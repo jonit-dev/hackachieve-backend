@@ -19,7 +19,7 @@ class Resume(models.Model):
     total_household_members = models.IntegerField(default=1)
     consent_criminal_check = models.BooleanField()
     eviction_history = models.BooleanField()
-    current_property_has_bedbugs = models.BooleanField()
+    current_property_has_infestations = models.BooleanField()
     has_pet = models.BooleanField()
 
     #financial risk
