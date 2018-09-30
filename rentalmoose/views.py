@@ -50,7 +50,7 @@ def user_register(request):
 
             # create user here
 
-            create_user = User(
+            create_user = User.objects.create_user(
                 username=json_data['email'],
                 email=json_data['email'],
                 password=json_data['password'],
@@ -58,7 +58,6 @@ def user_register(request):
                 last_name=json_data['lastName'],
                 type=1
             )
-            create_user.save()
 
         if create_user:
             return API.json_response({
