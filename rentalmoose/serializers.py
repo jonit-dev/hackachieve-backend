@@ -17,7 +17,7 @@ class ProvinceSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Province
-        fields = ('id', 'name', 'country_id', 'abbrev')
+        fields = ('id', 'name', 'country', 'abbrev')
 
 
 
@@ -25,7 +25,7 @@ class ProvinceSerializer(serializers.ModelSerializer):
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = ('id', 'name', 'province_id')
+        fields = ('id', 'name', 'province')
 
 
 class ResumeSerializer(serializers.ModelSerializer):
@@ -35,4 +35,4 @@ class ResumeSerializer(serializers.ModelSerializer):
             'id', 'phone', 'description', 'zipcode', 'address', 'expected_tenancy_length', 'total_household_members',
             'consent_criminal_check', 'eviction_history', 'current_property_has_infestations', 'has_pet',
             'currently_working',
-            'current_ocupation', 'credit_score', 'maximum_rental_budget', 'current_wage', 'tenant_id')
+            'current_ocupation', 'credit_score', 'maximum_rental_budget', 'current_wage', 'tenant')
