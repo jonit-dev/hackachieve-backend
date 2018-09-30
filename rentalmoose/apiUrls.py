@@ -11,6 +11,7 @@ router.register('countries', views.CountryView)
 
 urlpatterns = [
 
-    url('', include(router.urls))
+    url('', include(router.urls)),
+    url('user/create', views.user_register)
 
 ]
