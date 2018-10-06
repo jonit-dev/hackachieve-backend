@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, permissions
 
 from apps.cities.models import City
 from apps.countries.models import Country
@@ -12,20 +12,19 @@ class CountrySerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class ProvinceSerializer(serializers.ModelSerializer):
-
-    class Meta:
-
-        model = Province
-        fields = ('id', 'name', 'country', 'abbrev')
-
-
-
-
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ('id', 'name', 'province')
+        depth = 1
+
+
+class ProvinceSerializer(serializers.ModelSerializer):
+    cities = CitySerializer(many=True)
+
+    class Meta:
+        model = Province
+        fields = ('id', 'name', 'country', 'abbrev', 'cities')
 
 
 class ResumeSerializer(serializers.ModelSerializer):

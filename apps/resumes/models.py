@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-
+from apps.cities.models import City
 from apps.users.models import User
 
 
@@ -9,7 +9,7 @@ class Resume(models.Model):
     tenant = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # location
-    # city = models.ForeignKey(City, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, default=None)
     phone = models.CharField(max_length=255)
     description = models.TextField()
     zipcode = models.CharField(max_length=255)

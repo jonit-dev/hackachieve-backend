@@ -13,3 +13,9 @@ class Province(models.Model):
 
     def __str__(self):  # title on dashboard
         return self.name
+
+
+    @property
+    def cities(self):
+        
+        return self.city_set.all()
