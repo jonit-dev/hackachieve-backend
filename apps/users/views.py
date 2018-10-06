@@ -1,3 +1,4 @@
+from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from rentalmoose.classes.API import *
 from rentalmoose.classes.Validator import *
@@ -18,11 +19,20 @@ from rest_framework.permissions import IsAuthenticated
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def user_dashboard(request):
-
     user_id = API.getUserByToken(request)
 
+    user = User.objects.get(pk=user_id)
+
+    user_resumes = user.resume_set.all()
+
+    has_resumes = len(user_resumes)
+
+    # user_resumes = serializers.serialize('json', user_resumes)
+
     return API.json_response({
-        'content': "hi"
+        'has_resumes': has_resumes > 0,
+        # 'user_resumes': json.loads(user_resumes)
+        # you MUST use a json.loads here to load the serialized json model. Otherwise, it wont work!
     })
 
 
