@@ -2,14 +2,12 @@ from django.views.decorators.csrf import csrf_exempt
 from rentalmoose.classes.API import *
 from rentalmoose.classes.Validator import *
 
-#for protected views
+# for protected views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 
 # CUSTOM VIEWS =========================== #
-
 
 # ================================================================= #
 #                      DASHBOARD
@@ -19,7 +17,10 @@ from rest_framework.response import Response
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
-def user_dashboard(APIView):
+def user_dashboard(request):
+
+    user_id = API.getUserByToken(request)
+
     return API.json_response({
         'content': "hi"
     })
