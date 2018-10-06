@@ -1,5 +1,8 @@
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
+
+from apps.cities.models import City
+from apps.resumes.models import Resume
 from rentalmoose.classes.API import *
 from rentalmoose.classes.Validator import *
 
@@ -37,6 +40,85 @@ def user_dashboard(request):
 
 
 # ================================================================= #
+#                      RESUME
+# ================================================================= #
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def resume_create(request):
+    # get user
+    user_id = API.getUserByToken(request)
+    user = User.objects.get(pk=user_id)
+
+    resume_data = API.json_get_data(request)
+
+    json_data = API.json_get_data(request)
+    city_id = json_data['city']['id']
+    city = City.objects.get(pk=city_id)
+
+    request_fields = Validator.are_request_fields_valid(json_data)
+
+    request_fields_valid = Validator.are_request_fields_valid(resume_data)
+
+    if request_fields_valid is not True:
+        return API.json_response({
+            "status": "error",
+            "message": "Error while trying to create your resume. The following fields are empty: {}".format(
+                ", ".join(request_fields_valid)),
+            "type": "danger"
+        })
+
+    elif user.has_resume() == True:
+
+        #update resume data
+        #todo: update resume
+
+        return API.json_response({
+            "status": "error",
+            "message": "This user already has a resume! Please, update it instead of creating a new one",
+            "type": "danger"
+        })
+    else:
+
+        # create resume
+
+        resume = Resume(
+            tenant=user,
+            city=city,
+            phone=resume_data['phone'],
+            description=resume_data['description'],
+            zipcode=resume_data['zipcode'],
+            address=resume_data['address'],
+            expected_tenancy_length=resume_data['tenancyLength'],
+            total_household_members=resume_data['totalHouseholdMembers'],
+            consent_criminal_check=resume_data['consentCriminalCheck'],
+            eviction_history=resume_data['evictionHistory'],
+            current_property_has_infestations=resume_data['currentPropertyInfestations'],
+            has_pet=resume_data['hasPet'],
+            currently_working=resume_data['working'],
+            current_ocupation=resume_data['occupation'],
+            credit_score=resume_data['creditScore'],
+            maximum_rental_budget=resume_data['maximumRentalBudget'],
+            current_wage=resume_data['monthlyWage']
+        )
+        resume.save()
+
+        if resume:
+            return API.json_response({
+                "status": "success",
+                "message": "Your resume was created successfully",
+                "type": "success"
+            })
+        else:
+            return API.json_response({
+                "status": "error",
+                "message": "Error while trying to register your resume. Please, contact our support team.",
+                "type": "danger"
+            })
+
+
+# ================================================================= #
 #                      REGISTER
 # ================================================================= #
 
@@ -50,9 +132,9 @@ def user_register(request):
 
         # Empty fields valitation =========================== #
 
-        check_user_fields = Validator.are_user_fields_valid(json_data)
+        check_user_fields = Validator.are_request_fields_valid(json_data)
 
-        check_user_fields = Validator.are_user_fields_valid(json_data)
+        check_user_fields = Validator.are_request_fields_valid(json_data)
 
         if check_user_fields is not True:
             return API.json_response({

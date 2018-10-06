@@ -16,5 +16,13 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+    def has_resume(self):
+
+        if len(self.resume_set.all()) > 0:
+            return True
+        else:
+            return False
+
+
 
 

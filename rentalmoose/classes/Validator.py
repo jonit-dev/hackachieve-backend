@@ -9,7 +9,7 @@ class Validator:
         return filter(None, re.split("([A-Z][^A-Z]*)", s))
 
     @staticmethod
-    def are_user_fields_valid(user_fields):
+    def are_request_fields_valid(user_fields):
 
         print(">> checking user fields")
 
@@ -47,4 +47,7 @@ class Validator:
             return True
         else:
             return False
+
+
+
 
