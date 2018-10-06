@@ -15,7 +15,3 @@ class Province(models.Model):
         return self.name
 
 
-    @property
-    def cities(self):
-        
-        return self.city_set.all()
