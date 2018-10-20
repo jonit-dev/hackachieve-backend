@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'stdimage'
 
 ]
 
@@ -139,7 +140,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-PROPERTIES_IMAGES_ROOT = join(BASE_DIR, "static/images/properties")
+PROPERTIES_IMAGES_ROOT = "static/images/properties"
 
 MEDIA_URL = '/images/'
 MEDIA_ROOT = BASE_DIR
