@@ -23,5 +23,7 @@ urlpatterns = [
     url(r'^province/(?P<id>[0-9]+)/cities$', provinces_views.provinces_cities),
 
     url(r'^properties/create$', properties_view.create),
+    url(r'^properties/show/dashboard', properties_view.show_dashboard),
+
 
 ]

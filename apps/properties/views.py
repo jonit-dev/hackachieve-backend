@@ -58,3 +58,12 @@ def create(request):
             "message": "The file extension that you're trying to submit is not allowed. Please, send a .png, .jpg or .bmp image file",
             "type": "danger"
         })
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes(())
+def show_dashboard(request):
+    properties = Property.objects.all()[:3]
+
+    return API.json_response(API.serialize_model(properties))

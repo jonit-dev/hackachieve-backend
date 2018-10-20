@@ -1,6 +1,7 @@
 import base64
 import json
 from django.http import HttpResponse
+from django.core import serializers
 
 
 class API:
@@ -23,14 +24,12 @@ class API:
 
         user_data = list(user_data.split(','))
 
-
         for data in user_data:
             if "user_id" in data:
                 user_id = data.split(':')[1]
                 return user_id
 
         return False
-
 
     @staticmethod
     def json_get_data(request):
@@ -42,3 +41,19 @@ class API:
     @staticmethod
     def json_response(response):
         return HttpResponse(json.dumps(response), content_type="application/json")
+
+    @staticmethod
+    def serialize_model(model):
+
+        data = serializers.serialize('json', model)
+
+        final_results = []
+        for d in json.loads(data):
+            d['fields']['id'] = d['pk']
+            del d['pk']
+            del d['model']
+            d = d['fields']
+            final_results.append(d)
+
+        return final_results
+

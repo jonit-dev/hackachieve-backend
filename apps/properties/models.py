@@ -1,5 +1,3 @@
-from django.db import models
-
 # Create your models here.
 from apps.property_types.models import Property_type
 from apps.users.models import User
@@ -12,11 +10,6 @@ from django.db import models
 property_root = FileSystemStorage(location=settings.PROPERTIES_IMAGES_ROOT)
 
 
-def property_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return '{0}/{1}'.format(instance.owner.id, filename)
-
-
 class Property(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     # upload = models.FileField(storage=property_root,default=False)
@@ -24,14 +17,16 @@ class Property(models.Model):
     upload = StdImageField(upload_to=settings.PROPERTIES_IMAGES_ROOT, blank=True,
                            variations={
                                'large': (600, 400),
-                               'thumbnail': (100, 100, True)
+                               'thumbnail': (287, 161, True)
                            })
     status = models.BooleanField(default=1)
+    description = models.TextField(default="")
     title = models.CharField(max_length=255)
     sqft = models.IntegerField()
     type = models.ForeignKey(Property_type, on_delete=models.CASCADE, default=2)
     rental_value = models.FloatField()
     utilities_included = models.BooleanField()
+    utilities_estimation = models.FloatField(default=0)
     n_bedrooms = models.IntegerField()
     n_bathrooms = models.IntegerField()
     address = models.CharField(max_length=255)

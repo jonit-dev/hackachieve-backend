@@ -16,9 +16,10 @@ class PropertyHandler:
     def get_base64_img_data(request_data_image):
 
         format, imgstr = request_data_image.split(';base64,')
-        ext = format.split('/')[-1]
+        # ext = format.split('/')[-1]
+        ext = "jpeg"  # force jpeg extension
 
-        filename = "{}.{}".format("property_image", ext)
+        filename = "{}.{}".format("property_image", ext)  # convert everything to JPEG
 
         data = ContentFile(base64.b64decode(imgstr), name=filename)  # You can save this as file instance.
         return {
@@ -33,10 +34,12 @@ class PropertyHandler:
             owner=owner,
             status=request_data['status'],
             title=request_data['title'],
+            description=request_data['description'],
             sqft=request_data['sqft'],
             type=property_type,
             rental_value=request_data['rental_value'],
             utilities_included=request_data['utilities_included'],
+            utilities_estimation=request_data['utilities_estimation'],
             n_bedrooms=request_data['n_bedrooms'],
             n_bathrooms=request_data['n_bathrooms'],
             address=request_data['address'],
