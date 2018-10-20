@@ -15,23 +15,27 @@ from rentalmoose.serializers import ProvinceSerializer, CitySerializer, ResumeSe
 class PropertyView(viewsets.ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerialier
+    http_method_names = ['get']
 
 
 class ProvinceView(viewsets.ModelViewSet):
     queryset = Province.objects.all()
     serializer_class = ProvinceSerializer
+    http_method_names = ['get']
 
 
 class CityView(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
-
+    http_method_names = ['get']
 
 class ResumeView(viewsets.ModelViewSet):
     queryset = Resume.objects.all()
     serializer_class = ResumeSerializer
+    http_method_names = ['get']
 
 
 class CountryView(viewsets.ModelViewSet):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
+    http_method_names = ['get']

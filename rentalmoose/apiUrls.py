@@ -9,10 +9,10 @@ from apps.properties import views as properties_view
 
 router = routers.DefaultRouter()
 router.register('properties', views.PropertyView)
-# router.register('provinces', views.ProvinceView)
-# router.register('cities', views.CityView)
-# router.register('resumes', views.ResumeView)
-# router.register('countries', views.CountryView)
+router.register('provinces', views.ProvinceView)
+router.register('cities', views.CityView)
+router.register('resumes', views.ResumeView)
+router.register('countries', views.CountryView)
 
 urlpatterns = [
 
