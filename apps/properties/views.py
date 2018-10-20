@@ -1,9 +1,8 @@
 from django.views.decorators.csrf import csrf_exempt
 
-from apps.properties.models import Property
 from apps.property_types.models import Property_type
 from apps.users.models import User
-from rentalmoose import settings
+
 from rentalmoose.classes.API import *
 
 from rentalmoose.classes.PropertyHandler import *
@@ -11,14 +10,6 @@ from rentalmoose.classes.PropertyHandler import *
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
-# for receiving and decoding files in base64
-import base64
-from django.core.files.base import ContentFile
-
-# for moving files
-import os
-import shutil
 
 
 @csrf_exempt
@@ -43,7 +34,7 @@ def create(request):
 
     if check_allowed_file_extension:
 
-        #save property on DB
+        # save property on DB
         property = PropertyHandler.save_property(request_data, owner, property_type, img_data)
 
         # now lets move the image files that were created to the respective property folder (static/images/properties)
