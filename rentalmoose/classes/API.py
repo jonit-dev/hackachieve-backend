@@ -44,6 +44,7 @@ class API:
 
     @staticmethod
     def serialize_model(model):
+        # This script is responsible for converting django models into JSON responses, to be sent out through our API
 
         data = serializers.serialize('json', model)
 
@@ -56,4 +57,3 @@ class API:
             final_results.append(d)
 
         return final_results
-

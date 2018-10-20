@@ -67,3 +67,21 @@ def show_dashboard(request):
     properties = Property.objects.all()[:3]
 
     return API.json_response(API.serialize_model(properties))
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes(())
+def show(request, id):
+    try:
+
+        #try to find the property and return it
+        property = Property.objects.filter(pk=id)
+        return API.json_response(API.serialize_model(property)[0])
+
+    except Exception as e: #if not found, display this message
+        return API.json_response({
+            "status": "error",
+            "message": "Real estate property not found.",
+            "type": "danger"
+        })
