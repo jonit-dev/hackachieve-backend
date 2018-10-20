@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'apps.provinces',
     'apps.cities',
     'apps.resumes',
+    'apps.properties',
+    'apps.property_types',
 
     'django.contrib.admin',
     'django.contrib.auth',
