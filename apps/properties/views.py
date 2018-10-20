@@ -38,14 +38,15 @@ def create(request):
     # Convert file information (get from base64 and convert to fileContent
     img_data = PropertyHandler.get_base64_img_data(request_data['image'])
 
-    # Before saving the file, lets verify if its a allowed file tipe
+    # Before saving the file, lets verify if its a allowed file type
     check_allowed_file_extension = PropertyHandler.check_file_extensions(img_data['ext'])
 
     if check_allowed_file_extension:
 
+        #save property on DB
         property = PropertyHandler.save_property(request_data, owner, property_type, img_data)
 
-        # now lets move the image files that were created to the respective folder
+        # now lets move the image files that were created to the respective property folder (static/images/properties)
         PropertyHandler.reallocate_uploaded_files(property, img_data)
 
         if property:

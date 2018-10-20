@@ -58,9 +58,8 @@ class PropertyHandler:
 
         return property
 
-
     @staticmethod
-    def reallocate_uploaded_files(property,img_data):
+    def reallocate_uploaded_files(property, img_data):
 
         property_id = str(property.id)
         os.mkdir(os.path.join(settings.PROPERTIES_IMAGES_ROOT, property_id))
@@ -86,8 +85,6 @@ class PropertyHandler:
                 shutil.move(normal_img_path, newdir_path + "/" + normal_img)
                 shutil.move(thumbnail_img_path, newdir_path + "/" + thumbnail_img)
                 break
-
-        return
 
     @staticmethod
     def check_file_extensions(ext):
