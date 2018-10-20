@@ -78,7 +78,7 @@ class PropertyHandler:
 
         # try to save it when those files are available in our server
         while True:
-            time.sleep(1)
+            time.sleep(0.2)
             if os.path.isfile(large_img_path) is True and os.path.isfile(normal_img_path) and os.path.isfile(
                     thumbnail_img_path):
                 shutil.move(large_img_path, newdir_path + "/" + large_img)
