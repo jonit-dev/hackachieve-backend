@@ -4,9 +4,15 @@ from django.db import models
 from apps.property_types.models import Property_type
 from apps.users.models import User
 
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django.db import models
+
+property_root = FileSystemStorage(location=settings.PROPERTIES_IMAGES_ROOT)
 
 class Property(models.Model):
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    upload = models.FileField(storage=property_root,default=False)
     status = models.BooleanField(default=1)
     title = models.CharField(max_length=255)
     sqft = models.IntegerField()
