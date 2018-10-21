@@ -84,10 +84,11 @@ class PropertyHandler:
             time.sleep(0.2)
             if os.path.isfile(large_img_path) is True and os.path.isfile(normal_img_path) and os.path.isfile(
                     thumbnail_img_path):
-                shutil.move(large_img_path, newdir_path + "/" + large_img)
+                shutil.move(large_img_path, newdir_path + "/" + large_img.replace(".large","_large"))
                 shutil.move(normal_img_path, newdir_path + "/" + normal_img)
-                shutil.move(thumbnail_img_path, newdir_path + "/" + thumbnail_img)
+                shutil.move(thumbnail_img_path, newdir_path + "/" + thumbnail_img.replace(".thumbnail","_thumbnail"))
                 break
+
 
     @staticmethod
     def check_file_extensions(ext):
