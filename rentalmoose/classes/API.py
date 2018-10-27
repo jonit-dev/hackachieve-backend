@@ -49,12 +49,39 @@ class API:
     def json_response(response):
         return HttpResponse(json.dumps(response), content_type="application/json")
 
+    # @staticmethod
+    # def clean_fields(data):
+    #     final_results = []
+    #     for d in json.loads(data):
+    #         d['fields']['id'] = d['pk']
+    #         del d['pk']
+    #         del d['model']
+    #         d = d['fields']
+    #         final_results.append(d)
+    #
+    #     return final_results
+
     @staticmethod
-    def serialize_model(model):
+    def serialize_model(object):
+
         # This script is responsible for converting django models into JSON responses, to be sent out through our API
 
-        data = serializers.serialize('json', model)
+        data = serializers.serialize('json', object)
         final_results = []
+        for d in json.loads(data):
+            d['fields']['id'] = d['pk']
+            del d['pk']
+            del d['model']
+            d = d['fields']
+            final_results.append(d)
+
+        return final_results
+
+    @staticmethod
+    def serialize_single_object(Model, id):
+        data = serializers.serialize("json", Model.objects.filter(pk=id))
+        final_results = []
+
         for d in json.loads(data):
             d['fields']['id'] = d['pk']
             del d['pk']

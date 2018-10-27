@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.property_types.models import Property_type
@@ -10,6 +11,8 @@ from rentalmoose.classes.PropertyHandler import *
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+
+from apps.applications.models import Application
 
 
 @csrf_exempt
@@ -75,13 +78,68 @@ def show_dashboard(request):
 def show(request, id):
     try:
 
-        #try to find the property and return it
+        # try to find the property and return it
         property = Property.objects.filter(pk=id)
         return API.json_response(API.serialize_model(property)[0])
 
-    except Exception as e: #if not found, display this message
+    except Exception as e:  # if not found, display this message
         return API.json_response({
             "status": "error",
             "message": "Real estate property not found.",
             "type": "danger"
         })
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes(())
+def applications(request, id):
+    # Validation =========================== #
+
+    user = User.objects.get(pk=API.getUserByToken(request))
+    property = Property.objects.get(pk=id)
+
+    #check if user is a landlord
+    if user.type is not 2:
+        return API.json_response({
+            "status": "error",
+            "message": "Only landlords are allowed to access this information.",
+            "type": "danger"
+        })
+
+    #check if user is the owner of this property
+    elif property.owner_id != user.id:
+            return API.json_response({
+                "status": "error",
+                "message": "You cannot access applications from properties that are not yours.",
+                "type": "danger"
+            })
+
+    else:
+
+        try:
+
+
+            applications = property.application_set.all()
+            applications_count = applications.count()
+
+            if applications_count == 0:
+                return API.json_response({
+                    "status": "error",
+                    "message": "No one applied for this property yet.",
+                    "type": "danger"
+                })
+            else:
+                tenants = []
+                for application in applications:
+                    tenants.append(application.tenant.get())
+
+                return API.json_response(API.serialize_model(tenants))
+
+        except ObjectDoesNotExist as e:  # and more generic exception handling on bottom
+
+            return API.json_response({
+                "status": "error",
+                "message": "This property does not exists.",
+                "type": "danger"
+            })

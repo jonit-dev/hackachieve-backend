@@ -42,5 +42,6 @@ class Property(models.Model):
     open_view_start = models.DateTimeField()
     open_view_end = models.DateTimeField()
 
+
     def __str__(self):  # title on dashboard
         return self.title
