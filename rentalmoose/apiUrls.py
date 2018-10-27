@@ -17,14 +17,22 @@ router.register('countries', views.CountryView)
 urlpatterns = [
 
     url('', include(router.urls)),
+
+    # USER ROUTES =========================== #
+
     url('user/info', user_views.user_info),
     url('user/create', user_views.user_register),
     url('user/resume/create', user_views.resume_create),
     url('user/dashboard', user_views.user_dashboard),
+    url('user/apply/(?P<property_id>[0-9]+)', user_views.user_apply),
+
+    # PROVINCES =========================== #
+
     url(r'^province/(?P<id>[0-9]+)/cities$', provinces_views.provinces_cities),
 
 
-    # REAL ESTATE PROPERTIES ROUTES
+    # PROPERTIES ROUTES (REAL ESTATE LISTINGS) =========================== #
+
     url(r'^properties/create$', properties_view.create),
     url(r'^properties/show/dashboard', properties_view.show_dashboard),
     url(r'^properties/(?P<id>[0-9]+)', properties_view.show),

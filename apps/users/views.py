@@ -1,6 +1,8 @@
 from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 
+from apps.applications.models import Application
 from apps.cities.models import City
 from apps.properties.models import Property
 from apps.resumes.models import Resume
@@ -51,12 +53,11 @@ def user_dashboard(request):
 
         # if the user has a resume registered, let him see all properties
 
-
         # CUSTOM JSON SERIALIZER =========================== #
 
         properties = Property.objects.all()
 
-       # data is a python list
+        # data is a python list
         data = json.loads(serializers.serialize('json', properties))
 
         final_results = []
@@ -230,11 +231,7 @@ def user_register(request):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def user_info(request):
-
     user_id = API.getUserByToken(request)
-
-
-
 
     user = User.objects.get(pk=user_id)
     return API.json_response({
@@ -246,9 +243,45 @@ def user_info(request):
     })
 
 
+# ================================================================= #
+#                      APPLY FOR A PROPERTY
+# ================================================================= #
 
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def user_apply(request, property_id):
+    # get the property name that we want to apply for
 
+    # Validation =========================== #
 
+    # check if its a tenant who's applying for it
+    tenant = User.objects.get(pk=API.getUserByToken(request))
 
+    if tenant.type != 1:
+        return API.json_response({
+            "status": "error",
+            "message": "Sorry. Only tenants can apply for properties.",
+            "type": "danger"
+        })
 
-    return
+    # Application =========================== #
+
+    try:
+        property = Property.objects.get(pk=property_id)
+
+        Application.apply(tenant, property)
+
+        return API.json_response({
+            "status": "success",
+            "message": "Your tenant's application resume was sent.",
+            "type": "success"
+        })
+
+    except ObjectDoesNotExist as e:  # and more generic exception handling on bottom
+        return API.json_response({
+
+            "status": "error",
+            "message": "The property that you're trying to apply for does not exist.",
+            "type": "danger"
+        })

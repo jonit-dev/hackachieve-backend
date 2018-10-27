@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.resumes',
     'apps.properties',
     'apps.property_types',
+    'apps.applications',
 
     'django.contrib.admin',
     'django.contrib.auth',
