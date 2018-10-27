@@ -133,7 +133,12 @@ def applications(request, id):
                 scores = []
 
                 for application in applications:
-                    scores.append(ResumeHandler.calculate_risk(application.resume.get(), property))
+
+                    resume = application.resume.get()
+
+                    if resume.active:
+                        scores.append(ResumeHandler.calculate_risk(resume, property))
+
 
                 return HttpResponse(json.dumps(scores), content_type="application/json")
 

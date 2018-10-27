@@ -18,7 +18,8 @@ class Resume(models.Model):
     # property damage risk
     expected_tenancy_length = models.IntegerField(default=1)
     total_household_members = models.IntegerField(default=1)
-    consent_criminal_check = models.BooleanField()
+    consent_criminal_check = models.BooleanField(default=True)
+    consent_credit_check = models.BooleanField(default=True)
     eviction_history = models.BooleanField()
     current_property_has_infestations = models.BooleanField()
     has_pet = models.BooleanField()
