@@ -14,7 +14,7 @@ class Resume(models.Model):
     description = models.TextField()
     zipcode = models.CharField(max_length=255)
     address = models.TextField()
-
+    active = models.BooleanField(default=True)
     # property damage risk
     expected_tenancy_length = models.IntegerField(default=1)
     total_household_members = models.IntegerField(default=1)

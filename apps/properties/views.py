@@ -7,6 +7,7 @@ from apps.users.models import User
 from rentalmoose.classes.API import *
 
 from rentalmoose.classes.PropertyHandler import *
+from rentalmoose.classes.ResumeHandler import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -99,7 +100,7 @@ def applications(request, id):
     user = User.objects.get(pk=API.getUserByToken(request))
     property = Property.objects.get(pk=id)
 
-    #check if user is a landlord
+    # check if user is a landlord
     if user.type is not 2:
         return API.json_response({
             "status": "error",
@@ -107,18 +108,17 @@ def applications(request, id):
             "type": "danger"
         })
 
-    #check if user is the owner of this property
+    # check if user is the owner of this property
     elif property.owner_id != user.id:
-            return API.json_response({
-                "status": "error",
-                "message": "You cannot access applications from properties that are not yours.",
-                "type": "danger"
-            })
+        return API.json_response({
+            "status": "error",
+            "message": "You cannot access applications from properties that are not yours.",
+            "type": "danger"
+        })
 
     else:
 
         try:
-
 
             applications = property.application_set.all()
             applications_count = applications.count()
@@ -130,13 +130,14 @@ def applications(request, id):
                     "type": "danger"
                 })
             else:
-                tenants = []
+                scores = []
+
                 for application in applications:
-                    tenants.append(application.tenant.get())
+                    scores.append(ResumeHandler.calculate_risk(application.resume.get(), property))
 
-                return API.json_response(API.serialize_model(tenants))
+                return HttpResponse(json.dumps(scores), content_type="application/json")
 
-        except ObjectDoesNotExist as e:  # and more generic exception handling on bottom
+        except ObjectDoesNotExist as e:
 
             return API.json_response({
                 "status": "error",

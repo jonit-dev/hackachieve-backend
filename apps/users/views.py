@@ -270,13 +270,27 @@ def user_apply(request, property_id):
     try:
         property = Property.objects.get(pk=property_id)
 
-        Application.apply(tenant, property)
+        resume_query = tenant.resume_set.filter(active=True)
+        resume = resume_query.first()
+        resume_count = resume_query.count()
 
-        return API.json_response({
-            "status": "success",
-            "message": "Your tenant's application resume was sent.",
-            "type": "success"
-        })
+        if resume_count >= 1:
+            Application.apply(resume, property)
+
+            return API.json_response({
+                "status": "success",
+                "message": "Your tenant's application resume was sent.",
+                "type": "success"
+            })
+        else:
+            return API.json_response({
+                "status": "error",
+                "message": "You dont have a registered resume to apply.",
+                "type": "danger"
+            })
+
+
+
 
     except ObjectDoesNotExist as e:  # and more generic exception handling on bottom
         return API.json_response({
