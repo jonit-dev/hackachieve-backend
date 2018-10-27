@@ -2,6 +2,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.cities.models import City
+from apps.properties.models import Property
 from apps.resumes.models import Resume
 from rentalmoose.classes.API import *
 from rentalmoose.classes.Validator import *
@@ -9,6 +10,9 @@ from rentalmoose.classes.Validator import *
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+
+import json
+from django.core import serializers
 
 
 # CUSTOM VIEWS =========================== #
@@ -30,13 +34,44 @@ def user_dashboard(request):
 
     has_resumes = len(user_resumes)
 
-    # user_resumes = serializers.serialize('json', user_resumes)
+    has_resumes = has_resumes > 0
 
-    return API.json_response({
-        'has_resumes': has_resumes > 0,
-        # 'user_resumes': json.loads(user_resumes)
-        # you MUST use a json.loads here to load the serialized json model. Otherwise, it wont work!
-    })
+    if has_resumes is not True:
+
+        # if user does not have resume, lets force him to register one.
+
+        # user_resumes = serializers.serialize('json', user_resumes)
+
+        return API.json_response({
+            'has_resumes': has_resumes,
+            # 'user_resumes': json.loads(user_resumes)
+            # you MUST use a json.loads here to load the serialized json model. Otherwise, it wont work!
+        })
+    else:
+
+        # if the user has a resume registered, let him see all properties
+
+
+        # CUSTOM JSON SERIALIZER =========================== #
+
+        properties = Property.objects.all()
+
+       # data is a python list
+        data = json.loads(serializers.serialize('json', properties))
+
+        final_results = []
+        for d in data:
+            d['fields']['owner_name'] = User.objects.get(pk=d['fields']['owner']).first_name
+            d['fields']['id'] = d['pk']
+            del d['fields']['owner']
+            del d['pk']
+            del d['model']
+            d = d['fields']
+            final_results.append(d)
+
+        d = {}
+        d = final_results
+        return HttpResponse(json.dumps(d), content_type="application/json")
 
 
 # ================================================================= #
@@ -71,8 +106,8 @@ def resume_create(request):
 
     elif user.has_resume() == True:
 
-        #update resume data
-        #todo: update resume
+        # update resume data
+        # todo: update resume
 
         return API.json_response({
             "status": "error",
@@ -134,8 +169,6 @@ def user_register(request):
 
         check_user_fields = Validator.are_request_fields_valid(json_data)
 
-        check_user_fields = Validator.are_request_fields_valid(json_data)
-
         if check_user_fields is not True:
             return API.json_response({
                 "status": "error",
@@ -166,7 +199,7 @@ def user_register(request):
                 password=json_data['password'],
                 first_name=json_data['firstName'],
                 last_name=json_data['lastName'],
-                type=1
+                type=json_data['type']
             )
 
         if create_user:
@@ -187,3 +220,35 @@ def user_register(request):
             "error": "Invalid request"
         }
     return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+# ================================================================= #
+#                      GET OWN INFO
+# ================================================================= #
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def user_info(request):
+
+    user_id = API.getUserByToken(request)
+
+
+
+
+    user = User.objects.get(pk=user_id)
+    return API.json_response({
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'is_active': user.is_active,
+        'type': user.type
+    })
+
+
+
+
+
+
+
+    return

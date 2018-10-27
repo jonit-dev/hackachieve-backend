@@ -17,6 +17,7 @@ router.register('countries', views.CountryView)
 urlpatterns = [
 
     url('', include(router.urls)),
+    url('user/info', user_views.user_info),
     url('user/create', user_views.user_register),
     url('user/resume/create', user_views.resume_create),
     url('user/dashboard', user_views.user_dashboard),

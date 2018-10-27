@@ -10,13 +10,20 @@ class API:
     def getUserByToken(request):
         # find header and get token
         header = request.META.get('HTTP_AUTHORIZATION')
+
         jwt = header.split(" ")[1]
         token = jwt.split('.')[1]
 
-        # print(token)
+        # # now identify user by token
 
-        # now identify user by token
+        token = str.encode(token)
+        # Solve missing padding bug
+        missing_padding = len(token) % 4
+        if missing_padding != 0:
+            token += b'=' * (4 - missing_padding)
+
         user_data = base64.b64decode(token).decode('UTF-8')
+
         # print(user_data)
         user_data = user_data.replace('"', '')
         user_data = user_data.replace('{', '')
@@ -47,7 +54,6 @@ class API:
         # This script is responsible for converting django models into JSON responses, to be sent out through our API
 
         data = serializers.serialize('json', model)
-
         final_results = []
         for d in json.loads(data):
             d['fields']['id'] = d['pk']
