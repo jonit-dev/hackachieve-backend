@@ -265,14 +265,24 @@ def user_apply(request, property_id):
             "type": "danger"
         })
 
+    resume_query = tenant.resume_set.filter(active=True)
+    resume = resume_query.first()
+    resume_count = resume_query.count()
+
+    if Application.objects.filter(resume=resume.id,property=property_id).count() > 0:
+        return API.json_response({
+            "status": "error",
+            "message": "You already sent a resume for this application",
+            "type": "danger"
+        })
+
+
     # Application =========================== #
 
     try:
         property = Property.objects.get(pk=property_id)
 
-        resume_query = tenant.resume_set.filter(active=True)
-        resume = resume_query.first()
-        resume_count = resume_query.count()
+
 
         if resume_count >= 1:
             Application.apply(resume, property)
