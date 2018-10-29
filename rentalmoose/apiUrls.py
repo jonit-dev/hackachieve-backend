@@ -37,6 +37,6 @@ urlpatterns = [
     url(r'^properties/show/dashboard', properties_view.show_dashboard),
     url(r'^properties/(?P<id>[0-9]+)', properties_view.show),
     url(r'^properties/applications/(?P<id>[0-9]+)', properties_view.applications),
-
+    url(r'^properties/landlord', properties_view.properties_listing),
 
 ]

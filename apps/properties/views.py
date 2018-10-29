@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.property_types.models import Property_type
 from apps.users.models import User
+from apps.properties.models import Property
 
 from rentalmoose.classes.API import *
 
@@ -149,3 +150,28 @@ def applications(request, id):
                 "message": "This property does not exists.",
                 "type": "danger"
             })
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def properties_listing(request):
+
+    try:
+
+        owner_id = API.getUserByToken(request)
+
+        properties = Property.objects.filter(owner = owner_id)
+
+        properties = serializers.serialize('json', properties)
+        properties = json.loads(properties)
+
+        return API.json_response({
+         'properties': properties
+        })
+
+    except Exception as e:  # if not found, display this message
+        return API.json_response({
+            "status": "error",
+            "message": "Real estate property not found.",
+            "type": "danger"
+        })
