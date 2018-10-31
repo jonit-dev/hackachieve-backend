@@ -27,6 +27,20 @@ def create(request):
     owner_id = API.getUserByToken(request)
     owner = User.objects.get(pk=owner_id)
 
+    # Validation =========================== #
+
+    # check if user who's trying to list a property is a landlord
+
+    if owner.type != 2:
+        return API.json_response({
+            "status": "error",
+            "message": "Only landlords accounts can list real estate properties.",
+            "type": "danger"
+        })
+
+
+
+
     # Set property type
     property_type = Property_type.objects.get(pk=request_data['type_id'])
 
