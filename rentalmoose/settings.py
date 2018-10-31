@@ -91,28 +91,28 @@ WSGI_APPLICATION = 'rentalmoose.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'rentalmoose',
-    #     'USER': 'django-admin',
-    #     'PASSWORD': '32258190',
-    #     'HOST': '127.0.0.1',
-    #     'POST': '3306',
-    #     'OPTIONS': {
-    #         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-    #     },
-    # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rm_database',
-        'USER': 'rentalmooseuser2',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
+        'NAME': 'rentalmoose',
+        'USER': 'django-admin',
+        'PASSWORD': '32258190',
+        'HOST': '127.0.0.1',
         'POST': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'rm_database',
+    #     'USER': 'rentalmooseuser2',
+    #     'PASSWORD': '1234',
+    #     'HOST': 'localhost',
+    #     'POST': '3306',
+    #     'OPTIONS': {
+    #         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+    #     },
+    # }
 }
 
 # Password validation

@@ -49,17 +49,17 @@ class API:
     def json_response(response):
         return HttpResponse(json.dumps(response), content_type="application/json")
 
-    # @staticmethod
-    # def clean_fields(data):
-    #     final_results = []
-    #     for d in json.loads(data):
-    #         d['fields']['id'] = d['pk']
-    #         del d['pk']
-    #         del d['model']
-    #         d = d['fields']
-    #         final_results.append(d)
-    #
-    #     return final_results
+    @staticmethod
+    def clean_fields(data):
+        final_results = []
+        for d in json.loads(data):
+            d['fields']['id'] = d['pk']
+            del d['pk']
+            del d['model']
+            d = d['fields']
+            final_results.append(d)
+
+        return final_results
 
     @staticmethod
     def serialize_model(object):

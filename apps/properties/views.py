@@ -39,9 +39,6 @@ def create(request):
             "type": "danger"
         })
 
-
-
-
     # Set property type
     property_type = Property_type.objects.get(pk=request_data['type_id'])
 
@@ -154,7 +151,6 @@ def applications(request, id):
                     if resume.active:
                         scores.append(ResumeHandler.calculate_risk(resume, property))
 
-
                 return HttpResponse(json.dumps(scores), content_type="application/json")
 
         except ObjectDoesNotExist as e:
@@ -165,27 +161,15 @@ def applications(request, id):
                 "type": "danger"
             })
 
+
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def properties_listing(request):
+    owner_id = API.getUserByToken(request)
 
-    try:
+    properties = Property.objects.filter(owner=owner_id)
 
-        owner_id = API.getUserByToken(request)
+    properties = serializers.serialize('json', properties)
 
-        properties = Property.objects.filter(owner = owner_id)
-
-        properties = serializers.serialize('json', properties)
-        properties = json.loads(properties)
-
-        return API.json_response({
-         'properties': properties
-        })
-
-    except Exception as e:  # if not found, display this message
-        return API.json_response({
-            "status": "error",
-            "message": "Real estate property not found.",
-            "type": "danger"
-        })
+    return API.json_response(API.clean_fields(properties))
