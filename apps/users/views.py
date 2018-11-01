@@ -129,6 +129,7 @@ def resume_create(request):
             expected_tenancy_length=resume_data['tenancyLength'],
             total_household_members=resume_data['totalHouseholdMembers'],
             consent_criminal_check=resume_data['consentCriminalCheck'],
+            consent_credit_check=resume_data['consentCreditCheck'],
             eviction_history=resume_data['evictionHistory'],
             current_property_has_infestations=resume_data['currentPropertyInfestations'],
             has_pet=resume_data['hasPet'],
@@ -136,6 +137,7 @@ def resume_create(request):
             current_ocupation=resume_data['occupation'],
             credit_score=resume_data['creditScore'],
             maximum_rental_budget=resume_data['maximumRentalBudget'],
+            total_household_income=resume_data['totalHouseholdIncome'],
             current_wage=resume_data['monthlyWage']
         )
         resume.save()

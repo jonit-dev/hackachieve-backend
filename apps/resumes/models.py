@@ -29,6 +29,7 @@ class Resume(models.Model):
     current_ocupation = models.CharField(max_length=255)
     credit_score = models.IntegerField()
     maximum_rental_budget = models.FloatField()
+    total_household_income = models.FloatField(default=0)
     current_wage = models.FloatField()
 
     def __str__(self):  # title on dashboard

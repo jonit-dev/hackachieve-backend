@@ -82,7 +82,22 @@ def create(request):
 def show_dashboard(request):
     properties = Property.objects.all()[:3]
 
-    return API.json_response(API.serialize_model(properties))
+     # data is a python list
+    data = json.loads(serializers.serialize('json', properties))
+
+    final_results = []
+    for d in data:
+        d['fields']['owner_name'] = User.objects.get(pk=d['fields']['owner']).first_name
+        d['fields']['id'] = d['pk']
+        del d['fields']['owner']
+        del d['pk']
+        del d['model']
+        d = d['fields']
+        final_results.append(d)
+
+    d = {}
+    d = final_results
+    return HttpResponse(json.dumps(d), content_type="application/json")
 
 
 @csrf_exempt
@@ -149,7 +164,7 @@ def applications(request, id):
                     resume = application.resume.get()
 
                     if resume.active:
-                        scores.append(ResumeHandler.calculate_risk(resume, property))
+                        scores.append(ResumeHandler.calculate_risk(resume, property, application))
 
                 return HttpResponse(json.dumps(scores), content_type="application/json")
 

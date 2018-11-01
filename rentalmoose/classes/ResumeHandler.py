@@ -1,10 +1,20 @@
 import json
+import datetime
 
 
 class ResumeHandler:
 
     @staticmethod
-    def calculate_risk(resume, property):
+    def datetime_parse(application_datetime):
+
+        def myconverter(o):
+            if isinstance(o, datetime.datetime):
+                return o.__str__()
+
+        return json.dumps(application_datetime, default=myconverter).replace('\"', "").replace('\"', "")
+
+    @staticmethod
+    def calculate_risk(resume, property, application):
 
         # Validation =========================== #
 
@@ -43,18 +53,30 @@ class ResumeHandler:
         if resume.consent_credit_check is not True:
             financial_risk += 100
 
+        # rental vs total household income
+
+        rental_total_income_ratio = (resume.total_household_income / property.rental_value)
+        if 2.5 <= rental_total_income_ratio < 3:
+            financial_risk += 10
+        elif 2 <= rental_total_income_ratio < 2.5:
+            financial_risk += 18
+        elif 1.5 <= rental_total_income_ratio < 2:
+            financial_risk += 25
+        elif rental_total_income_ratio < 1.5:
+            financial_risk += 50
+
         # rental vs wage ratio =========================== #
 
         rental_wage_ratio = (resume.current_wage / property.rental_value)
 
         if 2.5 <= rental_wage_ratio < 3:
-            financial_risk += 20
+            financial_risk += 10
         elif 2 <= rental_wage_ratio < 2.5:
-            financial_risk += 35
+            financial_risk += 18
         elif 1.5 <= rental_wage_ratio < 2:
-            financial_risk += 50
+            financial_risk += 25
         elif rental_wage_ratio < 1.5:
-            financial_risk += 100
+            financial_risk += 50
 
         # ================================================================= #
         #                      PROPERTY DAMAGE RISK
@@ -103,13 +125,13 @@ class ResumeHandler:
 
         # Some validation to avoid overflow values =========================== #
         if financial_risk > 100:
-            financial_risk = 100
+            financial_risk = 99.9
 
         if early_vacation_risk > 100:
-            early_vacation_risk = 100
+            early_vacation_risk = 99.9
 
         if property_damage_risk > 100:
-            property_damage_risk = 100
+            property_damage_risk = 99.9
 
         overall_score = (financial_risk * 70 + property_damage_risk * 20 + early_vacation_risk * 10) / 100
         overall_risk = ""
@@ -127,20 +149,20 @@ class ResumeHandler:
 
         result = {
             "name": "{} {}".format(resume.tenant.first_name, resume.tenant.last_name),
-            "applicationDate": "XXXXX",
-            "rental_wage_ratio": rental_wage_ratio,
+            "applicationDate": ResumeHandler.datetime_parse(application.timestamp),
+            "rentalWageRatio": rental_wage_ratio,
+            "rentalTotalIncomeRatio": rental_total_income_ratio,
             "email": resume.tenant.email,
             "phone": resume.phone,
             "address": resume.address,
             "city": resume.city.name,
-            "zipcode": resume.zipcode,
+            "zipCode": resume.zipcode,
             "description": resume.description,
-            "finacial_risk": financial_risk,
-            "property_damage_risk": property_damage_risk,
-            "early_vacation_risk": early_vacation_risk,
+            "financialRisk": financial_risk,
+            "propertyDamageRisk": property_damage_risk,
+            "earlyVacationRisk": early_vacation_risk,
             "overrallRisk": overall_risk,
             "overallScore": overall_score
         }
-
 
         return result
