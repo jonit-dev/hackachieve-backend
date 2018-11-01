@@ -93,6 +93,16 @@ def resume_create(request):
     city_id = json_data['city']['id']
     city = City.objects.get(pk=city_id)
 
+    # VALIDATION =========================== #
+    #check if user has a resume
+    if user.has_resume() == True:
+        return API.json_response({
+            "status": "error",
+            "message": "This user already has a resume! Please, update it instead of creating a new one",
+            "type": "danger"
+        })
+
+    #check if there's an empty field.
     request_fields = Validator.are_request_fields_valid(json_data)
 
     request_fields_valid = Validator.are_request_fields_valid(resume_data)
@@ -102,17 +112,6 @@ def resume_create(request):
             "status": "error",
             "message": "Error while trying to create your resume. The following fields are empty: {}".format(
                 ", ".join(request_fields_valid)),
-            "type": "danger"
-        })
-
-    elif user.has_resume() == True:
-
-        # update resume data
-        # todo: update resume
-
-        return API.json_response({
-            "status": "error",
-            "message": "This user already has a resume! Please, update it instead of creating a new one",
             "type": "danger"
         })
     else:
@@ -271,20 +270,17 @@ def user_apply(request, property_id):
     resume = resume_query.first()
     resume_count = resume_query.count()
 
-    if Application.objects.filter(resume=resume.id,property=property_id).count() > 0:
+    if Application.objects.filter(resume=resume.id, property=property_id).count() > 0:
         return API.json_response({
             "status": "error",
             "message": "You already sent a resume for this application",
             "type": "danger"
         })
 
-
     # Application =========================== #
 
     try:
         property = Property.objects.get(pk=property_id)
-
-
 
         if resume_count >= 1:
             Application.apply(resume, property)

@@ -17,7 +17,7 @@ class Validator:
         pretty_fields = []  # store the final results, that we'll make pretty for user output
 
         for key in user_fields:
-            if user_fields[key] == "":
+            if user_fields[key] == "" or user_fields[key] == None:
                 empty_fields.append(key)
 
         if len(empty_fields) > 0:
@@ -47,7 +47,3 @@ class Validator:
             return True
         else:
             return False
-
-
-
-
