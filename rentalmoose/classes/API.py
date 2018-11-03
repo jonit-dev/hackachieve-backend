@@ -50,9 +50,14 @@ class API:
         return HttpResponse(json.dumps(response), content_type="application/json")
 
     @staticmethod
-    def clean_fields(data):
+    def clean_fields(data, additional_fields = None):
         final_results = []
         for d in json.loads(data):
+
+            if additional_fields is not None:
+                for af in additional_fields:
+                    d['fields'][af['key']] = af['value']
+
             d['fields']['id'] = d['pk']
             del d['pk']
             del d['model']

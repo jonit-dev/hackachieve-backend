@@ -161,7 +161,7 @@ class ResumeHandler:
             "financialRisk": financial_risk,
             "propertyDamageRisk": property_damage_risk,
             "earlyVacationRisk": early_vacation_risk,
-            "overrallRisk": overall_risk,
+            "overallRisk": overall_risk,
             "overallScore": overall_score
         }
 

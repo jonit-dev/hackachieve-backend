@@ -82,7 +82,7 @@ def create(request):
 def show_dashboard(request):
     properties = Property.objects.all()[:3]
 
-     # data is a python list
+    # data is a python list
     data = json.loads(serializers.serialize('json', properties))
 
     final_results = []
@@ -187,4 +187,7 @@ def properties_listing(request):
 
     properties = serializers.serialize('json', properties)
 
-    return API.json_response(API.clean_fields(properties))
+    # add additional field to response
+    return API.json_response(API.clean_fields(properties, additional_fields=[
+        {"key": "is_owner", "value": True}
+    ]))
