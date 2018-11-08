@@ -120,12 +120,33 @@ def show(request, id):
 
 @csrf_exempt
 @api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def applicant_info(request, property_id, applicant_id):
+    # fetch all applications from a especific property
+    property = Property.objects.get(pk=property_id)
+    applications = property.application_set.all()
+
+    for application in applications:
+        resume = application.resume.get()
+
+        if resume.tenant_id == int(applicant_id):
+            return API.json_response(ResumeHandler.calculate_risk(resume, property, application))
+
+    return API.json_response({
+        "status": "error",
+        "message": "Application not found.",
+        "type": "danger"
+    })
+
+
+@csrf_exempt
+@api_view(['GET'])
 @permission_classes(())
-def applications(request, id):
+def applications(request, property_id):
     # Validation =========================== #
 
     user = User.objects.get(pk=API.getUserByToken(request))
-    property = Property.objects.get(pk=id)
+    property = Property.objects.get(pk=property_id)
 
     # check if user is a landlord
     if user.type is not 2:
