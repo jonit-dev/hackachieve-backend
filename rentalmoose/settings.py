@@ -26,9 +26,52 @@ SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '104.248.222.108'
+]
 
 # Application definition
+CORS_ORIGIN_ALLOW_ALL = True
+#
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:8000',
+#     '127.0.0.1:8000',
+#     '104.248.222.108:8000'
+# )
+#
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+#
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'cache-control'
+)
+
+
+CSRF_TRUSTED_ORIGINS = (
+    'localhost:8000',
+    '127.0.0.1:8000',
+    '104.248.222.108:8000'
+)
+
+
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -53,12 +96,13 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # CORS FIX
+    'corsheaders.middleware.CorsMiddleware',  # CorsMiddleware should be as high as possible
+    'django.middleware.common.CommonMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 
-    'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsPostCsrfMiddleware',
 
@@ -172,15 +216,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',)
 }
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:8000',
-    '127.0.0.1:8000'
-)
 
-CSRF_TRUSTED_ORIGINS = (
-    'localhost:8000',
-    '127.0.0.1:8000'
-)
 
 # ================================================================= #
 #                      SIMPLE JWT
