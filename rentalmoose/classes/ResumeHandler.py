@@ -148,6 +148,7 @@ class ResumeHandler:
         # ================================================================= #
 
         result = {
+            "id": resume.tenant.id,
             "name": "{} {}".format(resume.tenant.first_name, resume.tenant.last_name),
             "applicationDate": ResumeHandler.datetime_parse(application.timestamp),
             "rentalWageRatio": rental_wage_ratio,
