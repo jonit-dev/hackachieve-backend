@@ -15,6 +15,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from apps.applications.models import Application
+from rentalmoose.classes.UserHandler import UserHandler
 
 
 @csrf_exempt
@@ -128,8 +129,7 @@ def applicant_info(request, property_id, applicant_id):
 
     # check if the user that's making the request is a landlord
     user = User.objects.get(pk=user_id)
-
-    if user.type != 2:
+    if not UserHandler.is_landlord(user):
         return API.json_response({
             "status": "error",
             "message": "You must be a landlord to do this request.",
@@ -138,11 +138,12 @@ def applicant_info(request, property_id, applicant_id):
 
     # check if user owns this property
     property = Property.objects.get(pk=property_id)
+    # print("PROPERTYOWNER={} - USER_ID={}".format(property.owner_id, user.id))
 
-    if property.owner_id != int(user_id):
+    if PropertyHandler.is_owner(property, user) is False:
         return API.json_response({
             "status": "error",
-            "message": "You're not the owner of this property.",
+            "message": "You cannot access applications from properties that are not yours.",
             "type": "danger"
         })
 
@@ -175,7 +176,7 @@ def applications(request, property_id):
     property = Property.objects.get(pk=property_id)
 
     # check if user is a landlord
-    if user.type is not 2:
+    if not UserHandler.is_landlord(user):
         return API.json_response({
             "status": "error",
             "message": "Only landlords are allowed to access this information.",
@@ -183,7 +184,7 @@ def applications(request, property_id):
         })
 
     # check if user is the owner of this property
-    elif property.owner_id != user.id:
+    elif PropertyHandler.is_owner(property, user) is False:
         return API.json_response({
             "status": "error",
             "message": "You cannot access applications from properties that are not yours.",

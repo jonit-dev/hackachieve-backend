@@ -8,6 +8,7 @@ from django.http import HttpResponse
 
 from apps.properties.models import Property
 from rentalmoose import settings
+from rentalmoose.classes.API import API
 
 
 class PropertyHandler:
@@ -89,7 +90,6 @@ class PropertyHandler:
                 shutil.move(thumbnail_img_path, newdir_path + "/" + thumbnail_img.replace(".thumbnail","_thumbnail"))
                 break
 
-
     @staticmethod
     def check_file_extensions(ext):
 
@@ -99,3 +99,13 @@ class PropertyHandler:
             return True
         else:
             return False
+
+
+    @staticmethod
+    def is_owner(property,user):
+
+        if property.owner_id != user.id:
+            return False
+        else:
+            return True
+
