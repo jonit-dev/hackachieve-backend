@@ -122,8 +122,34 @@ def show(request, id):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def applicant_info(request, property_id, applicant_id):
-    # fetch all applications from a especific property
+    # VALIDATION =========================== #
+
+    user_id = API.getUserByToken(request)
+
+    # check if the user that's making the request is a landlord
+    user = User.objects.get(pk=user_id)
+
+    if user.type != 2:
+        return API.json_response({
+            "status": "error",
+            "message": "You must be a landlord to do this request.",
+            "type": "danger"
+        })
+
+    # check if user owns this property
     property = Property.objects.get(pk=property_id)
+
+    if property.owner_id != int(user_id):
+        return API.json_response({
+            "status": "error",
+            "message": "You're not the owner of this property.",
+            "type": "danger"
+        })
+
+    # FETCH APPLICATIONS =========================== #
+
+    # fetch all applications from a especific property
+
     applications = property.application_set.all()
 
     for application in applications:
