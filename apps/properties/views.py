@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 
@@ -205,16 +207,19 @@ def applications(request, property_id):
                     "type": "danger"
                 })
             else:
-                scores = []
+                tenants_applications = []
 
                 for application in applications:
 
                     resume = application.resume.get()
 
                     if resume.active:
-                        scores.append(ResumeHandler.calculate_risk(resume, property, application))
+                        tenants_applications.append(ResumeHandler.calculate_risk(resume, property, application))
 
-                return HttpResponse(json.dumps(scores), content_type="application/json")
+
+
+                #returns response sorted by lowest score first (thats why we use itemgetter)
+                return HttpResponse(json.dumps(sorted(tenants_applications, key=itemgetter('overallScore'))), content_type="application/json")
 
         except ObjectDoesNotExist as e:
 

@@ -1,6 +1,8 @@
 import json
 import datetime
 
+from rentalmoose.classes.UserHandler import UserHandler
+
 
 class ResumeHandler:
 
@@ -105,35 +107,35 @@ class ResumeHandler:
         #                      EARLY VACATION RISK
         # ================================================================= #
 
-        early_vacation_risk = 0
+        early_vacancy_risk = 0
 
         if resume.expected_tenancy_length < 2:
-            early_vacation_risk += 40
+            early_vacancy_risk += 40
 
         if resume.eviction_history is True:
-            early_vacation_risk += 50
+            early_vacancy_risk += 50
 
         if rental_wage_ratio < 2:
-            early_vacation_risk += 30
+            early_vacancy_risk += 30
 
         if not resume.consent_criminal_check or not resume.consent_credit_check:
-            early_vacation_risk = 100
+            early_vacancy_risk = 100
 
         # ================================================================= #
         #                      OVERALL RISK CALCULATION
         # ================================================================= #
 
         # Some validation to avoid overflow values =========================== #
-        if financial_risk > 100:
+        if financial_risk >= 100:
             financial_risk = 99.9
 
-        if early_vacation_risk > 100:
-            early_vacation_risk = 99.9
+        if early_vacancy_risk >= 100:
+            early_vacancy_risk = 99.9
 
-        if property_damage_risk > 100:
+        if property_damage_risk >= 100:
             property_damage_risk = 99.9
 
-        overall_score = (financial_risk * 70 + property_damage_risk * 20 + early_vacation_risk * 10) / 100
+        overall_score = (financial_risk * 70 + property_damage_risk * 20 + early_vacancy_risk * 10) / 100
         overall_risk = ""
 
         if overall_score >= 60:
@@ -149,21 +151,35 @@ class ResumeHandler:
 
         result = {
             "id": resume.tenant.id,
-            "name": "{} {}".format(resume.tenant.first_name, resume.tenant.last_name),
+            "name": UserHandler.shorten_name("{} {}".format(resume.tenant.first_name, resume.tenant.last_name)),
+            # names are shortened due to privacy concerns
             "applicationDate": ResumeHandler.datetime_parse(application.timestamp),
-            "rentalWageRatio": rental_wage_ratio,
-            "rentalTotalIncomeRatio": rental_total_income_ratio,
+            "rentalWageRatio": round(rental_wage_ratio, 2),
+            "rentalTotalIncomeRatio": round(rental_total_income_ratio, 2),
             "email": resume.tenant.email,
             "phone": resume.phone,
-            "address": resume.address,
+            # "address": resume.address,
             "city": resume.city.name,
-            "zipCode": resume.zipcode,
+            # "zipCode": resume.zipcode,
             "description": resume.description,
-            "financialRisk": financial_risk,
-            "propertyDamageRisk": property_damage_risk,
-            "earlyVacationRisk": early_vacation_risk,
+            "financialRisk": round(financial_risk,2),
+            "propertyDamageRisk": round(property_damage_risk,2),
+            "earlyVacancyRisk": round(early_vacancy_risk,2),
             "overallRisk": overall_risk,
-            "overallScore": overall_score
+            "overallScore": round(overall_score,2),
+            "expectedTenancyLength": resume.expected_tenancy_length,
+            "totalHouseHoldMembers": resume.total_household_members,
+            "consentCriminalCheck": resume.consent_criminal_check,
+            "evictionHistory": resume.eviction_history,
+            "currentPropertyHasInfestations": resume.current_property_has_infestations,
+            "hasPet": resume.has_pet,
+            "currentlyWorking": resume.currently_working,
+            "currentOcupation": resume.current_ocupation,
+            "creditScore": resume.credit_score,
+            "maximumRentalBudget": resume.maximum_rental_budget,
+            "currentWage": resume.current_wage,
+            "consentCreditCheck": resume.consent_credit_check,
+            "totalHouseHoldIncome": resume.total_household_income
         }
 
         return result
