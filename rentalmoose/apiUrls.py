@@ -6,6 +6,7 @@ from rest_framework import routers
 from apps.users import views as user_views
 from apps.provinces import views as provinces_views
 from apps.properties import views as properties_view
+from apps.neighborhoods import views as neighborhoods_view
 
 router = routers.DefaultRouter()
 router.register('properties', views.PropertyView)
@@ -30,6 +31,8 @@ urlpatterns = [
 
     url(r'^province/(?P<id>[0-9]+)/cities$', provinces_views.provinces_cities),
 
+    # NEIGHBORHOODS =========================== #
+    url(r'^neighborhoods/(?P<keyword>[\w\-]+)/$', neighborhoods_view.fetch_neighborhoods),
 
     # PROPERTIES ROUTES (REAL ESTATE LISTINGS) =========================== #
 
