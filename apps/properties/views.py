@@ -3,6 +3,8 @@ from operator import itemgetter
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 
+from apps.cities.models import City
+from apps.neighborhoods.models import Neighborhood
 from apps.property_types.models import Property_type
 from apps.users.models import User
 from apps.properties.models import Property
