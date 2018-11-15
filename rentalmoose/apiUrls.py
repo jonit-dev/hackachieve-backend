@@ -31,8 +31,11 @@ urlpatterns = [
 
     url(r'^province/(?P<id>[0-9]+)/cities$', provinces_views.provinces_cities),
 
-    # NEIGHBORHOODS =========================== #
-    url(r'^neighborhoods/(?P<keyword>[\w\-]+)/$', neighborhoods_view.fetch_neighborhoods),
+    # NEIGHBORHOODS from specific city=========================== #
+    url(r'^(?P<city_id>[0-9]+)/neighborhoods/(?P<keyword>[\w\-]+)/$', neighborhoods_view.fetch_neighborhoods),
+
+    url(r'^(?P<city_id>[0-9]+)/has-neighborhoods',neighborhoods_view.has_neighborhoods),
+
 
     # PROPERTIES ROUTES (REAL ESTATE LISTINGS) =========================== #
 

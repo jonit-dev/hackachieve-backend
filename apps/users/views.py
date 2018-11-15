@@ -4,6 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.applications.models import Application
 from apps.cities.models import City
+from apps.neighborhoods.models import Neighborhood
+from apps.neighborhoods_tenants.models import Neighborhood_tenant
 from apps.properties.models import Property
 from apps.resumes.models import Resume
 from rentalmoose.classes.API import *
@@ -140,6 +142,19 @@ def resume_create(request):
             current_wage=resume_data['monthlyWage']
         )
         resume.save()
+
+        #after resume creation, lets verify if we have some neighborhoods to add.
+
+        if len(resume_data['neighborhoodsOfInterest']) > 0:
+            for n in resume_data['neighborhoodsOfInterest']:
+
+                print(n)
+                neighborhood = Neighborhood.objects.get(pk=n['id'])
+                nt = Neighborhood_tenant.attach(neighborhood,user)
+
+
+
+
 
         if resume:
             return API.json_response({
