@@ -45,7 +45,7 @@ urlpatterns = [
 
 
 
-    #FETCH ALL PROPERTIES THAT A PARTICULAR LANDLORD OWNS
+    #FETCH ALL PROPERTIES THAT SOME PARTICULAR LANDLORD OWNS
     url(r'^property/landlord', properties_view.properties_listing),
 
 
