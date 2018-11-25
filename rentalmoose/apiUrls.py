@@ -7,6 +7,7 @@ from apps.users import views as user_views
 from apps.provinces import views as provinces_views
 from apps.properties import views as properties_view
 from apps.neighborhoods import views as neighborhoods_view
+from apps.requests import views as requests_view
 
 router = routers.DefaultRouter()
 router.register('properties', views.PropertyView)
@@ -54,5 +55,12 @@ urlpatterns = [
 
     #FETCH ONLY ONE APPLICANT FROM APPLICATION
     url(r'^property/(?P<property_id>[0-9]+)/applicant/(?P<applicant_id>[0-9]+)', properties_view.applicant_info),
+
+
+    # ================================================================= #
+    #                      EXTERNAL REQUISITIONS (APIs)
+    # ================================================================= #
+
+    url(r'^walkscore/(?P<address>[\w\-]+)/(?P<lat>[0-9]+)/(?P<lng>[0-9]+)', requests_view.walkscore),
 
 ]

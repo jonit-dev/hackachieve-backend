@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'apps.applications',
     'apps.neighborhoods',
     'apps.neighborhoods_tenants',
+    'apps.requests',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
