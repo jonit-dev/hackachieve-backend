@@ -6,6 +6,10 @@ from django.core import serializers
 
 class API:
 
+    keys = {
+        "walkscore":"6056fc826e5009f60e77752e88567bff"
+    }
+
     @staticmethod
     def getUserByToken(request):
         # find header and get token

@@ -17,13 +17,14 @@ import urllib
 @api_view(['GET'])
 @permission_classes(())
 def walkscore(request, address, lat, lng):
-    walkscoreAPI = "6056fc826e5009f60e77752e88567bff"
+
+    walkscoreAPI = "c884e78a8ee37d9770bef366af03a4b5"
 
     encoded_address = urllib.parse.quote(address)
 
     url = "http://api.walkscore.com/score?format=json&address=" + encoded_address + "&lat=" + lat + "&lon=" + lng + "&wsapikey=" + walkscoreAPI
 
-    env = "prod"
+    env = "dev"
 
     if env == "prod":
         f = urllib.request.urlopen(url)
