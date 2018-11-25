@@ -35,8 +35,7 @@ urlpatterns = [
     # NEIGHBORHOODS from specific city=========================== #
     url(r'^(?P<city_id>[0-9]+)/neighborhoods/(?P<keyword>[\w\-]+)/$', neighborhoods_view.fetch_neighborhoods),
 
-    url(r'^(?P<city_id>[0-9]+)/has-neighborhoods',neighborhoods_view.has_neighborhoods),
-
+    url(r'^(?P<city_id>[0-9]+)/has-neighborhoods', neighborhoods_view.has_neighborhoods),
 
     # PROPERTIES ROUTES (REAL ESTATE LISTINGS) =========================== #
 
@@ -44,23 +43,19 @@ urlpatterns = [
     url(r'^properties/show/dashboard', properties_view.show_dashboard),
     url(r'^properties/(?P<id>[0-9]+)', properties_view.show),
 
-
-
-    #FETCH ALL PROPERTIES THAT SOME PARTICULAR LANDLORD OWNS
+    # FETCH ALL PROPERTIES THAT SOME PARTICULAR LANDLORD OWNS
     url(r'^property/landlord', properties_view.properties_listing),
 
-
-    #FETCH ALL APPLICANTS FROM SPECIFIC APPLICATION
+    # FETCH ALL APPLICANTS FROM SPECIFIC APPLICATION
     url(r'^property/(?P<property_id>[0-9]+)/applications', properties_view.applications),
 
-    #FETCH ONLY ONE APPLICANT FROM APPLICATION
+    # FETCH ONLY ONE APPLICANT FROM APPLICATION
     url(r'^property/(?P<property_id>[0-9]+)/applicant/(?P<applicant_id>[0-9]+)', properties_view.applicant_info),
-
 
     # ================================================================= #
     #                      EXTERNAL REQUISITIONS (APIs)
     # ================================================================= #
 
-    url(r'^walkscore/(?P<address>[\w\-]+)/(?P<lat>[0-9]+)/(?P<lng>[0-9]+)', requests_view.walkscore),
+    url(r'^walkscore/(?P<address>[\w|\W]+)/(?P<lat>-?\d+.?\d+)/(?P<lng>-?\d+.?\d+)', requests_view.walkscore),
 
 ]
