@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from rentalmoose.classes.API import *
-
+from rentalmoose.classes.Environment import *
 import urllib
 
 
@@ -17,14 +17,12 @@ import urllib
 @api_view(['GET'])
 @permission_classes(())
 def walkscore(request, address, lat, lng):
-
-    walkscoreAPI = "c884e78a8ee37d9770bef366af03a4b5"
+    env = Environment.getkey('env')
+    walkscoreAPIKEY = Environment.getkey('walkscore')
 
     encoded_address = urllib.parse.quote(address)
 
-    url = "http://api.walkscore.com/score?format=json&address=" + encoded_address + "&lat=" + lat + "&lon=" + lng + "&wsapikey=" + walkscoreAPI
-
-    env = "dev"
+    url = "http://api.walkscore.com/score?format=json&address=" + encoded_address + "&lat=" + lat + "&lon=" + lng + "&wsapikey=" + walkscoreAPIKEY
 
     if env == "prod":
         f = urllib.request.urlopen(url)

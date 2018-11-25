@@ -3,12 +3,8 @@ import json
 from django.http import HttpResponse
 from django.core import serializers
 
-
 class API:
 
-    keys = {
-        "walkscore":"6056fc826e5009f60e77752e88567bff"
-    }
 
     @staticmethod
     def getUserByToken(request):
@@ -54,7 +50,7 @@ class API:
         return HttpResponse(json.dumps(response), content_type="application/json")
 
     @staticmethod
-    def clean_fields(data, additional_fields = None):
+    def clean_fields(data, additional_fields=None):
         final_results = []
         for d in json.loads(data):
 
