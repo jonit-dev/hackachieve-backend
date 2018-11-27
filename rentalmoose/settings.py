@@ -29,7 +29,9 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '104.248.222.108'
+    '104.248.222.108',
+    'therentalmoose.com',
+    'www.therentalmoose.com'
 ]
 
 # Application definition
@@ -68,7 +70,8 @@ CORS_ALLOW_HEADERS = (
 CSRF_TRUSTED_ORIGINS = (
     'localhost:8000',
     '127.0.0.1:8000',
-    '104.248.222.108:8000'
+    '104.248.222.108:8000',
+    'therentalmoose.com:8000'
 )
 
 
