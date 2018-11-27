@@ -71,7 +71,8 @@ CSRF_TRUSTED_ORIGINS = (
     'localhost:8000',
     '127.0.0.1:8000',
     '104.248.222.108:8000',
-    'therentalmoose.com:8000'
+    'therentalmoose.com:8000',
+    'www.therentalmoose.com:8000'
 )
 
 
@@ -277,3 +278,30 @@ if __name__ == "__main__":
         ) from exc
     execute_from_command_line(sys.argv)
 
+# ================================================================= #
+#                      DJANGO LOGGE
+# ================================================================= #
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
