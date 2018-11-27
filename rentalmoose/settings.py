@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from rentalmoose.classes.Environment import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from os.path import join
@@ -279,7 +280,7 @@ if __name__ == "__main__":
     execute_from_command_line(sys.argv)
 
 # ================================================================= #
-#                      DJANGO LOGGE
+#                      DJANGO LOGGER
 # ================================================================= #
 
 LOGGING = {
@@ -305,3 +306,13 @@ LOGGING = {
         },
     }
 }
+# ================================================================= #
+#                      SSL
+# ================================================================= #
+env = Environment.getkey('env')
+
+if env == "prod":
+    # SSL
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
