@@ -299,7 +299,7 @@ LOGGING = {
         # Log to a text file that can be rotated by logrotate
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': 'logs/myapp.log'
+            'filename': 'rentalmoose/logs/myapp.log'
         },
     },
     'loggers': {
