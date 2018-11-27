@@ -27,7 +27,11 @@ ENV = Environment.getkey('env')
 SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+if ENV == "prod":
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
