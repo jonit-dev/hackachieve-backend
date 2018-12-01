@@ -1,6 +1,8 @@
 # Create your models here.
 from apps.property_types.models import Property_type
 from apps.users.models import User
+from apps.cities.models import City
+from apps.neighborhoods.models import Neighborhood
 
 from stdimage.models import StdImageField  # for image resizing
 from django.conf import settings  # for saving image in particular folder
@@ -19,6 +21,8 @@ class Property(models.Model):
                                'large': (600, 400),
                                'thumbnail': (287, 161, True)
                            })
+    city = models.ForeignKey(City, on_delete=models.CASCADE, default=None)
+    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, default=None)
     status = models.BooleanField(default=1)
     description = models.TextField(default="")
     title = models.CharField(max_length=255)
@@ -41,7 +45,6 @@ class Property(models.Model):
     available_to_move_in_date = models.DateField()
     open_view_start = models.DateTimeField()
     open_view_end = models.DateTimeField()
-
 
     def __str__(self):  # title on dashboard
         return self.title

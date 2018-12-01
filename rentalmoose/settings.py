@@ -73,7 +73,6 @@ CORS_ALLOW_HEADERS = (
     'cache-control'
 )
 
-
 CSRF_TRUSTED_ORIGINS = (
     'localhost:8000',
     '127.0.0.1:8000',
@@ -81,8 +80,6 @@ CSRF_TRUSTED_ORIGINS = (
     'therentalmoose.com:8000',
     'www.therentalmoose.com:8000'
 )
-
-
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -114,7 +111,6 @@ MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
 
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsPostCsrfMiddleware',
@@ -156,7 +152,9 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'POST': '3306',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            "init_command": 'SET foreign_key_checks = 0; \
+                             SET sql_mode=STRICT_TRANS_TABLES;',
+
         },
     }
     # 'default': {
@@ -208,7 +206,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
 PROPERTIES_IMAGES_ROOT = "static/images/properties"
 
 MEDIA_URL = '/images/'
@@ -217,7 +214,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/var/www/static/',
 ]
-
 
 # CUSTOM USER
 AUTH_USER_MODEL = 'users.User'
@@ -228,8 +224,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',)
 }
-
-
 
 # ================================================================= #
 #                      SIMPLE JWT
@@ -271,7 +265,7 @@ LOGGING = {
         'mail_admins': {
             'class': 'django.utils.log.AdminEmailHandler',
             'level': 'ERROR',
-             # But the emails are plain text by default - HTML is nicer
+            # But the emails are plain text by default - HTML is nicer
             'include_html': True,
         },
         # Log to a text file that can be rotated by logrotate
@@ -296,18 +290,17 @@ LOGGING = {
         # Your own app - this assumes all your logger names start with "myapp."
         'myapp': {
             'handlers': ['logfile'],
-            'level': 'WARNING', # Or maybe INFO or DEBUG
+            'level': 'WARNING',  # Or maybe INFO or DEBUG
             'propagate': False
         },
     },
 }
 
-
 # ================================================================= #
 #                      SSL
 # ================================================================= #
 
-#this is for specific env related configuration
+# this is for specific env related configuration
 
 
 print('ENVIROMENT RUNNING ON {}'.format(ENV))
