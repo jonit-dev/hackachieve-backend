@@ -302,13 +302,13 @@ def user_apply(request, property_id):
 
             return API.json_response({
                 "status": "success",
-                "message": "Your tenant's application resume was sent.",
+                "message": "Your tenant's application resume was sent succesfully.",
                 "type": "success"
             })
         else:
             return API.json_response({
                 "status": "error",
-                "message": "You dont have a registered resume to apply.",
+                "message": "You don't have a registered resume to apply.",
                 "type": "danger"
             })
 
