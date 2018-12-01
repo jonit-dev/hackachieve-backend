@@ -22,7 +22,7 @@ class Property(models.Model):
                                'thumbnail': (287, 161, True)
                            })
     city = models.ForeignKey(City, on_delete=models.CASCADE, default=None)
-    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, default=None)
+    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, default=None, null=True)
     status = models.BooleanField(default=1)
     description = models.TextField(default="")
     title = models.CharField(max_length=255)

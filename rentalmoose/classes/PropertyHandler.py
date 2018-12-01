@@ -10,6 +10,9 @@ from apps.properties.models import Property
 from rentalmoose import settings
 from rentalmoose.classes.API import API
 
+from apps.cities.models import City
+from apps.neighborhoods.models import Neighborhood
+
 
 class PropertyHandler:
 
@@ -31,8 +34,18 @@ class PropertyHandler:
     @staticmethod
     def save_property(request_data, owner, property_type, img_data):
 
+        city = City.objects.get(pk=request_data['city'])
+
+        # Neighborhood is optional. Lets check if user passed it. If so, save. If not, set to None (null).
+        if 'neighborhood'in request_data:
+            neighborhood = Neighborhood.objects.get(pk=request_data['neighborhood'])
+        else:
+            neighborhood = None
+
         property = Property(
             owner=owner,
+            city=city,
+            neighborhood=neighborhood,
             status=request_data['status'],
             title=request_data['title'],
             description=request_data['description'],
@@ -85,9 +98,9 @@ class PropertyHandler:
             time.sleep(0.2)
             if os.path.isfile(large_img_path) is True and os.path.isfile(normal_img_path) and os.path.isfile(
                     thumbnail_img_path):
-                shutil.move(large_img_path, newdir_path + "/" + large_img.replace(".large","_large"))
+                shutil.move(large_img_path, newdir_path + "/" + large_img.replace(".large", "_large"))
                 shutil.move(normal_img_path, newdir_path + "/" + normal_img)
-                shutil.move(thumbnail_img_path, newdir_path + "/" + thumbnail_img.replace(".thumbnail","_thumbnail"))
+                shutil.move(thumbnail_img_path, newdir_path + "/" + thumbnail_img.replace(".thumbnail", "_thumbnail"))
                 break
 
     @staticmethod
@@ -100,12 +113,10 @@ class PropertyHandler:
         else:
             return False
 
-
     @staticmethod
-    def is_owner(property,user):
+    def is_owner(property, user):
 
         if property.owner_id != user.id:
             return False
         else:
             return True
-
