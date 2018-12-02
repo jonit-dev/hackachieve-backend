@@ -6,6 +6,7 @@ from rest_framework import routers
 from apps.users import views as user_views
 from apps.provinces import views as provinces_views
 from apps.properties import views as properties_view
+from apps.property_types import views as properties_types_view
 from apps.neighborhoods import views as neighborhoods_view
 from apps.requests import views as requests_view
 
@@ -42,6 +43,7 @@ urlpatterns = [
     url(r'^properties/create$', properties_view.create),
     url(r'^properties/show/dashboard', properties_view.show_dashboard),
     url(r'^properties/(?P<id>[0-9]+)', properties_view.show),
+    url(r'^properties/types', properties_types_view.fetch_types),
 
     # FETCH ALL PROPERTIES THAT SOME PARTICULAR LANDLORD OWNS
     url(r'^property/landlord', properties_view.properties_listing),
