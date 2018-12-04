@@ -17,6 +17,19 @@ from apps.neighborhoods.models import Neighborhood
 class PropertyHandler:
 
     @staticmethod
+    def get_base64_img(base64imgdata):
+
+        format, imgstr = base64imgdata.split(';base64,')
+        # ext = format.split('/')[-1]
+        ext = "jpeg"  # force jpeg extension
+        filename = "{}.{}".format("property_image", ext)
+
+        return {
+            "base64data": base64.b64decode(imgstr),
+            "ext": ext
+        }
+
+    @staticmethod
     def get_base64_img_data(request_data_image):
 
         format, imgstr = request_data_image.split(';base64,')
@@ -32,15 +45,22 @@ class PropertyHandler:
         }
 
     @staticmethod
-    def save_property(request_data, owner, property_type, img_data):
+    def save_property(request_data, owner, property_type):
 
         city = City.objects.get(pk=request_data['city'])
 
         # Neighborhood is optional. Lets check if user passed it. If so, save. If not, set to None (null).
-        if 'neighborhood'in request_data:
+        if 'neighborhood' in request_data:
             neighborhood = Neighborhood.objects.get(pk=request_data['neighborhood'])
         else:
             neighborhood = None
+
+
+        #before saving, lets reformat dates
+
+        move_in_date = request_data['available_to_move_in_date'].split("T")[0]
+        open_view_start = request_data['open_view_start'].split("T")[0]
+        open_view_end = request_data['open_view_end'].split("T")[0]
 
         property = Property(
             owner=owner,
@@ -65,10 +85,9 @@ class PropertyHandler:
             pet_deposit=request_data['pet_deposit'],
             security_deposit=request_data['security_deposit'],
             publication_date=request_data['publication_date'],
-            available_to_move_in_date=request_data['available_to_move_in_date'],
-            open_view_start=request_data['open_view_start'],
-            open_view_end=request_data['open_view_end'],
-            upload=img_data['data']
+            available_to_move_in_date=move_in_date,
+            open_view_start=open_view_start,
+            open_view_end=open_view_end,
 
         )
         property.save()

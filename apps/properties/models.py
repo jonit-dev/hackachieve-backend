@@ -15,12 +15,6 @@ property_root = FileSystemStorage(location=settings.PROPERTIES_IMAGES_ROOT)
 class Property(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     # upload = models.FileField(storage=property_root,default=False)
-
-    upload = StdImageField(upload_to=settings.PROPERTIES_IMAGES_ROOT, blank=True,
-                           variations={
-                               'large': (600, 400),
-                               'thumbnail': (287, 161, True)
-                           })
     city = models.ForeignKey(City, on_delete=models.CASCADE, default=None)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, default=None, null=True)
     status = models.BooleanField(default=1)

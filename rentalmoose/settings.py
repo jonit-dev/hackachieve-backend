@@ -26,6 +26,7 @@ ENV = Environment.getkey('env')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 
 if ENV == "prod":

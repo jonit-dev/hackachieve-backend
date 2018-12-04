@@ -1,5 +1,6 @@
 from operator import itemgetter
 
+import time
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 
@@ -44,41 +45,42 @@ def create(request):
             "type": "danger"
         })
 
-    # Set property type
+    # SAVE PROPERTY FIRST!
     property_type = Property_type.objects.get(pk=request_data['type_id'])
+    property = PropertyHandler.save_property(request_data, owner, property_type)
 
-    # Convert file information (get from base64 and convert to fileContent
-    img_data = PropertyHandler.get_base64_img_data(request_data['image'])
+    # now that the property is saved, create folder on static dir to save uploaded images
+    property_id = str(property.id)
 
-    # Before saving the file, lets verify if its a allowed file type
-    check_allowed_file_extension = PropertyHandler.check_file_extensions(img_data['ext'])
+    image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
 
-    if check_allowed_file_extension:
+    if not os.path.isdir(image_path):
+        os.mkdir(os.path.join(image_path))
 
-        # save property on DB
-        property = PropertyHandler.save_property(request_data, owner, property_type, img_data)
+    i = 0
+    for image in request_data['images']:
+        img_data = PropertyHandler.get_base64_img(image["image"])
 
-        # now lets move the image files that were created to the respective property folder (static/images/properties)
-        PropertyHandler.reallocate_uploaded_files(property, img_data)
+        if PropertyHandler.check_file_extensions(img_data['ext']):  # if file has allowed extension
 
-        if property:
-            return API.json_response({
-                "status": "success",
-                "message": "Your property was listed successfully!",
-                "type": "success"
-            })
-        else:
-            return API.json_response({
-                "status": "error",
-                "message": "Error while trying to list your property. Please, contact our support.",
-                "type": "danger"
-            })
-    else:
-        return API.json_response({
-            "status": "error",
-            "message": "The file extension that you're trying to submit is not allowed. Please, send a .png, .jpg or .bmp image file",
-            "type": "danger"
-        })
+            while True:  # save it!
+
+                time.sleep(0.2)
+                if os.path.isdir(image_path):  # we have to check if directory is created, because its async
+                    # when the directory is created, create image file there.
+                    image_file = open("{}/{}.{}".format(image_path, i, img_data['ext']), "wb")  # save file
+                    image_file.write(img_data['base64data'])  # write base64 content
+                    image_file.close()
+                    i = i + 1  # now lets save the next file!
+
+                    break
+
+    return API.json_response({
+        "status": "success",
+        "message": "Your property was listed successfully!",
+        "type": "success"
+    })
+
 
 
 @csrf_exempt
@@ -218,10 +220,9 @@ def applications(request, property_id):
                     if resume.active:
                         tenants_applications.append(ResumeHandler.calculate_risk(resume, property, application))
 
-
-
-                #returns response sorted by lowest score first (thats why we use itemgetter)
-                return HttpResponse(json.dumps(sorted(tenants_applications, key=itemgetter('overallScore'))), content_type="application/json")
+                # returns response sorted by lowest score first (thats why we use itemgetter)
+                return HttpResponse(json.dumps(sorted(tenants_applications, key=itemgetter('overallScore'))),
+                                    content_type="application/json")
 
         except ObjectDoesNotExist as e:
 
