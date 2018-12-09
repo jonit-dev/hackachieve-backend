@@ -255,7 +255,6 @@ SIMPLE_JWT = {
 # ================================================================= #
 #                      DJANGO LOGGER
 # ================================================================= #
-
 DEV_LOG_PATH = 'rentalmoose/logs/myapp.log'
 PROD_LOG_PATH = 'logs/myapp.log'
 
