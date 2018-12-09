@@ -257,6 +257,12 @@ SIMPLE_JWT = {
 # ================================================================= #
 #                      DJANGO LOGGER
 # ================================================================= #
+
+DEV_LOG_PATH = 'rentalmoose/logs/myapp.log'
+PROD_LOG_PATH = 'logs/myapp.log'
+
+LOG_PATH = PROD_LOG_PATH if ENV == 'PROD' else LOG_PATH = DEV_LOG_PATH
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -272,7 +278,7 @@ LOGGING = {
         # Log to a text file that can be rotated by logrotate
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': 'rentalmoose/logs/myapp.log'
+            'filename': LOG_PATH
         },
     },
     'loggers': {
