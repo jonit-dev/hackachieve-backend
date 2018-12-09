@@ -73,7 +73,12 @@ def create(request):
 
         if not os.path.isdir(image_path):
             path = os.path.join(image_path)
-            os.makedirs(path)
+
+            try:
+                original_umask = os.umask(0)
+                os.makedirs(path, 0o755)
+            finally:
+                os.umask(original_umask)
 
 
         i = 0
