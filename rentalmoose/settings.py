@@ -255,13 +255,8 @@ SIMPLE_JWT = {
 # ================================================================= #
 #                      DJANGO LOGGER
 # ================================================================= #
-DEV_LOG_PATH = 'rentalmoose/logs/myapp.log'
-PROD_LOG_PATH = 'logs/myapp.log'
+LOG_PATH = 'rentalmoose/logs/myapp.log'
 
-if ENV == "prod":
-    LOG_PATH = PROD_LOG_PATH
-else:
-    LOG_PATH = DEV_LOG_PATH
 
 LOGGING = {
     'version': 1,
