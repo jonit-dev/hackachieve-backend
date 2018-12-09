@@ -259,7 +259,7 @@ SIMPLE_JWT = {
 DEV_LOG_PATH = 'rentalmoose/logs/myapp.log'
 PROD_LOG_PATH = 'logs/myapp.log'
 
-if ENV == "PROD":
+if ENV == "prod":
     LOG_PATH = PROD_LOG_PATH
 else:
     LOG_PATH = DEV_LOG_PATH
