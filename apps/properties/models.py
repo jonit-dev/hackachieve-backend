@@ -4,7 +4,6 @@ from apps.users.models import User
 from apps.cities.models import City
 from apps.neighborhoods.models import Neighborhood
 
-from stdimage.models import StdImageField  # for image resizing
 from django.conf import settings  # for saving image in particular folder
 from django.core.files.storage import FileSystemStorage  # same as above
 from django.db import models
