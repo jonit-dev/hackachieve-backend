@@ -205,17 +205,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-if ENV == 'prod':
-    PROPERTIES_IMAGES_ROOT = "rentalmoose/static/images/properties"
-else:
-    PROPERTIES_IMAGES_ROOT = "static/images/properties"
-
 MEDIA_URL = '/images/'
 MEDIA_ROOT = BASE_DIR
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/var/www/static/',
 ]
+
+PROPERTIES_IMAGES_ROOT = os.path.join(BASE_DIR, "static") + "/images/properties"
+
 
 # CUSTOM USER
 AUTH_USER_MODEL = 'users.User'
@@ -259,7 +257,6 @@ SIMPLE_JWT = {
 #                      DJANGO LOGGER
 # ================================================================= #
 LOG_PATH = 'rentalmoose/logs/myapp.log'
-
 
 LOGGING = {
     'version': 1,
