@@ -71,15 +71,19 @@ def create(request):
 
         image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
 
+        def supermakedirs(path, mode):
+            if not path or os.path.exists(path):
+                return []
+            (head, tail) = os.path.split(path)
+            res = supermakedirs(head, mode)
+            os.mkdir(path)
+            os.chmod(path, mode)
+            res += [path]
+            return res
+
         if not os.path.isdir(image_path):
             path = os.path.join(image_path)
-
-            try:
-                original_umask = os.umask(0)
-                os.makedirs(path, 0o755)
-            finally:
-                os.umask(original_umask)
-
+            supermakedirs(path, 0o775)
 
         i = 0
         for image in request_data['images']:
