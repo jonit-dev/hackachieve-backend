@@ -26,7 +26,6 @@ ENV = Environment.getkey('env')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 
 if ENV == "prod":
@@ -102,7 +101,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-
 
 ]
 
@@ -261,7 +259,10 @@ SIMPLE_JWT = {
 DEV_LOG_PATH = 'rentalmoose/logs/myapp.log'
 PROD_LOG_PATH = 'logs/myapp.log'
 
-LOG_PATH = PROD_LOG_PATH if ENV == 'PROD' else LOG_PATH = DEV_LOG_PATH
+if ENV == "PROD":
+    LOG_PATH = PROD_LOG_PATH
+else:
+    LOG_PATH = DEV_LOG_PATH
 
 LOGGING = {
     'version': 1,
