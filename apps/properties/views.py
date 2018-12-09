@@ -22,6 +22,8 @@ from rest_framework.permissions import IsAuthenticated
 from apps.applications.models import Application
 from rentalmoose.classes.UserHandler import UserHandler
 
+from rentalmoose.classes.Validator import Validator
+
 
 @csrf_exempt
 @api_view(['POST'])
@@ -30,57 +32,72 @@ def create(request):
     # get data coming in JSON format
     request_data = API.json_get_data(request)
 
-    # Lets find the who is the owner of this property listing, from the incoming POST request
-    owner_id = API.getUserByToken(request)
-    owner = User.objects.get(pk=owner_id)
+    # first of all, lets check if all request fields were filled properly
 
-    # Validation =========================== #
+    check_fields = Validator.are_request_fields_valid(request_data)
 
-    # check if user who's trying to list a property is a landlord
+    if check_fields is not True:
 
-    if owner.type != 2:
         return API.json_response({
             "status": "error",
-            "message": "Only landlords accounts can list real estate properties.",
-            "type": "danger"
+            "message": "The following fields are empty: {}".format(check_fields),
+            "type": "error",
+            "title": "Error"
         })
 
-    # SAVE PROPERTY FIRST!
-    property_type = Property_type.objects.get(pk=request_data['type_id'])
-    property = PropertyHandler.save_property(request_data, owner, property_type)
+    else:
 
-    # now that the property is saved, create folder on static dir to save uploaded images
-    property_id = str(property.id)
+        # Lets find the who is the owner of this property listing, from the incoming POST request
+        owner_id = API.getUserByToken(request)
+        owner = User.objects.get(pk=owner_id)
 
-    image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
+        # Validation =========================== #
 
-    if not os.path.isdir(image_path):
-        os.mkdir(os.path.join(image_path))
+        # check if user who's trying to list a property is a landlord
 
-    i = 0
-    for image in request_data['images']:
-        img_data = PropertyHandler.get_base64_img(image["image"])
+        if owner.type != 2:
+            return API.json_response({
+                "status": "error",
+                "message": "Only landlords accounts can list real estate properties.",
+                "type": "danger"
+            })
 
-        if PropertyHandler.check_file_extensions(img_data['ext']):  # if file has allowed extension
+        # SAVE PROPERTY FIRST!
+        property_type = Property_type.objects.get(pk=request_data['type_id'])
+        property = PropertyHandler.save_property(request_data, owner, property_type)
 
-            while True:  # save it!
+        # now that the property is saved, create folder on static dir to save uploaded images
+        property_id = str(property.id)
 
-                time.sleep(0.2)
-                if os.path.isdir(image_path):  # we have to check if directory is created, because its async
-                    # when the directory is created, create image file there.
-                    image_file = open("{}/{}.{}".format(image_path, i, img_data['ext']), "wb")  # save file
-                    image_file.write(img_data['base64data'])  # write base64 content
-                    image_file.close()
-                    i = i + 1  # now lets save the next file!
+        image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
 
-                    break
+        if not os.path.isdir(image_path):
+            os.mkdir(os.path.join(image_path))
 
-    return API.json_response({
-        "status": "success",
-        "message": "Your property was listed successfully!",
-        "type": "success"
-    })
+        i = 0
+        for image in request_data['images']:
+            img_data = PropertyHandler.get_base64_img(image["image"])
 
+            if PropertyHandler.check_file_extensions(img_data['ext']):  # if file has allowed extension
+
+                while True:  # save it!
+
+                    time.sleep(0.2)
+                    if os.path.isdir(image_path):  # we have to check if directory is created, because its async
+                        # when the directory is created, create image file there.
+                        image_file = open("{}/{}.{}".format(image_path, i, img_data['ext']), "wb")  # save file
+                        image_file.write(img_data['base64data'])  # write base64 content
+                        image_file.close()
+                        i = i + 1  # now lets save the next file!
+
+                        break
+
+        return API.json_response({
+            "status": "success",
+            "message": "Your property was listed successfully!",
+            "type": "success",
+            "title": "Success"
+        })
 
 
 @csrf_exempt

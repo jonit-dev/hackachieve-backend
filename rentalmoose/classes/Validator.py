@@ -25,10 +25,11 @@ class Validator:
 
             for e in empty_fields:
                 e = Validator.split_upper(e)
-                pretty_fields.append(" ".join(list(e)).capitalize())
+
+                pretty_fields.append(" ".join(list(e)).capitalize().replace("_", " "))
                 print(list(e))
 
-            return pretty_fields
+            return ", ".join(pretty_fields)
         else:
             return True
 

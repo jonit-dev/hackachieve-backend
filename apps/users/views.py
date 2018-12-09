@@ -112,8 +112,7 @@ def resume_create(request):
     if request_fields_valid is not True:
         return API.json_response({
             "status": "error",
-            "message": "Error while trying to create your resume. The following fields are empty: {}".format(
-                ", ".join(request_fields_valid)),
+            "message": "Error while trying to create your resume. The following fields are empty: {}".format(request_fields_valid),
             "type": "danger"
         })
     else:
@@ -189,8 +188,7 @@ def user_register(request):
         if check_user_fields is not True:
             return API.json_response({
                 "status": "error",
-                "message": "Error while trying to create your account. The following fields are empty: {}".format(
-                    ", ".join(check_user_fields)),
+                "message": "Error while trying to create your account. The following fields are empty: {}".format(check_user_fields),
                 "type": "danger"
             })
         elif not Validator.check_password_confirmation(json_data['password'], json_data['passwordConfirmation']):
