@@ -205,7 +205,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-PROPERTIES_IMAGES_ROOT = "static/images/properties"
+if ENV == 'prod':
+    PROPERTIES_IMAGES_ROOT = "rentalmoose/static/images/properties"
+else:
+    PROPERTIES_IMAGES_ROOT = "static/images/properties"
 
 MEDIA_URL = '/images/'
 MEDIA_ROOT = BASE_DIR

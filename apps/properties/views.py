@@ -72,7 +72,9 @@ def create(request):
         image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
 
         if not os.path.isdir(image_path):
-            os.mkdir(os.path.join(image_path))
+            path = os.path.join(image_path)
+            os.makedirs(path)
+
 
         i = 0
         for image in request_data['images']:
