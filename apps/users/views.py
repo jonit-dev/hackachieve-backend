@@ -34,47 +34,26 @@ def user_dashboard(request):
 
     user = User.objects.get(pk=user_id)
 
-    user_resumes = user.resume_set.all()
+    # CUSTOM JSON SERIALIZER =========================== #
 
-    has_resumes = len(user_resumes)
+    properties = Property.objects.all()
 
-    has_resumes = has_resumes > 0
+    # data is a python list
+    data = json.loads(serializers.serialize('json', properties))
 
-    if has_resumes is not True:
+    final_results = []
+    for d in data:
+        d['fields']['owner_name'] = User.objects.get(pk=d['fields']['owner']).first_name
+        d['fields']['id'] = d['pk']
+        del d['fields']['owner']
+        del d['pk']
+        del d['model']
+        d = d['fields']
+        final_results.append(d)
 
-        # if user does not have resume, lets force him to register one.
-
-        # user_resumes = serializers.serialize('json', user_resumes)
-
-        return API.json_response({
-            'has_resumes': has_resumes,
-            # 'user_resumes': json.loads(user_resumes)
-            # you MUST use a json.loads here to load the serialized json model. Otherwise, it wont work!
-        })
-    else:
-
-        # if the user has a resume registered, let him see all properties
-
-        # CUSTOM JSON SERIALIZER =========================== #
-
-        properties = Property.objects.all()
-
-        # data is a python list
-        data = json.loads(serializers.serialize('json', properties))
-
-        final_results = []
-        for d in data:
-            d['fields']['owner_name'] = User.objects.get(pk=d['fields']['owner']).first_name
-            d['fields']['id'] = d['pk']
-            del d['fields']['owner']
-            del d['pk']
-            del d['model']
-            d = d['fields']
-            final_results.append(d)
-
-        d = {}
-        d = final_results
-        return HttpResponse(json.dumps(d), content_type="application/json")
+    d = {}
+    d = final_results
+    return HttpResponse(json.dumps(d), content_type="application/json")
 
 
 # ================================================================= #
@@ -96,7 +75,7 @@ def resume_create(request):
     city = City.objects.get(pk=city_id)
 
     # VALIDATION =========================== #
-    #check if user has a resume
+    # check if user has a resume
     if user.has_resume() == True:
         return API.json_response({
             "status": "error",
@@ -104,7 +83,7 @@ def resume_create(request):
             "type": "danger"
         })
 
-    #check if there's an empty field.
+    # check if there's an empty field.
     request_fields = Validator.are_request_fields_valid(json_data)
 
     request_fields_valid = Validator.are_request_fields_valid(resume_data)
@@ -112,7 +91,8 @@ def resume_create(request):
     if request_fields_valid is not True:
         return API.json_response({
             "status": "error",
-            "message": "Error while trying to create your resume. The following fields are empty: {}".format(request_fields_valid),
+            "message": "Error while trying to create your resume. The following fields are empty: {}".format(
+                request_fields_valid),
             "type": "danger"
         })
     else:
@@ -142,18 +122,13 @@ def resume_create(request):
         )
         resume.save()
 
-        #after resume creation, lets verify if we have some neighborhoods to add.
+        # after resume creation, lets verify if we have some neighborhoods to add.
 
         if len(resume_data['neighborhoodsOfInterest']) > 0:
             for n in resume_data['neighborhoodsOfInterest']:
-
                 print(n)
                 neighborhood = Neighborhood.objects.get(pk=n['id'])
-                nt = Neighborhood_tenant.attach(neighborhood,user)
-
-
-
-
+                nt = Neighborhood_tenant.attach(neighborhood, user)
 
         if resume:
             return API.json_response({
@@ -188,7 +163,8 @@ def user_register(request):
         if check_user_fields is not True:
             return API.json_response({
                 "status": "error",
-                "message": "Error while trying to create your account. The following fields are empty: {}".format(check_user_fields),
+                "message": "Error while trying to create your account. The following fields are empty: {}".format(
+                    check_user_fields),
                 "type": "danger"
             })
         elif not Validator.check_password_confirmation(json_data['password'], json_data['passwordConfirmation']):
@@ -248,12 +224,16 @@ def user_info(request):
     user_id = API.getUserByToken(request)
 
     user = User.objects.get(pk=user_id)
+
+    has_resume = len(user.resume_set.all()) > 0
+
     return API.json_response({
         'id': user.id,
         'first_name': user.first_name,
         'last_name': user.last_name,
         'is_active': user.is_active,
-        'type': user.type
+        'type': user.type,
+        'has_resume': has_resume
     })
 
 
