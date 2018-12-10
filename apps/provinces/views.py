@@ -19,7 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 # Protected view - dashboard
 @csrf_exempt
 @api_view(['GET'])
-@permission_classes((IsAuthenticated,))
+@permission_classes(())
 def provinces_cities(request, id):
     cities = City.objects.filter(province_id=id)
 

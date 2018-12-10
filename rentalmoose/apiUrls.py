@@ -39,7 +39,7 @@ urlpatterns = [
 
     # PROVINCES =========================== #
 
-    url(r'^province/(?P<id>[0-9]+)/cities$', provinces_views.provinces_cities),
+    url(r'^provinces/(?P<id>[0-9]+)/cities$', provinces_views.provinces_cities),
 
     # NEIGHBORHOODS from specific city=========================== #
     url(r'^(?P<city_id>[0-9]+)/neighborhoods/(?P<keyword>[\w\-]+)/$', neighborhoods_view.fetch_neighborhoods),
