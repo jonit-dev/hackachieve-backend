@@ -4,16 +4,21 @@ from . import views
 from rest_framework import routers
 
 from apps.users import views as user_views
-from apps.provinces import views as provinces_views
-from apps.properties import views as properties_view
-from apps.properties.api import views as api_properties_view
+
+from apps.provinces import views as provinces_views #function based serializer
+from apps.provinces.api import views as api_provinces_view #class based serializer
+
+from apps.properties import views as properties_view #function based serializer
+from apps.properties.api import views as api_properties_view #class based serializer
 from apps.property_types import views as properties_types_view
+
+
 from apps.neighborhoods import views as neighborhoods_view
 from apps.requests import views as requests_view
 
 router = routers.DefaultRouter()
 router.register('properties', api_properties_view.PropertyView)
-router.register('provinces', views.ProvinceView)
+router.register('provinces', api_provinces_view.ProvinceView)
 router.register('cities', views.CityView)
 router.register('resumes', views.ResumeView)
 router.register('countries', views.CountryView)

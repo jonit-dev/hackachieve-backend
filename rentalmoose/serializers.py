@@ -13,10 +13,6 @@ class CountrySerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class ProvinceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Province
-        fields = ('id', 'name', 'country', 'abbrev')
 
 
 class CitySerializer(serializers.ModelSerializer):
