@@ -6,12 +6,12 @@ from rentalmoose.classes.API import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 @csrf_exempt
 @api_view(['GET'])
-@permission_classes((IsAuthenticated,))
+@permission_classes((AllowAny,))
 def fetch_neighborhoods(request, city_id, keyword):
     # if all keyword, lets provide all neighborhoods
     if keyword == "all":
@@ -26,7 +26,7 @@ def fetch_neighborhoods(request, city_id, keyword):
 
 @csrf_exempt
 @api_view(['GET'])
-@permission_classes((IsAuthenticated,))
+@permission_classes((AllowAny,))
 def has_neighborhoods(request, city_id):
     # fetch all neighborhoods with name containing something similar to the passed keyword
     neighborhoods = Neighborhood.objects.filter(city_id=city_id)
