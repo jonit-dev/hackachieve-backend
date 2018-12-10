@@ -6,17 +6,16 @@ from apps.properties.models import Property
 from apps.provinces.models import Province
 from apps.resumes.models import Resume
 
-from rentalmoose.serializers import ProvinceSerializer, CitySerializer, ResumeSerializer, CountrySerializer, \
-    PropertySerialier
+from rentalmoose.serializers import ProvinceSerializer, CitySerializer, ResumeSerializer, CountrySerializer, PropertySerializer
 
 
 # SERIALIZER VIEWS =========================== #
 
 class PropertyView(viewsets.ModelViewSet):
     queryset = Property.objects.all()
-    serializer_class = PropertySerialier
+    serializer_class = PropertySerializer
     http_method_names = ['get']
-
+    permission_classes = (())
 
 class ProvinceView(viewsets.ModelViewSet):
     queryset = Province.objects.all()
