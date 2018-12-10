@@ -8,3 +8,4 @@ class CountryView(viewsets.ModelViewSet):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
     http_method_names = ['get']
+    permission_classes = (())

@@ -9,3 +9,4 @@ class ProvinceView(viewsets.ModelViewSet):
     queryset = Province.objects.all()
     serializer_class = ProvinceSerializer
     http_method_names = ['get']
+    permission_classes = (())
