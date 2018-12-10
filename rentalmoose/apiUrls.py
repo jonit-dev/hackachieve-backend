@@ -6,12 +6,13 @@ from rest_framework import routers
 from apps.users import views as user_views
 from apps.provinces import views as provinces_views
 from apps.properties import views as properties_view
+from apps.properties.api import views as api_properties_view
 from apps.property_types import views as properties_types_view
 from apps.neighborhoods import views as neighborhoods_view
 from apps.requests import views as requests_view
 
 router = routers.DefaultRouter()
-router.register('properties', views.PropertyView)
+router.register('properties', api_properties_view.PropertyView)
 router.register('provinces', views.ProvinceView)
 router.register('cities', views.CityView)
 router.register('resumes', views.ResumeView)
