@@ -33,6 +33,21 @@ if ENV == "prod":
 else:
     DEBUG = True
 
+# ================================================================= #
+#                      MAILGUN
+# ================================================================= #
+
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = Environment.getkey('mailgun_login')
+EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
+EMAIL_USE_TLS = True
+
+# ================================================================= #
+#                      CORS & CSRF
+# ================================================================= #
+
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -121,10 +136,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'rentalmoose.urls'
 
+SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
+TEMPLATES_PATH = os.path.join(SETTINGS_PATH, 'rentalmoose')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATES_PATH
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,6 +155,7 @@ TEMPLATES = [
             ],
         },
     },
+
 ]
 
 WSGI_APPLICATION = 'rentalmoose.wsgi.application'

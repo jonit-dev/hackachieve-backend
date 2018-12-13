@@ -9,11 +9,12 @@ from apps.neighborhoods_tenants.models import Neighborhood_tenant
 from apps.properties.models import Property
 from apps.resumes.models import Resume
 from rentalmoose.classes.API import *
+from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.Validator import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 import json
 from django.core import serializers
@@ -24,6 +25,26 @@ from django.core import serializers
 # ================================================================= #
 #                      DASHBOARD
 # ================================================================= #
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def test_email(request):
+    send = EmailHandler.send_email('Welcome to RentalMoose', ['joaopaulofurtado@live.com'],
+                                   "welcome",
+                                   {"name": "John"})
+
+    if send:
+        return API.json_response({
+            "status": "success",
+            "message": "Email was sent.",
+        })
+    else:
+        return API.json_response({
+            "status": "error",
+            "message": "failed to send email.",
+        })
+
 
 # Protected view - dashboard
 @csrf_exempt
