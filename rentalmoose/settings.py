@@ -18,6 +18,9 @@ from os.path import join
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+
+
 ENV = Environment.getkey('env')
 
 # Quick-start development settings - unsuitable for production
@@ -30,8 +33,10 @@ SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 
 if ENV == "prod":
     DEBUG = False
+    HOST_NAME = 'https://www.therentalmoose.com'
 else:
     DEBUG = True
+    HOST_NAME = 'http://127.0.0.1:8000'
 
 # ================================================================= #
 #                      MAILGUN

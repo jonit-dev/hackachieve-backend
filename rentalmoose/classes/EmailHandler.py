@@ -2,7 +2,8 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from rentalmoose.settings import TEMPLATES_PATH
-
+from rentalmoose.classes.Environment import *
+from rentalmoose.settings import HOST_NAME
 
 class EmailHandler:
 
@@ -15,6 +16,9 @@ class EmailHandler:
 
         plain_text_path = TEMPLATES_PATH + "/templates/emails/{}/".format(filename) + filename + ".txt"
         html_path = TEMPLATES_PATH + "/templates/emails/{}/".format(filename) + filename + ".html"
+
+        params['support_email'] = Environment.getkey('support_email')
+        params['host_name'] = HOST_NAME
 
         msg_plain = render_to_string(plain_text_path, params)
         msg_html = render_to_string(html_path, params)

@@ -32,8 +32,6 @@ urlpatterns = [
     # USER ROUTES =========================== #
 
 
-
-    url('user/test/email', user_views.test_email),
     url('user/info', user_views.user_info),
     url('user/create', user_views.user_register),
     url('user/resume/create', user_views.resume_create),

@@ -26,25 +26,6 @@ from django.core import serializers
 #                      DASHBOARD
 # ================================================================= #
 
-@csrf_exempt
-@api_view(['GET'])
-@permission_classes((AllowAny,))
-def test_email(request):
-    send = EmailHandler.send_email('Welcome to RentalMoose', ['joaopaulofurtado@live.com'],
-                                   "welcome",
-                                   {"name": "John"})
-
-    if send:
-        return API.json_response({
-            "status": "success",
-            "message": "Email was sent.",
-        })
-    else:
-        return API.json_response({
-            "status": "error",
-            "message": "failed to send email.",
-        })
-
 
 # Protected view - dashboard
 @csrf_exempt
@@ -215,6 +196,20 @@ def user_register(request):
             )
 
         if create_user:
+
+            #adjust firstname to first letter uppercase (eg. Joao)
+            adjusted_name = json_data['firstName'].lower()
+            adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
+
+            send = EmailHandler.send_email('Welcome to RentalMoose', [json_data['email']],
+                                           "welcome",
+                                           {
+                                               "name": adjusted_name,
+                                               "login": json_data['email'],
+                                               "password": json_data['password']
+
+                                           })
+
             return API.json_response({
                 "status": "success",
                 "message": "Your account {} was created successfully! Redirecting...".format(json_data['email']),
