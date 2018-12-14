@@ -11,6 +11,9 @@ from apps.resumes.models import Resume
 from rentalmoose.classes.API import *
 from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.Validator import *
+from rentalmoose.settings import HOST_NAME
+
+from rentalmoose.classes.UserHandler import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -197,7 +200,7 @@ def user_register(request):
 
         if create_user:
 
-            #adjust firstname to first letter uppercase (eg. Joao)
+            # adjust firstname to first letter uppercase (eg. Joao)
             adjusted_name = json_data['firstName'].lower()
             adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
 
@@ -293,6 +296,21 @@ def user_apply(request, property_id):
 
         if resume_count >= 1:
             Application.apply(resume, property)
+
+            # warn landlord about new application
+
+            tenant_name = UserHandler.capitalize_name(tenant.first_name)
+            landlord_name = UserHandler.capitalize_name(property.owner.first_name)
+
+            send = EmailHandler.send_email('New applicant to ' +
+                                           property.title, [property.owner.email],
+                                           "apply_posting",
+                                           {
+                                               "tenant_application_link": "{}/#!/property/check/applicants/{}/{}".format(HOST_NAME, property_id, tenant.id),
+                                               "property_title": property.title,
+                                               "tenant_name": tenant_name,
+                                               "landlord_first_name": landlord_name
+                                           })
 
             return API.json_response({
                 "status": "success",

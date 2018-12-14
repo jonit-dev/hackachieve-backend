@@ -4,6 +4,14 @@ from rentalmoose.classes.API import API
 class UserHandler:
 
     @staticmethod
+    def capitalize_name(name):
+
+        adjusted_name = name.lower()
+        adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
+
+        return adjusted_name
+
+    @staticmethod
     def is_landlord(user):
         if user.type != 2:
             return False

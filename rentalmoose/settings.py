@@ -33,10 +33,12 @@ SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 
 if ENV == "prod":
     DEBUG = False
-    HOST_NAME = 'https://www.therentalmoose.com:8000'
+    API_HOST = 'https://www.therentalmoose.com:8000'
+    HOST_NAME = 'https://www.therentalmoose.com'
 else:
     DEBUG = True
-    HOST_NAME = 'http://127.0.0.1:8000'
+    API_HOST = 'http://localhost:8000/'
+    HOST_NAME = 'http://localhost/rentalMoose'
 
 # ================================================================= #
 #                      MAILGUN

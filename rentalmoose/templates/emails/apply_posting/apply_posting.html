@@ -1,0 +1,24 @@
+{% extends "templates/emails/layout/base.html" %}
+
+{% block content %}
+
+<tr>
+                    <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
+                        <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
+                            <!-- Body content -->
+                            <tr>
+                                <td class="content-cell">
+                                    <h1><a href="{{tenant_application_link}}">{{tenant_name}}</a> applied for your property!</h1>
+                                    <p>Hi {{landlord_first_name}}, a new tenant just applied for <strong>{{property_title}}</strong>.
+                                        <a href="{{tenant_application_link}}">Click here to check this application</a></p>
+
+                                    <p>Thanks,
+                                        <br>Joao Paulo Furtado - Co-founder of RentalMoose</p>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+{% endblock %}

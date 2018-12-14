@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 
 from rentalmoose.settings import TEMPLATES_PATH
 from rentalmoose.classes.Environment import *
-from rentalmoose.settings import HOST_NAME
+from rentalmoose.settings import HOST_NAME, API_HOST
 
 class EmailHandler:
 
@@ -19,6 +19,7 @@ class EmailHandler:
 
         params['support_email'] = Environment.getkey('support_email')
         params['host_name'] = HOST_NAME
+        params['api_host'] = HOST_NAME
 
         msg_plain = render_to_string(plain_text_path, params)
         msg_html = render_to_string(html_path, params)
