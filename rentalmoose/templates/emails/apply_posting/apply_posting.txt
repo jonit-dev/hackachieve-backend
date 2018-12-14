@@ -1,1 +1,4 @@
-Welcome, {{name}} to rental moose
+Hi {{landlord_first_name}}, a new tenant just applied for {{property_title}}.
+Visit this link to check it: {{tenant_application_link}}
+                                    Thank you,
+                                    Joao Paulo Furtado - Founder of RentalMoose

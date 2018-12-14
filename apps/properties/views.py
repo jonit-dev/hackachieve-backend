@@ -11,9 +11,10 @@ from apps.users.models import User
 from apps.properties.models import Property
 
 from rentalmoose.classes.API import *
-
+from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.PropertyHandler import *
 from rentalmoose.classes.ResumeHandler import *
+from rentalmoose.classes.UserHandler import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -70,7 +71,6 @@ def create(request):
         property_id = str(property.id)
 
         image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
-
 
         if not os.path.isdir(image_path):
             os.mkdir(image_path)
@@ -181,6 +181,29 @@ def applicant_info(request, property_id, applicant_id):
         resume = application.resume.get()
 
         if resume.tenant_id == int(applicant_id):
+
+            # let's warn the user that some landlord/agency viewed his profile
+
+            user_type_name = "landlord"
+
+            if user.type == 2:
+                user_type_name = "landlord"
+            elif user.type == 3:
+                user_type_name = "real Estate agency"
+
+            import datetime
+            now = datetime.datetime.now()
+
+            # send = EmailHandler.send_email('A {} visited your profile'.format(user_type_name), [resume.tenant.email],
+            #                                "landlord_view_profile",
+            #                                {
+            #                                    "tenant_name": resume.tenant.first_name,
+            #                                    "user_type_name": user_type_name,
+            #                                    "user_name": UserHandler.capitalize_name(user.first_name),
+            #                                    "date_time": now,
+            #                                    "property_name": property.title
+            #                                })
+
             return API.json_response(ResumeHandler.calculate_risk(resume, property, application))
 
     return API.json_response({
