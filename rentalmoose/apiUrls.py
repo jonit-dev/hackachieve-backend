@@ -18,6 +18,7 @@ from apps.countries.api import views as api_countries_view
 
 from apps.neighborhoods import views as neighborhoods_view
 from apps.requests import views as requests_view
+from apps.tests import views as tests_view
 
 router = routers.DefaultRouter()
 router.register('properties', api_properties_view.PropertyView)
@@ -68,5 +69,7 @@ urlpatterns = [
     # ================================================================= #
 
     url(r'^walkscore/(?P<address>[\w|\W]+)/(?P<lat>-?\d+.?\d+)/(?P<lng>-?\d+.?\d+)', requests_view.walkscore),
+
+    # url(r'^test/email/threading', tests_view.email_threading),
 
 ]
