@@ -19,11 +19,11 @@ from rentalmoose.classes.UserHandler import *
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
 from apps.applications.models import Application
 from rentalmoose.classes.UserHandler import UserHandler
-
 from rentalmoose.classes.Validator import Validator
+
+from apps.logs.models import Log
 
 
 @csrf_exempt
@@ -194,17 +194,29 @@ def applicant_info(request, property_id, applicant_id):
             import datetime
             now = datetime.datetime.now()
 
-            # send = EmailHandler.send_email('A {} visited your profile'.format(user_type_name), [resume.tenant.email],
-            #                                "landlord_view_profile",
-            #                                {
-            #                                    "tenant_name": resume.tenant.first_name,
-            #                                    "user_type_name": user_type_name,
-            #                                    "user_name": UserHandler.capitalize_name(user.first_name),
-            #                                    "date_time": now,
-            #                                    "property_name": property.title
-            #                                })
+            # Lets check if we already warned the tenant about this profile visit.
 
-            return API.json_response(ResumeHandler.calculate_risk(resume, property, application))
+            visit_log = Log.objects.filter(event__exact='PROFILE_VISIT').filter(emitter__exact=user_id).filter(
+                target__exact=resume.tenant_id)
+
+            if len(visit_log) == 0:  # if we didn't send any email to the tenant yet...
+
+                #register visit on log to prevent warning tenant multiple times
+                l = Log(event='PROFILE_VISIT', emitter=user_id, target=resume.tenant_id)
+                l.save()
+
+                send = EmailHandler.send_email('A {} visited your profile'.format(user_type_name), [resume.tenant.email],
+                                               "landlord_view_profile",
+                                               {
+                                                   "tenant_name": resume.tenant.first_name,
+                                                   "user_type_name": user_type_name,
+                                                   "user_name": UserHandler.capitalize_name(user.first_name),
+                                                   "date_time": now,
+                                                   "property_name": property.title
+                                               })
+
+        return API.json_response(ResumeHandler.calculate_risk(resume, property, application))
+
 
     return API.json_response({
         "status": "error",

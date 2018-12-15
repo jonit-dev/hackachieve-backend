@@ -1,1 +1,8 @@
-Welcome, {{name}} to rental moose
+A {{user_type_name}}({{user_name}}) viewed your application.
+
+    Hi {{tenant_name}}, we detected a visit on your profile on {{ date_time | date:"D d M Y"}} due to an application to {{property_name}}. They're probably reviewing all applicants information, so make sure all of your data is updated on our system.
+
+                  And also remember to check {{host_name}} for recently added properties. You will certainly find something interesting.
+
+                    Thanks,
+                        Joao Paulo Furtado - Founder of RentalMoose
