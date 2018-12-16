@@ -25,6 +25,9 @@ from rentalmoose.classes.Validator import Validator
 
 from apps.logs.models import Log
 
+from rentalmoose.classes.SecurityHandler import *
+from apps.logs.models import Log
+
 
 @csrf_exempt
 @api_view(['POST'])
@@ -61,6 +64,32 @@ def create(request):
                 "status": "error",
                 "message": "Only landlords accounts can list real estate properties.",
                 "type": "danger"
+            })
+
+        # ANTI SCAMMER SYSTEM =========================== #
+
+        # lets check if the incoming request is from canada
+        ip = SecurityHandler.get_client_ip(request)
+
+        city = City.objects.get(pk=request_data['city'])
+        area_code = city.province.abbrev
+
+        check = SecurityHandler.is_allowed_ip(ip, "CA", area_code)
+
+        if check is not True:
+
+            #log suspicious event
+            log = Log(
+                event="SUSPICIOUS_POST_BLOCKED", emitted=owner_id, target=None, value=ip,
+            )
+            log.save()
+
+            #return generic error message.
+            return API.json_response({
+                "status": "error",
+                "message": "An error occurred while trying to post your property. Error code 13",
+                "type": "error",
+                "title": "Error"
             })
 
         # SAVE PROPERTY FIRST!
@@ -201,11 +230,12 @@ def applicant_info(request, property_id, applicant_id):
 
             if len(visit_log) == 0:  # if we didn't send any email to the tenant yet...
 
-                #register visit on log to prevent warning tenant multiple times
+                # register visit on log to prevent warning tenant multiple times
                 l = Log(event='PROFILE_VISIT', emitter=user_id, target=resume.tenant_id)
                 l.save()
 
-                send = EmailHandler.send_email('A {} visited your profile'.format(user_type_name), [resume.tenant.email],
+                send = EmailHandler.send_email('A {} visited your profile'.format(user_type_name),
+                                               [resume.tenant.email],
                                                "landlord_view_profile",
                                                {
                                                    "tenant_name": resume.tenant.first_name,
@@ -216,7 +246,6 @@ def applicant_info(request, property_id, applicant_id):
                                                })
 
         return API.json_response(ResumeHandler.calculate_risk(resume, property, application))
-
 
     return API.json_response({
         "status": "error",
