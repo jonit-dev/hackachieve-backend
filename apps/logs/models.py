@@ -5,8 +5,9 @@ from django.db import models
 
 class Log(models.Model):
     event = models.CharField(max_length=255)
-    emitter = models.IntegerField(default=None)
-    target = models.IntegerField(default=None)
+    emitter = models.IntegerField(default=None,null=True)
+    target = models.IntegerField(default=None, null=True)
+    value = models.CharField(max_length=255,default=None, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
 

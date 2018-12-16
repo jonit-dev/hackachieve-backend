@@ -236,6 +236,10 @@ def user_register(request):
 #                      GET OWN INFO
 # ================================================================= #
 
+from apps.logs.models import Log
+from rentalmoose.classes.SecurityHandler import *
+
+
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
@@ -243,6 +247,11 @@ def user_info(request):
     user_id = API.getUserByToken(request)
 
     user = User.objects.get(pk=user_id)
+
+    # get and register user IP
+    ip = SecurityHandler.get_client_ip(request)
+    log = Log(event="IP_ACCESS", emitter=user_id, target=None, value=ip)
+    log.save()
 
     has_resume = len(user.resume_set.all()) > 0
 
@@ -306,7 +315,8 @@ def user_apply(request, property_id):
                                            property.title, [property.owner.email],
                                            "apply_posting",
                                            {
-                                               "tenant_application_link": "{}/#!/property/check/applicants/{}/{}".format(HOST_NAME, property_id, tenant.id),
+                                               "tenant_application_link": "{}/#!/property/check/applicants/{}/{}".format(
+                                                   HOST_NAME, property_id, tenant.id),
                                                "property_title": property.title,
                                                "tenant_name": tenant_name,
                                                "landlord_first_name": landlord_name
