@@ -72,5 +72,6 @@ urlpatterns = [
 
     # url(r'^test/email/threading', tests_view.email_threading),
     url(r'^test/ip', tests_view.ipcheck),
+    url(r'^test/phone', tests_view.phonecheck),
 
 ]

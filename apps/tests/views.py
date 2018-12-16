@@ -23,6 +23,23 @@ def ipcheck(request):
     else:
         return API.json_response({
             "status": "forbidden_ip"
+        })\
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def phonecheck(request):
+
+    check = SecurityHandler.is_allowed_phone("7788467427", "BC", "CA")
+
+    if check:
+        return API.json_response({
+            "status": "allowed_phone"
+        })
+    else:
+        return API.json_response({
+            "status": "forbidden_phone"
         })
 
 #

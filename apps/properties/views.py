@@ -72,7 +72,7 @@ def create(request):
         ip = SecurityHandler.get_client_ip(request)
         city_id = request_data['city']
         city = City.objects.get(pk=city_id)
-        area_code = city.province.abbrev
+        area_code = city.province.abbrev #province that the user is trying to post to
         print("user is from {}".format(area_code))
 
         check = SecurityHandler.is_allowed_ip(ip, "CA", area_code)

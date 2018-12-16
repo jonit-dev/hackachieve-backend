@@ -75,3 +75,93 @@ class SecurityHandler:
                 return True
             else:
                 return False
+
+    @staticmethod
+    def is_allowed_phone(phone, area_code, country_code):
+        env = Environment.getkey('env')
+        WHITEPAGES_KEY = Environment.getkey('whitepages')
+
+        # scammers generally use VOIP based lines
+
+        """
+                  Landline: Traditional wired phone line
+                  FixedVOIP: VOIP based fixed line phones
+                  Mobile: Wireless phone line
+                  Voicemail: Voicemail-only service
+                  TollFree: Callee pays for call
+                  Premium: Caller pays a premium for the call–e.g. 976 area code
+                  NonFixedVOIP: Skype, for example
+                  Other: Anything that does not match the previous categories
+        """
+        forbidden_line_types = ['VOIP', "Voicemail", "Premium", "FixedVOIP", "NonFixedVOIP"]
+
+        def phone_check(data):
+            if data['line_type'] in forbidden_line_types:
+                print("line type flag")
+                return False
+
+            if area_code != data['current_addresses'][0]['state_code']:
+                print("area code flag")
+                return False
+
+            if country_code != data['current_addresses'][0]['country_code']:
+                print("country code flag")
+                return False
+
+            if data['is_valid'] != True:
+                print("invalid number flag")
+                return False
+
+            return True
+
+        if env == 'dev':
+
+            response = {
+                "id": "Phone.29c76fef-a2e1-4b08-cfe3-bc7128b7a075",
+                "phone_number": "7788467427",
+                "is_valid": True,
+                "country_calling_code": "1",
+                "line_type": "Mobile",
+                "carrier": "Bell Cellular",
+                "is_prepaid": None,
+                "is_commercial": None,
+                "belongs_to": [],
+                "current_addresses": [
+                    {
+                        "id": "Location.c2d26bbc-f1d3-4089-8bc9-f91e9a0a7ccd",
+                        "location_type": "PostalCode",
+                        "street_line_1": None,
+                        "street_line_2": None,
+                        "city": "Vancouver",
+                        "postal_code": "V5Z 1C5",
+                        "zip4": None,
+                        "state_code": "BC",
+                        "country_code": "CA",
+                        "lat_long": {
+                            "latitude": 49.2486,
+                            "longitude": -123.1202,
+                            "accuracy": "PostalCode"
+                        },
+                        "is_active": None,
+                        "delivery_point": None,
+                        "link_to_person_start_date": None
+                    }
+                ],
+                "historical_addresses": [],
+                "associated_people": [],
+                "alternate_phones": [],
+                "error": None,
+                "warnings": []
+            }
+
+            return phone_check(response)
+
+
+
+        if env == 'prod':
+
+            response = requests.get(
+                "https://proapi.whitepages.com/3.0/phone.json?api_key={}&phone={}".format(WHITEPAGES_KEY, phone))
+            json_data = json.loads(response.text)
+
+            return phone_check(json_data)

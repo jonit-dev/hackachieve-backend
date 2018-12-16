@@ -7,6 +7,7 @@ class Environment:
     def getkey(key):
         keys = {
             "walkscore": os.environ.get('WALKSCORE_KEY'),
+            "whitepages": os.environ.get('WHITEPAGES_KEY'),
             "ipstack": os.environ.get("IPSTACK_KEY"),
             "env": os.environ.get('ENV'),
             'mailgun_login': os.environ.get('MAILGUN_LOGIN'),
