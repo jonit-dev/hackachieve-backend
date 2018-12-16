@@ -80,7 +80,7 @@ def create(request):
 
             #log suspicious event
             log = Log(
-                event="SUSPICIOUS_POST_BLOCKED", emitted=owner_id, target=None, value=ip,
+                event="SUSPICIOUS_POST_BLOCKED", emitter=owner_id, target=None, value=ip,
             )
             log.save()
 
