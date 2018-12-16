@@ -70,64 +70,66 @@ def create(request):
 
         # lets check if the incoming request is from canada
         ip = SecurityHandler.get_client_ip(request)
-
-        city = City.objects.get(pk=request_data['city'])
+        city_id = request_data['city']
+        city = City.objects.get(pk=city_id)
         area_code = city.province.abbrev
+        print("user is from {}".format(area_code))
 
         check = SecurityHandler.is_allowed_ip(ip, "CA", area_code)
 
-        if check is not True:
+        if check is False:
 
-            #log suspicious event
+            # log suspicious event
             log = Log(
                 event="SUSPICIOUS_POST_BLOCKED", emitter=owner_id, target=None, value=ip,
             )
             log.save()
 
-            #return generic error message.
+            # return generic error message.
             return API.json_response({
                 "status": "error",
                 "message": "An error occurred while trying to post your property. Error code 13",
                 "type": "error",
                 "title": "Error"
             })
+        else:
 
-        # SAVE PROPERTY FIRST!
-        property_type = Property_type.objects.get(pk=request_data['type_id'])
-        property = PropertyHandler.save_property(request_data, owner, property_type)
+            # SAVE PROPERTY FIRST!
+            property_type = Property_type.objects.get(pk=request_data['type_id'])
+            property = PropertyHandler.save_property(request_data, owner, property_type)
 
-        # now that the property is saved, create folder on static dir to save uploaded images
-        property_id = str(property.id)
+            # now that the property is saved, create folder on static dir to save uploaded images
+            property_id = str(property.id)
 
-        image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
+            image_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
 
-        if not os.path.isdir(image_path):
-            os.mkdir(image_path)
+            if not os.path.isdir(image_path):
+                os.mkdir(image_path)
 
-        i = 0
-        for image in request_data['images']:
-            img_data = PropertyHandler.get_base64_img(image["image"])
+            i = 0
+            for image in request_data['images']:
+                img_data = PropertyHandler.get_base64_img(image["image"])
 
-            if PropertyHandler.check_file_extensions(img_data['ext']):  # if file has allowed extension
+                if PropertyHandler.check_file_extensions(img_data['ext']):  # if file has allowed extension
 
-                while True:  # save it!
+                    while True:  # save it!
 
-                    time.sleep(0.2)
-                    if os.path.isdir(image_path):  # we have to check if directory is created, because its async
-                        # when the directory is created, create image file there.
-                        image_file = open("{}/{}.{}".format(image_path, i, img_data['ext']), "wb")  # save file
-                        image_file.write(img_data['base64data'])  # write base64 content
-                        image_file.close()
-                        i = i + 1  # now lets save the next file!
+                        time.sleep(0.2)
+                        if os.path.isdir(image_path):  # we have to check if directory is created, because its async
+                            # when the directory is created, create image file there.
+                            image_file = open("{}/{}.{}".format(image_path, i, img_data['ext']), "wb")  # save file
+                            image_file.write(img_data['base64data'])  # write base64 content
+                            image_file.close()
+                            i = i + 1  # now lets save the next file!
 
-                        break
+                            break
 
-        return API.json_response({
-            "status": "success",
-            "message": "Your property was listed successfully!",
-            "type": "success",
-            "title": "Success"
-        })
+            return API.json_response({
+                "status": "success",
+                "message": "Your property was listed successfully!",
+                "type": "success",
+                "title": "Success"
+            })
 
 
 @csrf_exempt
