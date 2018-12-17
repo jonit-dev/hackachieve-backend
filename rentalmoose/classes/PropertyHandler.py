@@ -14,6 +14,8 @@ from apps.cities.models import City
 from apps.neighborhoods.models import Neighborhood
 
 
+from rentalmoose.classes.SecurityHandler import *
+
 class PropertyHandler:
 
     @staticmethod
@@ -47,11 +49,12 @@ class PropertyHandler:
     @staticmethod
     def save_property(request_data, owner, property_type):
 
-        city = City.objects.get(pk=request_data['city'])
+
+        city = City.objects.get(pk=request_data['city']['id'])
 
         # Neighborhood is optional. Lets check if user passed it. If so, save. If not, set to None (null).
         if 'neighborhood' in request_data:
-            neighborhood = Neighborhood.objects.get(pk=request_data['neighborhood'])
+            neighborhood = Neighborhood.objects.get(pk=request_data['neighborhood']['id'])
         else:
             neighborhood = None
 
@@ -65,7 +68,7 @@ class PropertyHandler:
         property = Property(
             owner=owner,
             city=city,
-            phone=request_data['phone'],
+            phone=SecurityHandler.prepare_phone_number(request_data['phone']),
             neighborhood=neighborhood,
             status=request_data['status'],
             title=request_data['title'],

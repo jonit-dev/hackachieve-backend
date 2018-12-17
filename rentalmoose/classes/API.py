@@ -41,7 +41,7 @@ class API:
     @staticmethod
     def json_get_data(request):
         json_data = json.loads(request.body.decode('utf-8'))
-        print(json_data)
+        # print(json_data)
 
         return json_data
 

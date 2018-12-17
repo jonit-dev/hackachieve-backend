@@ -36,6 +36,7 @@ def create(request):
     # get data coming in JSON format
     request_data = API.json_get_data(request)
 
+
     # first of all, lets check if all request fields were filled properly
 
     check_fields = Validator.are_request_fields_valid(request_data)
@@ -70,7 +71,7 @@ def create(request):
 
         # lets check if the incoming request is from canada
         ip = SecurityHandler.get_client_ip(request)
-        city_id = request_data['city']
+        city_id = request_data['city']['id']
         city = City.objects.get(pk=city_id)
         area_code = city.province.abbrev  # province that the user is trying to post to
         print("user is from {}".format(area_code))
@@ -114,7 +115,8 @@ def create(request):
         else:
 
             # SAVE PROPERTY FIRST!
-            property_type = Property_type.objects.get(pk=request_data['type_id'])
+
+            property_type = Property_type.objects.get(pk=request_data['type']['id'])
             property = PropertyHandler.save_property(request_data, owner, property_type)
 
             # now that the property is saved, create folder on static dir to save uploaded images
