@@ -65,6 +65,7 @@ class PropertyHandler:
         property = Property(
             owner=owner,
             city=city,
+            phone=request_data['phone'],
             neighborhood=neighborhood,
             status=request_data['status'],
             title=request_data['title'],

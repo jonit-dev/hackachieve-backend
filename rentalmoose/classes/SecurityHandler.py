@@ -8,6 +8,11 @@ from rentalmoose.classes.Environment import *
 class SecurityHandler:
 
     @staticmethod
+    def prepare_phone_number(phone):
+        phone = phone.replace("(", "").replace(")", "").replace(" ", "").replace("-", "")
+        return phone
+
+    @staticmethod
     def get_client_ip(request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
@@ -115,7 +120,6 @@ class SecurityHandler:
             return True
 
         if env == 'dev':
-
             response = {
                 "id": "Phone.29c76fef-a2e1-4b08-cfe3-bc7128b7a075",
                 "phone_number": "7788467427",
@@ -156,10 +160,7 @@ class SecurityHandler:
 
             return phone_check(response)
 
-
-
         if env == 'prod':
-
             response = requests.get(
                 "https://proapi.whitepages.com/3.0/phone.json?api_key={}&phone={}".format(WHITEPAGES_KEY, phone))
             json_data = json.loads(response.text)

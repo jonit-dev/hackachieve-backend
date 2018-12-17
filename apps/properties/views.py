@@ -72,13 +72,12 @@ def create(request):
         ip = SecurityHandler.get_client_ip(request)
         city_id = request_data['city']
         city = City.objects.get(pk=city_id)
-        area_code = city.province.abbrev #province that the user is trying to post to
+        area_code = city.province.abbrev  # province that the user is trying to post to
         print("user is from {}".format(area_code))
 
-        check = SecurityHandler.is_allowed_ip(ip, "CA", area_code)
+        check_ip = SecurityHandler.is_allowed_ip(ip, "CA", area_code)
 
-        if check is False:
-
+        if check_ip is False:
             # log suspicious event
             log = Log(
                 event="SUSPICIOUS_POST_BLOCKED", emitter=owner_id, target=None, value=ip,
@@ -92,6 +91,26 @@ def create(request):
                 "type": "error",
                 "title": "Error"
             })
+
+        check_phone = SecurityHandler.is_allowed_phone(SecurityHandler.prepare_phone_number(request_data['phone']),
+                                                       area_code, "CA")
+
+        if check_phone is False:
+
+            # log suspicious event
+            log = Log(
+                event="SUSPICIOUS_POST_BLOCKED", emitter=owner_id, target=None, value=request_data['phone'],
+            )
+            log.save()
+
+            # return generic error message.
+            return API.json_response({
+                "status": "error",
+                "message": "An error occurred while trying to post your property. Error code 14 - Invalid Phone",
+                "type": "error",
+                "title": "Error"
+            })
+
         else:
 
             # SAVE PROPERTY FIRST!
