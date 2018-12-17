@@ -105,12 +105,15 @@ class SecurityHandler:
                 print("line type flag")
                 return False
 
-            if area_code != data['current_addresses'][0]['state_code']:
-                print("area code flag")
-                return False
+            if len(data['current_addresses']) > 0: #if we found some address
+                if area_code != data['current_addresses'][0]['state_code']:
+                    print("area code flag")
+                    return False
 
-            if country_code != data['current_addresses'][0]['country_code']:
-                print("country code flag")
+                if country_code != data['current_addresses'][0]['country_code']:
+                    print("country code flag")
+                    return False
+            else:
                 return False
 
             if data['is_valid'] != True:
@@ -119,7 +122,7 @@ class SecurityHandler:
 
             return True
 
-        if env == 'dev':
+        if env == 'prod':
             response = {
                 "id": "Phone.29c76fef-a2e1-4b08-cfe3-bc7128b7a075",
                 "phone_number": "7788467427",
@@ -160,7 +163,7 @@ class SecurityHandler:
 
             return phone_check(response)
 
-        if env == 'prod':
+        if env == 'dev':
             response = requests.get(
                 "https://proapi.whitepages.com/3.0/phone.json?api_key={}&phone={}".format(WHITEPAGES_KEY, phone))
             json_data = json.loads(response.text)

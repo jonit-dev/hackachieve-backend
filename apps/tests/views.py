@@ -31,7 +31,7 @@ def ipcheck(request):
 @permission_classes((AllowAny,))
 def phonecheck(request):
 
-    check = SecurityHandler.is_allowed_phone("7788467427", "BC", "CA")
+    check = SecurityHandler.is_allowed_phone("7777777777", "BC", "CA")
 
     if check:
         return API.json_response({

@@ -93,24 +93,24 @@ def create(request):
                 "title": "Error"
             })
 
-        check_phone = SecurityHandler.is_allowed_phone(SecurityHandler.prepare_phone_number(request_data['phone']),
-                                                       area_code, "CA")
-
-        if check_phone is False:
-
-            # log suspicious event
-            log = Log(
-                event="SUSPICIOUS_POST_BLOCKED", emitter=owner_id, target=None, value=request_data['phone'],
-            )
-            log.save()
-
-            # return generic error message.
-            return API.json_response({
-                "status": "error",
-                "message": "An error occurred while trying to post your property. Error code 14 - Invalid Phone",
-                "type": "error",
-                "title": "Error"
-            })
+        # check_phone = SecurityHandler.is_allowed_phone(SecurityHandler.prepare_phone_number(request_data['phone']),
+        #                                                area_code, "CA")
+        #
+        # if check_phone is False:
+        #
+        #     # log suspicious event
+        #     log = Log(
+        #         event="SUSPICIOUS_POST_BLOCKED", emitter=owner_id, target=None, value=request_data['phone'],
+        #     )
+        #     log.save()
+        #
+        #     # return generic error message.
+        #     return API.json_response({
+        #         "status": "error",
+        #         "message": "An error occurred while trying to post your property. Error code 14 - Invalid Phone",
+        #         "type": "error",
+        #         "title": "Error"
+        #     })
 
         else:
 

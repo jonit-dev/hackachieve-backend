@@ -14,7 +14,6 @@ from apps.cities.models import City
 from apps.neighborhoods.models import Neighborhood
 
 
-from rentalmoose.classes.SecurityHandler import *
 
 class PropertyHandler:
 
@@ -68,7 +67,6 @@ class PropertyHandler:
         property = Property(
             owner=owner,
             city=city,
-            phone=SecurityHandler.prepare_phone_number(request_data['phone']),
             neighborhood=neighborhood,
             status=request_data['status'],
             title=request_data['title'],
