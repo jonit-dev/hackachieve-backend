@@ -97,34 +97,6 @@ class PropertyHandler:
         return property
 
     @staticmethod
-    def reallocate_uploaded_files(property, img_data):
-
-        property_id = str(property.id)
-        os.mkdir(os.path.join(settings.PROPERTIES_IMAGES_ROOT, property_id))
-
-        # setup some variables to help we handle it
-        newdir_path = settings.PROPERTIES_IMAGES_ROOT + "/" + property_id
-        large_img = "property_image" + ".large." + img_data['ext']
-        normal_img = "property_image" + "." + img_data['ext']
-        thumbnail_img = "property_image" + ".thumbnail." + img_data['ext']
-        large_img_path = settings.PROPERTIES_IMAGES_ROOT + "/" + large_img
-        normal_img_path = settings.PROPERTIES_IMAGES_ROOT + "/" + normal_img
-        thumbnail_img_path = settings.PROPERTIES_IMAGES_ROOT + "/" + thumbnail_img
-
-        # wait until images are saved, and then move them
-        import time
-
-        # try to save it when those files are available in our server
-        while True:
-            time.sleep(0.2)
-            if os.path.isfile(large_img_path) is True and os.path.isfile(normal_img_path) and os.path.isfile(
-                    thumbnail_img_path):
-                shutil.move(large_img_path, newdir_path + "/" + large_img.replace(".large", "_large"))
-                shutil.move(normal_img_path, newdir_path + "/" + normal_img)
-                shutil.move(thumbnail_img_path, newdir_path + "/" + thumbnail_img.replace(".thumbnail", "_thumbnail"))
-                break
-
-    @staticmethod
     def check_file_extensions(ext):
 
         allowed_extensions = ["png", "jpeg", "bmp", "jpg"]
