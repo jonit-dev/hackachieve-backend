@@ -88,6 +88,7 @@ class PropertyHandler:
             security_deposit=request_data['security_deposit'],
             publication_date=request_data['publication_date'],
             available_to_move_in_date=move_in_date,
+            open_view_available=request_data['open_view'],
             open_view_start=open_view_start,
             open_view_end=open_view_end,
 

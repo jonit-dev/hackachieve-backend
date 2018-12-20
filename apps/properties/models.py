@@ -37,6 +37,7 @@ class Property(models.Model):
     security_deposit = models.FloatField()
     publication_date = models.DateTimeField()
     available_to_move_in_date = models.DateField()
+    open_view_available = models.BooleanField(default=False)
     open_view_start = models.DateTimeField()
     open_view_end = models.DateTimeField()
 
