@@ -36,4 +36,4 @@ class PropertySerializer(serializers.ModelSerializer):
             'n_bathrooms', 'address', 'furnished', 'no_pets', 'no_smoking', 'no_parties', 'minimum_lease',
             'pet_deposit', 'description',
             'security_deposit', 'publication_date', 'available_to_move_in_date', 'open_view_start', 'open_view_end',
-            'city_name', 'type_name', 'images')
+            'city_name', 'type_name', 'images', 'utilities_estimation')

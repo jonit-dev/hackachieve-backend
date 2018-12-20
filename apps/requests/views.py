@@ -22,7 +22,7 @@ def walkscore(request, address, lat, lng):
 
     encoded_address = urllib.parse.quote(address)
 
-    url = "http://api.walkscore.com/score?format=json&address=" + encoded_address + "&lat=" + lat + "&lon=" + lng + "&wsapikey=" + walkscoreAPIKEY
+    url = "http://api.walkscore.com/score?format=json&address=" + encoded_address + "&lat=" + lat + "&lon=" + lng + "&transit=1&bike=1&wsapikey=" + walkscoreAPIKEY
 
     if env == "prod":
         f = urllib.request.urlopen(url)
@@ -31,16 +31,25 @@ def walkscore(request, address, lat, lng):
         return HttpResponse(response, "json")
     else:
         response = {
-            "status": 1,
-            "walkscore": 0,
-            "description": "Car-Dependent",
-            "updated": "2018-10-31 15:38:48.287182",
-            "logo_url": "https://cdn.walk.sc/images/api-logo.png",
-            "more_info_icon": "https://cdn.walk.sc/images/api-more-info.gif",
-            "more_info_link": "https://www.redfin.com/how-walk-score-works",
-            "ws_link": "https://www.walkscore.com/score/13450-.dash.-104-Avenue-.dash.Surrey-BC/lat=53.7266683/lng=-127.6476205/?utm_source=live.com&utm_medium=ws_api&utm_campaign=ws_api",
-            "help_link": "https://www.redfin.com/how-walk-score-works",
-            "snapped_lat": 53.727,
-            "snapped_lon": -127.647
-        }
+    "status": 1,
+    "walkscore": 61,
+    "description": "Somewhat Walkable",
+    "updated": "2018-11-28 21:05:32.266310",
+    "logo_url": "https://cdn.walk.sc/images/api-logo.png",
+    "more_info_icon": "https://cdn.walk.sc/images/api-more-info.gif",
+    "more_info_link": "https://www.redfin.com/how-walk-score-works",
+    "ws_link": "https://www.walkscore.com/score/W-939-58th-Oakridge/lat=49.217810/lng=-123.116010/?utm_source=rentalmoose.ca &utm_medium=ws_api&utm_campaign=ws_api",
+    "help_link": "https://www.redfin.com/how-walk-score-works",
+    "snapped_lat": 49.218,
+    "snapped_lon": -123.1155,
+    "transit": {
+        "score": None,
+        "description": None,
+        "summary": None
+    },
+    "bike": {
+        "score": 65,
+        "description": "Bikeable"
+    }
+}
         return API.json_response(response)
