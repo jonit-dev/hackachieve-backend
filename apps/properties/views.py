@@ -2,6 +2,7 @@ from operator import itemgetter
 
 import time
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.cities.models import City
@@ -18,7 +19,7 @@ from rentalmoose.classes.UserHandler import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from apps.applications.models import Application
 from rentalmoose.classes.UserHandler import UserHandler
 from rentalmoose.classes.Validator import Validator
@@ -30,12 +31,29 @@ from apps.logs.models import Log
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def prerender(request, property_id):
+    from rentalmoose.settings import TEMPLATES_PATH
+
+    property = Property.objects.get(pk=property_id)
+
+
+    return render(request, TEMPLATES_PATH+"/templates/prerender/property.html",{
+        "property": {
+            "id": property.id,
+            "title": property.title,
+            "description": property.description,
+        }
+    })
+
+
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def create(request):
     # get data coming in JSON format
     request_data = API.json_get_data(request)
-
 
     # first of all, lets check if all request fields were filled properly
 
