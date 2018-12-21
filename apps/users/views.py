@@ -315,7 +315,7 @@ def user_apply(request, property_id):
                                            property.title, [property.owner.email],
                                            "apply_posting",
                                            {
-                                               "tenant_application_link": "{}/#!/property/check/applicants/{}/{}".format(
+                                               "tenant_application_link": "{}/property/check/applicants/{}/{}".format(
                                                    HOST_NAME, property_id, tenant.id),
                                                "property_title": property.title,
                                                "tenant_name": tenant_name,
