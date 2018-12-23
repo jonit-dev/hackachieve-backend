@@ -8,5 +8,5 @@ from apps.properties.models import Property
 class PropertyView(viewsets.ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-    http_method_names = ['get']
+    http_method_names = ['get','delete']
     permission_classes = (())
