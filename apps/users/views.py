@@ -12,8 +12,8 @@ from rentalmoose.classes.API import *
 from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.Validator import *
 from rentalmoose.settings import HOST_NAME
-
 from rentalmoose.classes.UserHandler import *
+from rentalmoose.classes.SecurityHandler import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -161,10 +161,13 @@ def user_register(request):
 
         json_data = API.json_get_data(request)
 
+        ip = SecurityHandler.get_client_ip(request)
+
         # Empty fields valitation =========================== #
 
         check_user_fields = Validator.are_request_fields_valid(json_data)
 
+        # Check is theres no empty fields
         if check_user_fields is not True:
             return API.json_response({
                 "status": "error",
@@ -172,6 +175,21 @@ def user_register(request):
                     check_user_fields),
                 "type": "danger"
             })
+
+        # Check Landlord IP address =========================== #
+        elif SecurityHandler.is_allowed_ip(ip, "CA") is False and json_data['type'] != 1:
+            log = Log(
+                event="SUSPICIOUS_ACCOUNT_CREATION_TRY", emitter=None, target=None, value=ip,
+            )
+            log.save()
+
+            return API.json_response({
+                "status": "error",
+                "message": "Error while creating your account.",
+                "type": "danger"
+            })
+
+
         elif not Validator.check_password_confirmation(json_data['password'], json_data['passwordConfirmation']):
             return API.json_response({
                 "status": "error",

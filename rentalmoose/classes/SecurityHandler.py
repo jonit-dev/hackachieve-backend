@@ -22,7 +22,7 @@ class SecurityHandler:
         return ip
 
     @staticmethod
-    def is_allowed_ip(ip, required_country, required_region_code):
+    def is_allowed_ip(ip, required_country, required_region_code=None):
         env = Environment.getkey('env')
         IPSTACK_KEY = Environment.getkey('ipstack')
 
@@ -31,10 +31,16 @@ class SecurityHandler:
             response = requests.get("http://api.ipstack.com/{}?access_key={}&format=1".format(ip, IPSTACK_KEY))
             json_data = json.loads(response.text)
 
-            if required_country == json_data['country_code'] and required_region_code == json_data['region_code']:
-                return True
+            if required_region_code is None:
+                if required_country == json_data['country_code']:
+                    return True
+                else:
+                    return False
             else:
-                return False
+                if required_country == json_data['country_code'] and required_region_code == json_data['region_code']:
+                    return True
+                else:
+                    return False
 
 
 
@@ -105,7 +111,7 @@ class SecurityHandler:
                 print("line type flag")
                 return False
 
-            if len(data['current_addresses']) > 0: #if we found some address
+            if len(data['current_addresses']) > 0:  # if we found some address
                 if area_code != data['current_addresses'][0]['state_code']:
                     print("area code flag")
                     return False
