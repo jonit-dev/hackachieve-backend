@@ -6,6 +6,7 @@ from rentalmoose.classes.Environment import *
 
 
 class SecurityHandler:
+    allowed_regions = ["CA"]
 
     @staticmethod
     def prepare_phone_number(phone):
@@ -22,25 +23,28 @@ class SecurityHandler:
         return ip
 
     @staticmethod
-    def is_allowed_ip(ip, required_country, required_region_code=None):
+    def check_regions(required_region_code, required_country, data):
+
+        if required_region_code is None:
+            if required_country == data['country_code']:
+                return True
+            else:
+                return False
+        else:
+            if required_country == data['country_code'] and required_region_code == data['region_code']:
+                return True
+            else:
+                return False
+
+    @staticmethod
+    def is_allowed_ip(ip, required_country="CA", required_region_code=None):
         env = Environment.getkey('env')
         IPSTACK_KEY = Environment.getkey('ipstack')
 
         if env == 'prod':
-
             response = requests.get("http://api.ipstack.com/{}?access_key={}&format=1".format(ip, IPSTACK_KEY))
             json_data = json.loads(response.text)
-
-            if required_region_code is None:
-                if required_country == json_data['country_code']:
-                    return True
-                else:
-                    return False
-            else:
-                if required_country == json_data['country_code'] and required_region_code == json_data['region_code']:
-                    return True
-                else:
-                    return False
+            return SecurityHandler.check_regions(required_region_code, required_country, json_data)
 
 
 
@@ -82,10 +86,8 @@ class SecurityHandler:
                 }
             }
 
-            if required_country == response['country_code'] and required_region_code == response['region_code']:
-                return True
-            else:
-                return False
+            print("{} => {}".format(response['country_code'], required_country))
+            return SecurityHandler.check_regions(required_region_code, required_country, response)
 
     @staticmethod
     def is_allowed_phone(phone, area_code, country_code):

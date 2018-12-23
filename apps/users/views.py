@@ -177,6 +177,7 @@ def user_register(request):
             })
 
         # Check Landlord IP address =========================== #
+
         elif SecurityHandler.is_allowed_ip(ip, "CA") is False and json_data['type'] != 1:
             log = Log(
                 event="SUSPICIOUS_ACCOUNT_CREATION_TRY", emitter=None, target=None, value=ip,
