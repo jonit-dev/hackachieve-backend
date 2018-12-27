@@ -1,19 +1,11 @@
 from django.db import models
-
-# Create your models here.
-from apps.cities.models import City
 from apps.users.models import User
 
 
 class Resume(models.Model):
     tenant = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    # location
-    city = models.ForeignKey(City, on_delete=models.CASCADE, default=None)
-    phone = models.CharField(max_length=255)
+    phone = models.CharField(max_length=255, null=True)
     description = models.TextField()
-    zipcode = models.CharField(max_length=255)
-    address = models.TextField()
     active = models.BooleanField(default=True)
     # property damage risk
     expected_tenancy_length = models.IntegerField(default=1)
@@ -27,7 +19,6 @@ class Resume(models.Model):
     # financial risk
     currently_working = models.BooleanField()
     current_ocupation = models.CharField(max_length=255)
-    credit_score = models.IntegerField()
     maximum_rental_budget = models.FloatField()
     total_household_income = models.FloatField(default=0)
     current_wage = models.FloatField()

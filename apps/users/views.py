@@ -5,7 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.applications.models import Application
 from apps.cities.models import City
 from apps.neighborhoods.models import Neighborhood
-from apps.neighborhoods_tenants.models import Neighborhood_tenant
+from apps.resumes_cities.models import Resume_city
+from apps.resumes_neighborhoods.models import Resume_neighborhood
 from apps.properties.models import Property
 from apps.resumes.models import Resume
 from rentalmoose.classes.API import *
@@ -76,10 +77,9 @@ def resume_create(request):
     resume_data = API.json_get_data(request)
 
     json_data = API.json_get_data(request)
-    city_id = json_data['city']['id']
-    city = City.objects.get(pk=city_id)
 
     # VALIDATION =========================== #
+
     # check if user has a resume
     if user.has_resume() == True:
         return API.json_response({
@@ -106,11 +106,8 @@ def resume_create(request):
 
         resume = Resume(
             tenant=user,
-            city=city,
             phone=resume_data['phone'],
             description=resume_data['description'],
-            zipcode=resume_data['zipcode'],
-            address=resume_data['address'],
             expected_tenancy_length=resume_data['tenancyLength'],
             total_household_members=resume_data['totalHouseholdMembers'],
             consent_criminal_check=resume_data['consentCriminalCheck'],
@@ -120,20 +117,25 @@ def resume_create(request):
             has_pet=resume_data['hasPet'],
             currently_working=resume_data['working'],
             current_ocupation=resume_data['occupation'],
-            credit_score=resume_data['creditScore'],
             maximum_rental_budget=resume_data['maximumRentalBudget'],
             total_household_income=resume_data['totalHouseholdIncome'],
             current_wage=resume_data['monthlyWage']
         )
         resume.save()
 
-        # after resume creation, lets verify if we have some neighborhoods to add.
 
+        # saving neighborhoods of interest
         if len(resume_data['neighborhoodsOfInterest']) > 0:
             for n in resume_data['neighborhoodsOfInterest']:
-                print(n)
                 neighborhood = Neighborhood.objects.get(pk=n['id'])
-                nt = Neighborhood_tenant.attach(neighborhood, user)
+                rn = Resume_neighborhood(resume=resume, neighborhood=neighborhood)
+
+        #saving cities of interest
+        if len(resume_data['citiesOfInterest']) > 0:
+            for n in resume_data['citiesOfInterest']:
+                city = City.objects.get(pk=n['id'])
+                rc = Resume_city(resume=resume, city=city)
+
 
         if resume:
             return API.json_response({
