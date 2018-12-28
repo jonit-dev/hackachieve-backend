@@ -5,16 +5,19 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.applications.models import Application
 from apps.cities.models import City
 from apps.neighborhoods.models import Neighborhood
+from apps.property_types.models import Property_type
 from apps.resumes_cities.models import Resume_city
 from apps.resumes_neighborhoods.models import Resume_neighborhood
 from apps.properties.models import Property
 from apps.resumes.models import Resume
+from apps.user_property_filter_property_types.models import User_property_filter_property_type
 from rentalmoose.classes.API import *
 from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.Validator import *
 from rentalmoose.settings import HOST_NAME
 from rentalmoose.classes.UserHandler import *
 from rentalmoose.classes.SecurityHandler import *
+from apps.user_property_filter.models import User_property_filter
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -123,21 +126,33 @@ def resume_create(request):
         )
         resume.save()
 
+        if resume_data['rentAnywhere'] == False:
+            # saving neighborhoods of interest
+            if len(resume_data['neighborhoodsOfInterest']) > 0:
+                for n in resume_data['neighborhoodsOfInterest']:
+                    neighborhood = Neighborhood.objects.get(pk=n['id'])
+                    rn = Resume_neighborhood(resume=resume, neighborhood=neighborhood)
+                    rn.save()
 
-        # saving neighborhoods of interest
-        if len(resume_data['neighborhoodsOfInterest']) > 0:
-            for n in resume_data['neighborhoodsOfInterest']:
-                neighborhood = Neighborhood.objects.get(pk=n['id'])
-                rn = Resume_neighborhood(resume=resume, neighborhood=neighborhood)
-                rn.save()
+            # saving cities of interest
+            if len(resume_data['citiesOfInterest']) > 0:
+                for n in resume_data['citiesOfInterest']:
+                    city = City.objects.get(pk=n['id'])
+                    rc = Resume_city(resume=resume, city=city)
+                    rc.save()
 
-        #saving cities of interest
-        if len(resume_data['citiesOfInterest']) > 0:
-            for n in resume_data['citiesOfInterest']:
-                city = City.objects.get(pk=n['id'])
-                rc = Resume_city(resume=resume, city=city)
-                rc.save()
+        # User filter =========================== #
 
+        filter = User_property_filter(resume=resume, max_budget=resume_data['maximumRentalBudget'], moving_date=None,
+                                      rent_anywhere=resume_data['rentAnywhere'])
+        filter.save()
+
+        # attach properties types to filter (one (filter) to many (property types) relationship)
+        for p in resume_data['propertyTypes']:
+            property_type = Property_type.objects.get(pk=p['id'])
+            user_property_filter_property_type = User_property_filter_property_type(property_filter=filter,
+                                                                                    property_type=property_type)
+            user_property_filter_property_type.save()
 
         if resume:
             return API.json_response({

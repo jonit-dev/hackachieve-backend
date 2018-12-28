@@ -3,8 +3,8 @@ import json
 from django.http import HttpResponse
 from django.core import serializers
 
-class API:
 
+class API:
 
     @staticmethod
     def getUserByToken(request):
@@ -79,6 +79,31 @@ class API:
             del d['model']
             d = d['fields']
             final_results.append(d)
+
+        return final_results
+
+    @staticmethod
+    def serialize_model_multiple(list):
+
+        # This script is responsible for converting django models into JSON responses, to be sent out through our API
+        final_results = []
+        for object in list:
+            data = serializers.serialize('json', object)
+
+            for d in json.loads(data):
+                d['fields']['id'] = d['pk']
+                del d['pk']
+                del d['model']
+                d = d['fields']
+
+
+                if 'province' in d:
+                    d['type'] = "city"
+                if 'city' in d:
+                    d['type'] = "neighborhood"
+
+                final_results.append(d)
+
 
         return final_results
 
