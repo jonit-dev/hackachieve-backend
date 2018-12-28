@@ -6,7 +6,7 @@ from rentalmoose.classes.Environment import *
 
 
 class SecurityHandler:
-    allowed_regions = ["CA"]
+    allowed_regions = ["CA", "USA"]
 
     @staticmethod
     def prepare_phone_number(phone):
@@ -130,7 +130,7 @@ class SecurityHandler:
 
             return True
 
-        if env == 'prod':
+        if env == 'dev':
             response = {
                 "id": "Phone.29c76fef-a2e1-4b08-cfe3-bc7128b7a075",
                 "phone_number": "7788467427",
@@ -171,7 +171,7 @@ class SecurityHandler:
 
             return phone_check(response)
 
-        if env == 'dev':
+        if env == 'prod':
             response = requests.get(
                 "https://proapi.whitepages.com/3.0/phone.json?api_key={}&phone={}".format(WHITEPAGES_KEY, phone))
             json_data = json.loads(response.text)

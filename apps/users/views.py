@@ -129,12 +129,14 @@ def resume_create(request):
             for n in resume_data['neighborhoodsOfInterest']:
                 neighborhood = Neighborhood.objects.get(pk=n['id'])
                 rn = Resume_neighborhood(resume=resume, neighborhood=neighborhood)
+                rn.save()
 
         #saving cities of interest
         if len(resume_data['citiesOfInterest']) > 0:
             for n in resume_data['citiesOfInterest']:
                 city = City.objects.get(pk=n['id'])
                 rc = Resume_city(resume=resume, city=city)
+                rc.save()
 
 
         if resume:
