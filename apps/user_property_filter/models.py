@@ -12,6 +12,7 @@ class User_property_filter(models.Model):
     max_budget = models.FloatField()
     moving_date = models.DateField(null=True)
     rent_anywhere = models.BooleanField(default=True)
+    pet_friendly = models.BooleanField(default=False)
 
     def __str__(self):  # title on dashboard
         return self.resume

@@ -18,8 +18,8 @@ def fetch_places(request, keyword):
 
 
 
-    neighborhoods = Neighborhood.objects.filter(name__icontains=keyword)
-    cities = City.objects.filter(name__icontains=keyword)
+    neighborhoods = Neighborhood.objects.filter(name__icontains=keyword).order_by('id')[:10:1]
+    cities = City.objects.filter(name__icontains=keyword).order_by('id')[:10:1]
 
 
     return API.json_response(API.serialize_model_multiple([cities, neighborhoods]))

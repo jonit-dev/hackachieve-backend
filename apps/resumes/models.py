@@ -18,10 +18,10 @@ class Resume(models.Model):
 
     # financial risk
     currently_working = models.BooleanField()
-    current_ocupation = models.CharField(max_length=255)
+    current_ocupation = models.CharField(max_length=255, null=True)
     maximum_rental_budget = models.FloatField()
     total_household_income = models.FloatField(default=0)
-    current_wage = models.FloatField()
+    current_wage = models.FloatField(null=True)
 
     def __str__(self):  # title on dashboard
         return self.tenant.username

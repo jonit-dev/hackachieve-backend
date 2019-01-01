@@ -92,9 +92,8 @@ def resume_create(request):
         })
 
     # check if there's an empty field.
-    request_fields = Validator.are_request_fields_valid(json_data)
 
-    request_fields_valid = Validator.are_request_fields_valid(resume_data)
+    request_fields_valid = Validator.check_resume_fields(resume_data)
 
     if request_fields_valid is not True:
         return API.json_response({
@@ -143,8 +142,15 @@ def resume_create(request):
 
         # User filter =========================== #
 
-        filter = User_property_filter(resume=resume, max_budget=resume_data['maximumRentalBudget'], moving_date=None,
-                                      rent_anywhere=resume_data['rentAnywhere'])
+        if resume_data['hasMoveInDate'] is True:
+            move_in_date = resume_data['moveInDate'].split("T")[0]
+        else:
+            move_in_date = None
+
+        filter = User_property_filter(resume=resume, max_budget=resume_data['maximumRentalBudget'],
+                                      moving_date=move_in_date,
+                                      rent_anywhere=resume_data['rentAnywhere'],
+                                      pet_friendly=resume_data['propertyRequirements']['pet'])
         filter.save()
 
         # attach properties types to filter (one (filter) to many (property types) relationship)
