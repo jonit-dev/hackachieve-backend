@@ -21,7 +21,7 @@ class Resume(models.Model):
     current_ocupation = models.CharField(max_length=255, null=True)
     maximum_rental_budget = models.FloatField()
     total_household_income = models.FloatField(default=0)
-    current_wage = models.FloatField(null=True)
+    current_wage = models.FloatField(null=True, default=0)
 
     def __str__(self):  # title on dashboard
         return self.tenant.username

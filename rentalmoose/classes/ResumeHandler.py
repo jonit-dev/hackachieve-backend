@@ -45,21 +45,21 @@ class ResumeHandler:
 
         # we're looking for credit_score over 700
 
-        if 680 <= resume.credit_score <= 720:
-            financial_risk += 15
-            financial_details["Credit Score Risk"] = 15
-        elif 620 <= resume.credit_score < 680:
-            financial_risk += 25
-            financial_details["Credit Score Risk"] = 25
-        elif 580 <= resume.credit_score < 620:
-            financial_risk += 35
-            financial_details["Credit Score Risk"] = 35
-        elif 500 <= resume.credit_score < 580:
-            financial_risk += 50
-            financial_details["Credit Score Risk"] = 50
-        elif resume.credit_score < 500:
-            financial_risk += 100
-            financial_details["Credit Score Risk"] = 99.9
+        # if 680 <= resume.credit_score <= 720:
+        #     financial_risk += 15
+        #     financial_details["Credit Score Risk"] = 15
+        # elif 620 <= resume.credit_score < 680:
+        #     financial_risk += 25
+        #     financial_details["Credit Score Risk"] = 25
+        # elif 580 <= resume.credit_score < 620:
+        #     financial_risk += 35
+        #     financial_details["Credit Score Risk"] = 35
+        # elif 500 <= resume.credit_score < 580:
+        #     financial_risk += 50
+        #     financial_details["Credit Score Risk"] = 50
+        # elif resume.credit_score < 500:
+        #     financial_risk += 100
+        #     financial_details["Credit Score Risk"] = 99.9
 
         if resume.consent_credit_check is not True:
             financial_risk += 100
@@ -70,16 +70,16 @@ class ResumeHandler:
         rental_total_income_ratio = (resume.total_household_income / property.rental_value)
         if 2.5 <= rental_total_income_ratio < 3:
             financial_risk += 10
-            financial_details["Rental Income Risk"] = 10
+            financial_details["Rental/Total Income Risk"] = 10
         elif 2 <= rental_total_income_ratio < 2.5:
             financial_risk += 18
-            financial_details["Rental Income Risk"] = 18
+            financial_details["Rental/Total Income Risk"] = 18
         elif 1.5 <= rental_total_income_ratio < 2:
             financial_risk += 25
-            financial_details["Rental Income Risk"] = 25
+            financial_details["Rental/Total Income Risk"] = 25
         elif rental_total_income_ratio < 1.5:
             financial_risk += 50
-            financial_details["Rental Income Risk"] = 50
+            financial_details["Rental/Total Income Risk"] = 50
 
         # rental vs wage ratio =========================== #
 
@@ -87,16 +87,16 @@ class ResumeHandler:
 
         if 2.5 <= rental_wage_ratio < 3:
             financial_risk += 10
-            financial_details["Rental Wage Risk"] = 10
+            financial_details["Rental/Wage Risk"] = 10
         elif 2 <= rental_wage_ratio < 2.5:
             financial_risk += 18
-            financial_details["Rental Wage Risk"] = 18
+            financial_details["Rental/Wage Risk"] = 18
         elif 1.5 <= rental_wage_ratio < 2:
             financial_risk += 25
-            financial_details["Rental Wage Risk"] = 25
+            financial_details["Rental/Wage Risk"] = 25
         elif rental_wage_ratio < 1.5:
             financial_risk += 50
-            financial_details["Rental Wage Risk"] = 50
+            financial_details["Rental/Wage Risk"] = 50
 
         # ================================================================= #
         #                      PROPERTY DAMAGE RISK
@@ -112,18 +112,18 @@ class ResumeHandler:
 
         if 1 < resume.total_household_members <= 2:
             property_damage_risk += 20
-            property_damage_details["Household Members Risk"] = 20
+            property_damage_details["Household Members Qty Risk"] = 20
         elif 2 < resume.total_household_members <= 4:
             property_damage_risk += 30
-            property_damage_details["Household Members Risk"] = 30
+            property_damage_details["Household Members Qty Risk"] = 30
         elif 4 < resume.total_household_members:
             property_damage_risk += 40
-            property_damage_details["Household Members Risk"] = 40
+            property_damage_details["Household Members Qty Risk"] = 40
 
         if resume.consent_criminal_check is not True:
             property_damage_risk = 100
             financial_risk = 100
-            property_damage_details["Criminal Check Risk"] = 99.9
+            property_damage_details["Criminal check refused"] = 99.9
 
         if resume.current_property_has_infestations is True:
             property_damage_risk += 40
@@ -138,19 +138,19 @@ class ResumeHandler:
 
         if resume.expected_tenancy_length < 2:
             early_vacancy_risk += 40
-            early_vacancy_risk_details["Tenancy Length Risk"] = 40
+            early_vacancy_risk_details["Low Tenancy Length Risk"] = 40
 
         if resume.eviction_history is True:
             early_vacancy_risk += 50
-            early_vacancy_risk_details["Tenancy Length Risk"] = 50
+            early_vacancy_risk_details["Low Tenancy Length Risk"] = 50
 
         if rental_wage_ratio < 2:
             early_vacancy_risk += 30
-            early_vacancy_risk_details["Tenancy Length Risk"] = 30
+            early_vacancy_risk_details["Low Tenancy Length Risk"] = 30
 
         if not resume.consent_criminal_check or not resume.consent_credit_check:
             early_vacancy_risk = 100
-            early_vacancy_risk_details["Tenancy Length Risk"] = 99.9
+            early_vacancy_risk_details["Low Tenancy Length Risk"] = 99.9
 
         # ================================================================= #
         #                      OVERALL RISK CALCULATION
@@ -198,9 +198,6 @@ class ResumeHandler:
             "rentalTotalIncomeRatio": round(rental_total_income_ratio, 2),
             "email": resume.tenant.email,
             "phone": resume.phone,
-            # "address": resume.address,
-            "city": resume.city.name,
-            # "zipCode": resume.zipcode,
             "description": resume.description,
             "financialRisk": round(financial_risk,2),
             "financialDetails" : financial_details,
@@ -217,12 +214,13 @@ class ResumeHandler:
             "currentPropertyHasInfestations": resume.current_property_has_infestations,
             "hasPet": resume.has_pet,
             "currentlyWorking": resume.currently_working,
-            "currentOcupation": resume.current_ocupation,
-            "creditScore": resume.credit_score,
             "maximumRentalBudget": resume.maximum_rental_budget,
             "currentWage": resume.current_wage,
             "consentCreditCheck": resume.consent_credit_check,
             "totalHouseHoldIncome": resume.total_household_income
         }
+
+        if resume.currently_working:
+            result['currentOcupation'] = resume.current_ocupation
 
         return result
