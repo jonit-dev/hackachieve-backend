@@ -104,6 +104,11 @@ def resume_create(request):
         })
     else:
 
+        #avoid null type current wages, since it will break risk calculation
+        if resume_data['monthlyWage'] == None or resume_data['monthlyWage'] == False or resume_data[
+            'monthlyWage'] == "":
+            resume_data['monthlyWage'] = 0
+
         # create resume
 
         resume = Resume(

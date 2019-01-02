@@ -193,6 +193,7 @@ class ResumeHandler:
             "id": resume.tenant.id,
             "name": UserHandler.shorten_name("{} {}".format(resume.tenant.first_name, resume.tenant.last_name)),
             # names are shortened due to privacy concerns
+            "propertyName":property.title,
             "applicationDate": ResumeHandler.datetime_parse(application.timestamp),
             "rentalWageRatio": round(rental_wage_ratio, 2),
             "rentalTotalIncomeRatio": round(rental_total_income_ratio, 2),
