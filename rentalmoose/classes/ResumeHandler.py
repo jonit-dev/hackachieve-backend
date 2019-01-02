@@ -217,7 +217,8 @@ class ResumeHandler:
             "maximumRentalBudget": resume.maximum_rental_budget,
             "currentWage": resume.current_wage,
             "consentCreditCheck": resume.consent_credit_check,
-            "totalHouseHoldIncome": resume.total_household_income
+            "totalHouseHoldIncome": resume.total_household_income,
+            "rentalValue": property.rental_value
         }
 
         if resume.currently_working:
