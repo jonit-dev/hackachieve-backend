@@ -38,8 +38,7 @@ def prerender(request, property_id):
 
     property = Property.objects.get(pk=property_id)
 
-
-    return render(request, TEMPLATES_PATH+"/templates/prerender/property.html",{
+    return render(request, TEMPLATES_PATH + "/templates/prerender/property.html", {
         "property": {
             "id": property.id,
             "title": property.title,
@@ -250,7 +249,7 @@ def applicant_info(request, property_id, applicant_id):
     for application in applications:
         resume = application.resume.get()
 
-        if resume.tenant_id == int(applicant_id):
+        if resume.tenant_id is int(applicant_id):
 
             # let's warn the user that some landlord/agency viewed his profile
 
@@ -286,7 +285,7 @@ def applicant_info(request, property_id, applicant_id):
                                                    "property_name": property.title
                                                })
 
-        return API.json_response(ResumeHandler.calculate_risk(resume, property, application))
+            return API.json_response(ResumeHandler.calculate_risk(resume, property, application))
 
     return API.json_response({
         "status": "error",
