@@ -69,8 +69,8 @@ class ResumeHandler:
         #     financial_details["Credit Score Risk"] = 99.9
 
         if resume.consent_credit_check is not True:
-            financial_risk += 100
-            financial_details["Credit Score Risk"] = 99.9
+            financial_risk += 50
+            financial_details["Credit Score Risk"] = 50
 
         # rental vs total household income
 
