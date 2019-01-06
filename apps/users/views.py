@@ -168,7 +168,7 @@ def resume_create(request):
 
         # Automatically applying for properties after resume creation =========================== #
 
-        if resume_data['applyToProperty'] is not None:
+        if 'applyToProperty' in resume_data:
             ResumeHandler.apply_to_property(user, resume_data['applyToProperty'])
             if resume:
                 return API.json_response({
