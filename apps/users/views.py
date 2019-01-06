@@ -233,12 +233,12 @@ def user_register(request):
             })
 
 
-        elif not Validator.check_password_confirmation(json_data['password'], json_data['passwordConfirmation']):
-            return API.json_response({
-                "status": "error",
-                "message": "Your password does not match its respective password confirmation. Please, try again.",
-                "type": "danger"
-            })
+        # elif not Validator.check_password_confirmation(json_data['password'], json_data['passwordConfirmation']):
+        #     return API.json_response({
+        #         "status": "error",
+        #         "message": "Your password does not match its respective password confirmation. Please, try again.",
+        #         "type": "danger"
+        #     })
         elif Validator.check_user_exists(json_data['email']):
             return API.json_response({
                 "status": "error",
