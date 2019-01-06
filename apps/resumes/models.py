@@ -1,6 +1,6 @@
 from django.db import models
 from apps.users.models import User
-
+from django.utils.timezone import now
 
 class Resume(models.Model):
     tenant = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -22,6 +22,7 @@ class Resume(models.Model):
     maximum_rental_budget = models.FloatField()
     total_household_income = models.FloatField(default=0)
     current_wage = models.FloatField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):  # title on dashboard
         return self.tenant.username
