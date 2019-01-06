@@ -11,6 +11,7 @@ from apps.resumes_neighborhoods.models import Resume_neighborhood
 from apps.properties.models import Property
 from apps.resumes.models import Resume
 from apps.user_property_filter_property_types.models import User_property_filter_property_type
+from rentalmoose.classes.ResumeHandler import *
 from rentalmoose.classes.API import *
 from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.Validator import *
@@ -104,7 +105,7 @@ def resume_create(request):
         })
     else:
 
-        #avoid null type current wages, since it will break risk calculation
+        # avoid null type current wages, since it will break risk calculation
         if resume_data['monthlyWage'] == None or resume_data['monthlyWage'] == False or resume_data[
             'monthlyWage'] == "":
             resume_data['monthlyWage'] = 0
@@ -164,6 +165,17 @@ def resume_create(request):
             user_property_filter_property_type = User_property_filter_property_type(property_filter=filter,
                                                                                     property_type=property_type)
             user_property_filter_property_type.save()
+
+        # Automatically applying for properties after resume creation =========================== #
+
+        if resume_data['applyToProperty'] is not None:
+            ResumeHandler.apply_to_property(user, resume_data['applyToProperty'])
+            if resume:
+                return API.json_response({
+                    "status": "success",
+                    "message": "Your resume was created successfully and sent to the property owner",
+                    "type": "success"
+                })
 
         if resume:
             return API.json_response({
@@ -329,67 +341,4 @@ def user_apply(request, property_id):
     # check if its a tenant who's applying for it
     tenant = User.objects.get(pk=API.getUserByToken(request))
 
-    if tenant.type != 1:
-        return API.json_response({
-            "status": "error",
-            "message": "Sorry. Only tenants can apply for properties.",
-            "type": "danger"
-        })
-
-    resume_query = tenant.resume_set.filter(active=True)
-    resume = resume_query.first()
-    resume_count = resume_query.count()
-
-    if Application.objects.filter(resume=resume.id, property=property_id).count() > 0:
-        return API.json_response({
-            "status": "error",
-            "message": "You already sent a resume for this application",
-            "type": "danger"
-        })
-
-    # Application =========================== #
-
-    try:
-        property = Property.objects.get(pk=property_id)
-
-        if resume_count >= 1:
-            Application.apply(resume, property)
-
-            # warn landlord about new application
-
-            tenant_name = UserHandler.capitalize_name(tenant.first_name)
-            landlord_name = UserHandler.capitalize_name(property.owner.first_name)
-
-            send = EmailHandler.send_email('New applicant to ' +
-                                           property.title, [property.owner.email],
-                                           "apply_posting",
-                                           {
-                                               "tenant_application_link": "{}/property/check/applicants/{}/{}".format(
-                                                   HOST_NAME, property_id, tenant.id),
-                                               "property_title": property.title,
-                                               "tenant_name": tenant_name,
-                                               "landlord_first_name": landlord_name
-                                           })
-
-            return API.json_response({
-                "status": "success",
-                "message": "Your tenant's application resume was sent succesfully.",
-                "type": "success"
-            })
-        else:
-            return API.json_response({
-                "status": "error",
-                "message": "You don't have a registered resume to apply.",
-                "type": "danger"
-            })
-
-
-
-
-    except ObjectDoesNotExist as e:  # and more generic exception handling on bottom
-        return API.json_response({
-
-            "status": "error",
-            "message": "The property that you're trying to apply for does not exist.",
-            "type": "danger"
-        })
+    return ResumeHandler.apply_to_property(tenant, property_id)

@@ -1,7 +1,14 @@
 import json
 import datetime
 
+from django.core.exceptions import ObjectDoesNotExist
+
+from apps.applications.models import Application
+from apps.properties.models import Property
+from rentalmoose.classes.EmailHandler import *
+from rentalmoose.classes.API import API
 from rentalmoose.classes.UserHandler import UserHandler
+from rentalmoose.settings import HOST_NAME
 
 
 class ResumeHandler:
@@ -186,28 +193,25 @@ class ResumeHandler:
         #                      FINAL JSON ANSWER
         # ================================================================= #
 
-
-
-
         result = {
             "id": resume.tenant.id,
             "name": UserHandler.shorten_name("{} {}".format(resume.tenant.first_name, resume.tenant.last_name)),
             # names are shortened due to privacy concerns
-            "propertyName":property.title,
+            "propertyName": property.title,
             "applicationDate": ResumeHandler.datetime_parse(application.timestamp),
             "rentalWageRatio": round(rental_wage_ratio, 2),
             "rentalTotalIncomeRatio": round(rental_total_income_ratio, 2),
             "email": resume.tenant.email,
             "phone": resume.phone,
             "description": resume.description,
-            "financialRisk": round(financial_risk,2),
-            "financialDetails" : financial_details,
-            "propertyDamageRisk": round(property_damage_risk,2),
+            "financialRisk": round(financial_risk, 2),
+            "financialDetails": financial_details,
+            "propertyDamageRisk": round(property_damage_risk, 2),
             "propertyDamageDetails": property_damage_details,
-            "earlyVacancyRisk": round(early_vacancy_risk,2),
+            "earlyVacancyRisk": round(early_vacancy_risk, 2),
             "earlyVacancyRiskDetails": early_vacancy_risk_details,
             "overallRisk": overall_risk,
-            "overallScore": round(overall_score,2),
+            "overallScore": round(overall_score, 2),
             "expectedTenancyLength": resume.expected_tenancy_length,
             "totalHouseHoldMembers": resume.total_household_members,
             "consentCriminalCheck": resume.consent_criminal_check,
@@ -226,3 +230,72 @@ class ResumeHandler:
             result['currentOcupation'] = resume.current_ocupation
 
         return result
+
+    @staticmethod
+    def apply_to_property(tenant, property_id):
+
+        if tenant.type != 1:
+            return API.json_response({
+                "status": "error",
+                "message": "Sorry. Only tenants can apply for properties.",
+                "type": "danger"
+            })
+
+        resume_query = tenant.resume_set.filter(active=True)
+        resume = resume_query.first()
+        resume_count = resume_query.count()
+
+        if Application.objects.filter(resume=resume.id, property=property_id).count() > 0:
+            return API.json_response({
+                "status": "error",
+                "message": "You already sent a resume for this application",
+                "type": "danger"
+            })
+
+        # Application =========================== #
+
+        try:
+            property = Property.objects.get(pk=property_id)
+
+            if resume_count >= 1:
+                Application.apply(resume, property)
+
+                # warn landlord about new application
+
+                tenant_name = UserHandler.capitalize_name(tenant.first_name)
+                landlord_name = UserHandler.capitalize_name(property.owner.first_name)
+
+                send = EmailHandler.send_email('New applicant to ' +
+                                               property.title, [property.owner.email],
+                                               "apply_posting",
+                                               {
+                                                   "tenant_application_link": "{}/property/check/applicants/{}/{}".format(
+                                                       HOST_NAME, property_id, tenant.id),
+                                                   "property_title": property.title,
+                                                   "tenant_name": tenant_name,
+                                                   "landlord_first_name": landlord_name
+                                               })
+
+                return API.json_response({
+                    "status": "success",
+                    "message": "Your tenant's application resume was sent succesfully.",
+                    "type": "success"
+                })
+            else:
+                return API.json_response({
+                    "status": "error",
+                    "message": "You don't have a registered resume to apply.",
+                    "type": "danger"
+                })
+
+
+
+
+        except ObjectDoesNotExist as e:  # and more generic exception handling on bottom
+            return API.json_response({
+
+                "status": "error",
+                "message": "The property that you're trying to apply for does not exist.",
+                "type": "danger"
+            })
+
