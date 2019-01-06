@@ -86,7 +86,7 @@ class SecurityHandler:
                 }
             }
 
-            print("{} => {}".format(response['country_code'], required_country))
+            # print("{} => {}".format(response['country_code'], required_country))
             return SecurityHandler.check_regions(required_region_code, required_country, response)
 
     @staticmethod

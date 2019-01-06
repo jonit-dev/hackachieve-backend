@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 
 from rentalmoose.settings import TEMPLATES_PATH
 from rentalmoose.classes.Environment import *
-from rentalmoose.settings import HOST_NAME, API_HOST
+from rentalmoose.settings import HOST_NAME, API_HOST, ENV
 
 
 class EmailHandler(Thread):
@@ -38,6 +38,14 @@ class EmailHandler(Thread):
 
     @staticmethod
     def send_email(subject, to, filename, params, from_email="noreply@rentalmoose.ca", ):
+
+        TURNED_OFF_ON_DEV = True
+        print("skipping email sending. Turn on this feature on dev in EmailHandler.py")
+
+        if ENV == "dev":
+            if TURNED_OFF_ON_DEV == True:
+                return None
+
         print("threading and sending e-mail to {} - subject: {}".format(to, subject))
 
         t1 = Thread(target=EmailHandler.trigger_email, args=(subject, to, filename, params, from_email))
