@@ -174,7 +174,7 @@ def create(request):
 @api_view(['GET'])
 @permission_classes(())
 def show_dashboard(request):
-    properties = Property.objects.all()[:3]
+    properties = Property.objects.all()[:20]
 
     # data is a python list
     data = json.loads(serializers.serialize('json', properties))
