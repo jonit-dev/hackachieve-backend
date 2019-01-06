@@ -155,9 +155,7 @@ class ResumeHandler:
             early_vacancy_risk += 30
             early_vacancy_risk_details["Low Tenancy Length Risk"] = 30
 
-        if not resume.consent_criminal_check or not resume.consent_credit_check:
-            early_vacancy_risk = 100
-            early_vacancy_risk_details["Low Tenancy Length Risk"] = 99.9
+
 
         # ================================================================= #
         #                      OVERALL RISK CALCULATION
