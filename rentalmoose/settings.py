@@ -44,10 +44,18 @@ else:
 #                      MAILGUN
 # ================================================================= #
 
-EMAIL_HOST = 'smtp.mailgun.org'
+# EMAIL_HOST = 'smtp.mailgun.org'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = Environment.getkey('mailgun_login')
+# EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
+# EMAIL_USE_TLS = True
+
+# postmark =========================== #
+
+EMAIL_HOST = 'smtp.postmarkapp.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = Environment.getkey('mailgun_login')
-EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
+EMAIL_HOST_USER = Environment.getkey('postmark_login')
+EMAIL_HOST_PASSWORD = Environment.getkey('postmark_password')
 EMAIL_USE_TLS = True
 
 
