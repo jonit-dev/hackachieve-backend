@@ -53,8 +53,8 @@ else:
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = Environment.getkey('sendgrid_login')
 EMAIL_HOST_PASSWORD = Environment.getkey('sendgrid_password')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_PORT = 465
+
 
 
 
