@@ -37,7 +37,7 @@ class EmailHandler(Thread):
         )
 
     @staticmethod
-    def send_email(subject, to, filename, params, from_email="noreply@rentalmoose.ca", ):
+    def send_email(subject, to, filename, params, from_email="noreply@therentalmoose.com", ):
 
         TURNED_OFF_ON_DEV = True
         print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
