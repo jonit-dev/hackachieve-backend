@@ -11,7 +11,7 @@ from rentalmoose.settings import HOST_NAME, API_HOST, ENV
 class EmailHandler(Thread):
 
     @staticmethod
-    def trigger_email(subject, to, filename, params, from_email="noreply@rentalmoose.ca", ):
+    def trigger_email(subject, to, filename, params, from_email="noreply@therentalmoose.com", ):
         # both txt and html should be named the same, and they should be inside a folder with the same name!
         # eg. /templates/emails/welcome/welcome.txt
         # /templates/emails/welcome/welcome.html
