@@ -13,6 +13,8 @@ class Environment:
             'mailgun_login': os.environ.get('MAILGUN_LOGIN'),
             'mailgun_password': os.environ.get('MAILGUN_PASSWORD'),
             'support_email': os.environ.get('SUPPORT_EMAIL'),
+            'sendgrid_login': os.environ.get('SENDGRID_LOGIN'),
+            'sendgrid_password': os.environ.get('SENDGRID_PASSWORD'),
         }
 
         return keys[key]

@@ -41,14 +41,24 @@ else:
     HOST_NAME = 'http://localhost/rentalMoose'
 
 # ================================================================= #
-#                      MAILGUN
+#                      SENDGRID
 # ================================================================= #
 
-EMAIL_HOST = 'smtp.mailgun.org'
+# EMAIL_HOST = 'smtp.mailgun.org'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = Environment.getkey('mailgun_login')
+# EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
+# EMAIL_USE_TLS = True
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = Environment.getkey('sendgrid_login')
+EMAIL_HOST_PASSWORD = Environment.getkey('sendgrid_password')
 EMAIL_PORT = 587
-EMAIL_HOST_USER = Environment.getkey('mailgun_login')
-EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
 EMAIL_USE_TLS = True
+
+
+
+
 
 # ================================================================= #
 #                      CORS & CSRF
