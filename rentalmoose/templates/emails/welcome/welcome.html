@@ -2,46 +2,57 @@
 
 {% block content %}
 
-  <tr>
-                    <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
-                        <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
-                            <!-- Body content -->
-                            <tr>
-                                <td class="content-cell">
-                                    <h1>Hi, {{name}}!</h1>
-                                    <p>Thanks for creating your account at RentalMoose. We’re thrilled to have you on
-                                        board.</p>
+<tr>
+    <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
+        <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
+            <!-- Body content -->
+            <tr>
+                <td class="content-cell">
+                    <h1>Hi, {{name}}!</h1>
+                    <p>Thanks for creating your account at RentalMoose. We’re thrilled to have you on
+                        board!</p>
 
-                                    <p>For reference, here's your login information:</p>
-                                    <table class="attributes" width="100%" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td class="attributes_content">
-                                                <table width="100%" cellpadding="0" cellspacing="0">
-                                                    <tr>
-                                                        <td class="attributes_item"><strong>Login:</strong> {{login}}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="attributes_item"><strong>Pw:</strong>
-                                                            {{password}}
-                                                        </td>
-                                                    </tr>
+                    <p>For reference, here's your login information:</p>
+                    <table class="attributes" width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="attributes_content">
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td class="attributes_item"><strong>Login:</strong> {{login}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="attributes_item"><strong>Pw:</strong>
+                                            {{password}}
+                                        </td>
+                                    </tr>
 
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <p>Please, store this information somewhere safe.</p>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <p>To increase your chances of finding a place soon, do the following:</p>
 
-                                    <p>Thank you,
-                                        <br>Joao Paulo Furtado - CEO of RentalMoose</p>
+                    <ul>
+                        <li><a href="https://www.therentalmoose.com/user/resume/create"><strong>Create your
+                            resume:</strong> That way, landlords can easily find you.</a></li>
+                        <li><a href="https://www.facebook.com/groups/vancouverrentalandroomates/"><strong>Join our
+                            facebook group:</strong> And be part of one of the strongest communities for rentals in
+                            Vancouver</a></li>
 
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
 
+                    </ul>
+
+
+                    <p>Thank you,
+
+                        <br>Joao Paulo Furtado - CEO of RentalMoose</p>
+
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
 
 
 {% endblock %}
