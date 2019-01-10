@@ -43,7 +43,7 @@ class EmailHandler(Thread):
         print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
 
         if ENV == "dev":
-            if TURNED_OFF_ON_DEV == True:
+            if TURNED_OFF_ON_DEV == True: #avoid sending emails on dev mode
                 return None
 
         print("threading and sending e-mail to {} - subject: {}".format(to, subject))

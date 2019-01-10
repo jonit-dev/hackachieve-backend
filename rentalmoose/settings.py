@@ -18,9 +18,6 @@ from os.path import join
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-
-
 ENV = Environment.getkey('env')
 
 # Quick-start development settings - unsuitable for production
@@ -41,35 +38,40 @@ else:
     HOST_NAME = 'http://localhost/rentalMoose'
 
 # ================================================================= #
-#                      MAILGUN
+#                      TRANSACTIONAL EMAILS
 # ================================================================= #
 
-# EMAIL_HOST = 'smtp.mailgun.org'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = Environment.getkey('mailgun_login')
-# EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
-# EMAIL_USE_TLS = True
+current_provider = "mailgun"  # options: postmark, sendgrid, mailgun
 
-# postmark =========================== #
+# Mailgun =========================== #
 
-EMAIL_HOST = 'smtp.postmarkapp.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = Environment.getkey('postmark_login')
-EMAIL_HOST_PASSWORD = Environment.getkey('postmark_password')
-EMAIL_USE_TLS = True
+if current_provider == 'mailgun':
+
+    EMAIL_HOST = 'smtp.mailgun.org'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = Environment.getkey('mailgun_login')
+    EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
+    EMAIL_USE_TLS = True
 
 
 # SENDGRID =========================== #
+elif current_provider == 'sendgrid':
 
-# EMAIL_HOST = 'smtp.sendgrid.net'
-# EMAIL_HOST_USER = Environment.getkey('sendgrid_login')
-# EMAIL_HOST_PASSWORD = Environment.getkey('sendgrid_password')
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_HOST_USER = Environment.getkey('sendgrid_login')
+    EMAIL_HOST_PASSWORD = Environment.getkey('sendgrid_password')
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
 
 
+# POSTMARK =========================== #
+elif current_provider == 'postmark':
 
-
+    EMAIL_HOST = 'smtp.postmarkapp.com'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = Environment.getkey('postmark_login')
+    EMAIL_HOST_PASSWORD = Environment.getkey('postmark_password')
+    EMAIL_USE_TLS = True
 
 # ================================================================= #
 #                      CORS & CSRF
@@ -327,7 +329,7 @@ LOGGING = {
         # Log to a text file that can be rotated by logrotate
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': LOGS_PATH+"/myapp.log"
+            'filename': LOGS_PATH + "/myapp.log"
         },
     },
     'loggers': {
