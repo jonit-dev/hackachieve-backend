@@ -220,7 +220,7 @@ def user_register(request):
 
         # Check Landlord IP address =========================== #
 
-        elif SecurityHandler.is_allowed_ip(ip, "CA") is False and json_data['type'] != 1:
+        if SecurityHandler.is_allowed_ip(ip, "CA") is False and int(json_data['type']) is not 1:
             log = Log(
                 event="SUSPICIOUS_ACCOUNT_CREATION_TRY", emitter=None, target=None, value=ip,
             )
@@ -239,7 +239,9 @@ def user_register(request):
         #         "message": "Your password does not match its respective password confirmation. Please, try again.",
         #         "type": "danger"
         #     })
-        elif Validator.check_user_exists(json_data['email']):
+
+
+        if Validator.check_user_exists(json_data['email']):
             return API.json_response({
                 "status": "error",
                 "message": "This e-mail is already registered in our system. Please, choose another one and try again.",
