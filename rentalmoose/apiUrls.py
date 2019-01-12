@@ -70,8 +70,9 @@ urlpatterns = [
     url(r'^walkscore/(?P<address>[\w|\W]+)/(?P<lat>-?\d+.?\d+)/(?P<lng>-?\d+.?\d+)', requests_view.walkscore),
 
     # url(r'^test/email/threading', tests_view.email_threading),
-    url(r'^test/ip', tests_view.ipcheck),
-    url(r'^test/phone', tests_view.phonecheck),
+    # url(r'^test/ip', tests_view.ipcheck),
+    # url(r'^test/phone', tests_view.phonecheck),
+    url(r'^test/mailchimp', tests_view.mailchimp),
 
     url(r'^prerender/property/(?P<property_id>[0-9]+)', properties_view.prerender),
 

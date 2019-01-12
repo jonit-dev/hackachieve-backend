@@ -1,5 +1,7 @@
 import time
 
+from apps.users.models import User
+from rentalmoose.classes.MailchimpHandler import *
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -8,39 +10,53 @@ from rentalmoose.classes.API import *
 from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.SecurityHandler import *
 
-@csrf_exempt
-@api_view(['GET'])
-@permission_classes((AllowAny,))
-def ipcheck(request):
-
-
-    check = SecurityHandler.is_allowed_ip("23.248.181.255", "CA","BC")
-
-    if check:
-        return API.json_response({
-            "status": "allowed_ip"
-        })
-    else:
-        return API.json_response({
-            "status": "forbidden_ip"
-        })\
-
 
 @csrf_exempt
 @api_view(['GET'])
 @permission_classes((AllowAny,))
-def phonecheck(request):
+def mailchimp(request):
 
-    check = SecurityHandler.is_allowed_phone("7777777777", "BC", "CA")
+    users = User.objects.all()
 
-    if check:
-        return API.json_response({
-            "status": "allowed_phone"
-        })
-    else:
-        return API.json_response({
-            "status": "forbidden_phone"
-        })
+    for user in users:
+        if user.type is 1:
+            MailchimpHandler.addLead(user.email, "Tenants", "TestList", {})
+
+
+
+# @csrf_exempt
+# @api_view(['GET'])
+# @permission_classes((AllowAny,))
+# def ipcheck(request):
+#
+#
+#     check = SecurityHandler.is_allowed_ip("23.248.181.255", "CA","BC")
+#
+#     if check:
+#         return API.json_response({
+#             "status": "allowed_ip"
+#         })
+#     else:
+#         return API.json_response({
+#             "status": "forbidden_ip"
+#         })\
+#
+#
+# @csrf_exempt
+# @api_view(['GET'])
+# @permission_classes((AllowAny,))
+# def phonecheck(request):
+#
+#     check = SecurityHandler.is_allowed_phone("7777777777", "BC", "CA")
+#
+#     if check:
+#         return API.json_response({
+#             "status": "allowed_phone"
+#         })
+#     else:
+#         return API.json_response({
+#             "status": "forbidden_phone"
+#         })
 
 #
 # @csrf_exempt

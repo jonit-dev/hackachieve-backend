@@ -17,6 +17,7 @@ class Environment:
             'sendgrid_password': os.environ.get('SENDGRID_PASSWORD'),
             'postmark_login': os.environ.get('POSTMARK_LOGIN'),
             'postmark_password': os.environ.get('POSTMARK_PASSWORD'),
+            'mailchimp_api_key': os.environ.get('MAILCHIMP_API_KEY'),
         }
 
         return keys[key]
