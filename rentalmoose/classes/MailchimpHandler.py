@@ -6,10 +6,13 @@ from rentalmoose.classes.Environment import *
 class MailchimpHandler:
     print("Mailchimp API v3 handler")
 
-    ENV = Environment.getkey('env')
+    # ENV = Environment.getkey('env')
+    # API_KEY = Environment.getkey('mailchimp_api_key')
 
-    API_KEY = Environment.getkey('mailchimp_api_key')
-    # API_KEY = "eb8ffce2d2623bb9570702a7aac3afa3-us19"
+    ENV = 'prod'
+    API_KEY = "eb8ffce2d2623bb9570702a7aac3afa3-us19"
+
+
     API_URL = 'https://us19.api.mailchimp.com/3.0'
     USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
 
