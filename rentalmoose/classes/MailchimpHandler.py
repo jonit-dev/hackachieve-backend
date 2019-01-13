@@ -122,7 +122,7 @@ class MailchimpHandler:
 
         # if tag is found, return its id
         for segment in segments:
-            print("Analyzing segments...found {}".format(segment['name']))
+
             if segment['name'] == name:
                 print("Found tag: {}".format(segment['name']))
                 return segment['id']
