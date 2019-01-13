@@ -1,5 +1,6 @@
 from threading import Thread
 
+from apps.neighborhoods.models import Neighborhood
 from rentalmoose.classes.MailchimpHandler import *
 
 #     list_id = "0377f23832"
@@ -11,9 +12,6 @@ from rentalmoose.classes.MailchimpHandler import *
 # print(tag_id)
 
 
-MailchimpHandler.add_subscriber("info@hello.com", "ainha", "Silva")
-MailchimpHandler.attach_tags(['Commercial Drive'], "info@hello.com")
-
-
-
+# MailchimpHandler.add_subscriber("info@hello.com", "ainha", "Silva")
+# MailchimpHandler.attach_tags(['Commercial Drive'], "info@hello.com")
 
