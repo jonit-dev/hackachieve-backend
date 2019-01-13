@@ -44,7 +44,7 @@ class MailchimpHandler:
             }
             response = requests.request("POST", url, data=json.dumps(values), headers=MailchimpHandler.HEADERS)
 
-            sleep(3)
+            sleep(1)
 
             return response.text
 
@@ -63,11 +63,11 @@ class MailchimpHandler:
                     tag_id = MailchimpHandler.get_tag_id(tag, list_id)
 
                     if tag_id is not False:
-                        sleep(3)
+                        sleep(1)
                         MailchimpHandler.attach_tag(tag_id, subscriber, list_id)
                     else:
                         new_tag_id = MailchimpHandler.create_new_tag(tag, list_id)
-                        sleep(3)
+                        sleep(1)
                         MailchimpHandler.attach_tag(new_tag_id, subscriber, list_id)
 
     @staticmethod
@@ -87,7 +87,7 @@ class MailchimpHandler:
         json_data = json.loads(response.text)
 
         print('New tag created.. fetching new tag id')
-        sleep(3)
+        sleep(1)
 
         # print(json_data)
         tag_id = json_data['id']
