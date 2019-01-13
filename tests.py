@@ -6,8 +6,9 @@ from rentalmoose.classes.MailchimpHandler import *
 
 
 #
-# print(MailchimpHandler.get_tag_id('Burnaby', 'ec09a29d85'))
-# print(MailchimpHandler.add_subscriber("gertrudes@gmail.com", "Gertrudes", "Silva"))
+# MailchimpHandler.get_tag_id('Tenant', 'ec09a29d85')
+MailchimpHandler.add_subscriber("aninhasilva@gmail.com", "ainha", "Silva")
+MailchimpHandler.attach_tags(['Tenant'], "aninhasilva@gmail.com")
 
 
 

@@ -6,11 +6,11 @@ from rentalmoose.classes.Environment import *
 class MailchimpHandler:
     print("Mailchimp API v3 handler")
 
-    ENV = Environment.getkey('env')
-    API_KEY = Environment.getkey('mailchimp_api_key')
+    # ENV = Environment.getkey('env')
+    # API_KEY = Environment.getkey('mailchimp_api_key')
 
-    # ENV = 'prod'
-    # API_KEY = "eb8ffce2d2623bb9570702a7aac3afa3-us19"
+    ENV = 'prod'
+    API_KEY = "eb8ffce2d2623bb9570702a7aac3afa3-us19"
 
 
     API_URL = 'https://us19.api.mailchimp.com/3.0'
@@ -84,8 +84,6 @@ class MailchimpHandler:
 
         return tag_id
 
-        return
-
     @staticmethod
     def attach_tag(tag_id, subscriber, list_id="ec09a29d85"):
 
@@ -114,7 +112,9 @@ class MailchimpHandler:
 
         # if tag is found, return its id
         for segment in segments:
+            print("Analyzing segments...found {}".format(segment['name']))
             if segment['name'] == name:
+                print("Found tag: {}".format(segment['name']))
                 return segment['id']
 
         # if not, returns false
