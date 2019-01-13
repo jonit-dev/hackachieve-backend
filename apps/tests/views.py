@@ -34,9 +34,9 @@ def mailchimp(request):
                         args=(['Tenant'], user.email))
             t3.start()
         if user.type is 2:
-            t5 = Thread(target=MailchimpHandler.attach_tags,
+            t4 = Thread(target=MailchimpHandler.attach_tags,
                         args=(['Landlord'], user.email))
-            t5.start()
+            t4.start()
 
         # check if has resume
 
@@ -49,18 +49,18 @@ def mailchimp(request):
             for resume_city in resume_cities:
                 cities_tags.append(resume_city.city.name)
 
-            t1 = Thread(target=MailchimpHandler.attach_tags,
+            t5 = Thread(target=MailchimpHandler.attach_tags,
                         args=(cities_tags, user.email))
-            t1.start()
+            t5.start()
 
             resume_neighborhoods = Resume_neighborhood.objects.filter(resume=int(resume_id))
             neighborhood_tags = []
             for resume_neighborhood in resume_neighborhoods:
                 neighborhood_tags.append(resume_neighborhood.neighborhood.name)
 
-            t2 = Thread(target=MailchimpHandler.attach_tags,
+            t6 = Thread(target=MailchimpHandler.attach_tags,
                         args=(neighborhood_tags, user.email))
-            t2.start()
+            t6.start()
 
 
         else:
