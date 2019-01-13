@@ -18,51 +18,45 @@ from rentalmoose.classes.SecurityHandler import *
 @api_view(['GET'])
 @permission_classes((AllowAny,))
 def mailchimp(request):
-    # neighborhoods = Neighborhood.objects.all()
-    cities = City.objects.filter(province_id=2)
-
-    for n in cities:
-        print("processing {}".format(n.name))
-        MailchimpHandler.create_new_tag(n.name)
 
 
-    # # get all users
-    # users = User.objects.all()
-    #
-    # for user in users:
-    #     print("Processing user {}".format(user))
-    #
-    #     MailchimpHandler.add_subscriber(user.email, user.first_name, user.last_name)
-    #
-    #     if user.type is 1:
-    #         MailchimpHandler.attach_tags(['Tenant'], user.email)
-    #
-    #     if user.type is 2:
-    #         MailchimpHandler.attach_tags(['Landlord'], user.email)
-    #
-    #     # check if has resume
-    #
-    #     if len(user.resume_set.all()) is not 0:
-    #         resume_id = user.resume_set.first().id
-    #         print("resume_id: {}".format(resume_id))
-    #
-    #         resume_cities = Resume_city.objects.filter(resume=int(resume_id))
-    #         cities_tags = []
-    #         for resume_city in resume_cities:
-    #             cities_tags.append(resume_city.city.name)
-    #
-    #         MailchimpHandler.attach_tags(cities_tags, user.email)
-    #
-    #         resume_neighborhoods = Resume_neighborhood.objects.filter(resume=int(resume_id))
-    #         neighborhood_tags = []
-    #         for resume_neighborhood in resume_neighborhoods:
-    #             neighborhood_tags.append(resume_neighborhood.neighborhood.name)
-    #
-    #         MailchimpHandler.attach_tags(neighborhood_tags, user.email)
-    #
-    #
-    #     else:
-    #         continue
+    # get all users
+    users = User.objects.all()
+
+    for user in users:
+        print("Processing user {}".format(user))
+
+        MailchimpHandler.add_subscriber(user.email, user.first_name, user.last_name)
+
+        if user.type is 1:
+            MailchimpHandler.attach_tags(['Tenant'], user.email)
+
+        if user.type is 2:
+            MailchimpHandler.attach_tags(['Landlord'], user.email)
+
+        # check if has resume
+
+        if len(user.resume_set.all()) is not 0:
+            resume_id = user.resume_set.first().id
+            print("resume_id: {}".format(resume_id))
+
+            resume_cities = Resume_city.objects.filter(resume=int(resume_id))
+            cities_tags = []
+            for resume_city in resume_cities:
+                cities_tags.append(resume_city.city.name)
+
+            MailchimpHandler.attach_tags(cities_tags, user.email)
+
+            resume_neighborhoods = Resume_neighborhood.objects.filter(resume=int(resume_id))
+            neighborhood_tags = []
+            for resume_neighborhood in resume_neighborhoods:
+                neighborhood_tags.append(resume_neighborhood.neighborhood.name)
+
+            MailchimpHandler.attach_tags(neighborhood_tags, user.email)
+
+
+        else:
+            continue
 
     return API.json_response({
         "status": "subscribers processed"
