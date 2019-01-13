@@ -28,6 +28,18 @@ def mailchimp(request):
                     args=(user.email, user.first_name, user.last_name))
         t2.start()
 
+        # tag according to user type
+
+        if user.type == 1:
+            t4 = Thread(target=MailchimpHandler.attach_tags,
+                        args=(['Tenant'], user.email))
+            t4.start()
+        if user.type == 2:
+            t4 = Thread(target=MailchimpHandler.attach_tags,
+                        args=(['Landlord'], user.email))
+            t4.start()
+
+
         # check if has resume
 
         if len(user.resume_set.all()) is not 0:
