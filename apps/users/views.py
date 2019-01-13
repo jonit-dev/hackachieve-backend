@@ -11,6 +11,7 @@ from apps.resumes_neighborhoods.models import Resume_neighborhood
 from apps.properties.models import Property
 from apps.resumes.models import Resume
 from apps.user_property_filter_property_types.models import User_property_filter_property_type
+from rentalmoose.classes.MailchimpHandler import *
 from rentalmoose.classes.ResumeHandler import *
 from rentalmoose.classes.API import *
 from rentalmoose.classes.EmailHandler import *
@@ -134,17 +135,36 @@ def resume_create(request):
         if resume_data['rentAnywhere'] == False:
             # saving neighborhoods of interest
             if len(resume_data['neighborhoodsOfInterest']) > 0:
+                neighborhoods_of_interest = []
+
                 for n in resume_data['neighborhoodsOfInterest']:
                     neighborhood = Neighborhood.objects.get(pk=n['id'])
+                    neighborhoods_of_interest.append(n['name'])
+                    print('appending neighrborhood {}'.format(n['name']))
                     rn = Resume_neighborhood(resume=resume, neighborhood=neighborhood)
                     rn.save()
 
+                    print(neighborhoods_of_interest)
+                    # register neighborhoods on mailchimp
+                    t1 = Thread(target=MailchimpHandler.attach_tags,
+                                args=(neighborhoods_of_interest, user.email))
+                    t1.start()
+
             # saving cities of interest
             if len(resume_data['citiesOfInterest']) > 0:
+
+                cities_of_interest = []
+
                 for n in resume_data['citiesOfInterest']:
                     city = City.objects.get(pk=n['id'])
+                    cities_of_interest.append(n['name'])
                     rc = Resume_city(resume=resume, city=city)
                     rc.save()
+
+                t1 = Thread(target=MailchimpHandler.attach_tags,
+                            args=(cities_of_interest, user.email))
+                t1.start()
+
 
         # User filter =========================== #
 
@@ -232,14 +252,12 @@ def user_register(request):
                 "type": "danger"
             })
 
-
         # elif not Validator.check_password_confirmation(json_data['password'], json_data['passwordConfirmation']):
         #     return API.json_response({
         #         "status": "error",
         #         "message": "Your password does not match its respective password confirmation. Please, try again.",
         #         "type": "danger"
         #     })
-
 
         if Validator.check_user_exists(json_data['email']):
             return API.json_response({
@@ -263,6 +281,8 @@ def user_register(request):
 
         if create_user:
 
+            # Register on maillist
+
             # adjust firstname to first letter uppercase (eg. Joao)
             adjusted_name = json_data['firstName'].lower()
             adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
@@ -275,6 +295,24 @@ def user_register(request):
                                                "password": json_data['password']
 
                                            })
+
+
+
+            t2 = Thread(target= MailchimpHandler.add_subscriber,
+                        args=(json_data['email'], json_data['firstName'], json_data['lastName']))
+            t2.start()
+
+            if json_data['type'] == 1:
+                t3 = Thread(target=MailchimpHandler.attach_tags,
+                            args=(['Tenant'], json_data['email']))
+                t3.start()
+
+            if json_data['type'] == 2:
+                t3 = Thread(target=MailchimpHandler.attach_tags,
+                            args=(['Landlord'], json_data['email']))
+                t3.start()
+
+
 
             return API.json_response({
                 "status": "success",
