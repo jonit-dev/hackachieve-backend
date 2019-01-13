@@ -8,12 +8,11 @@ from rentalmoose.classes.Environment import *
 class MailchimpHandler:
     print("Mailchimp API v3 handler")
 
-    ENV = Environment.getkey('env')
-    API_KEY = Environment.getkey('mailchimp_api_key')
+    # ENV = Environment.getkey('env')
+    # API_KEY = Environment.getkey('mailchimp_api_key')
 
-    # ENV = 'prod'
-    # API_KEY = "eb8ffce2d2623bb9570702a7aac3afa3-us19"
-
+    ENV = 'prod'
+    API_KEY = "eb8ffce2d2623bb9570702a7aac3afa3-us19"
 
     API_URL = 'https://us19.api.mailchimp.com/3.0'
     USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
@@ -25,7 +24,7 @@ class MailchimpHandler:
     }
 
     @staticmethod
-    def add_subscriber(email, first_name, last_name, list_id="0377f23832"):
+    def add_subscriber(email, first_name, last_name, list_id="4d91e9cc64"):
 
         if MailchimpHandler.ENV == 'dev':
             print('Mailchimp: skipping new subscriber register')
@@ -45,12 +44,14 @@ class MailchimpHandler:
             }
             response = requests.request("POST", url, data=json.dumps(values), headers=MailchimpHandler.HEADERS)
 
+            sleep(3)
+
             return response.text
 
     @staticmethod
-    def attach_tags(tags, subscriber, list_id="0377f23832"):
+    def attach_tags(tags, subscriber, list_id="4d91e9cc64"):
 
-        if len(tags) > 0: # first of all, if there's some tag to add..
+        if len(tags) > 0:  # first of all, if there's some tag to add..
             if MailchimpHandler.ENV == 'dev':
                 print('Mailchimp: skipping attaching tags to subscriber')
 
@@ -62,15 +63,15 @@ class MailchimpHandler:
                     tag_id = MailchimpHandler.get_tag_id(tag, list_id)
 
                     if tag_id is not False:
-                        sleep(1)
+                        sleep(3)
                         MailchimpHandler.attach_tag(tag_id, subscriber, list_id)
                     else:
-                        sleep(1)
                         new_tag_id = MailchimpHandler.create_new_tag(tag, list_id)
+                        sleep(3)
                         MailchimpHandler.attach_tag(new_tag_id, subscriber, list_id)
 
     @staticmethod
-    def create_new_tag(tag_name, list_id="0377f23832"):
+    def create_new_tag(tag_name, list_id="4d91e9cc64"):
 
         print("Creating new tag ({}) for list {}".format(tag_name, list_id))
 
@@ -85,12 +86,14 @@ class MailchimpHandler:
 
         json_data = json.loads(response.text)
 
+        print('New tag created.. fetching new tag id')
+        # print(json_data)
         tag_id = json_data['id']
 
         return tag_id
 
     @staticmethod
-    def attach_tag(tag_id, subscriber, list_id="0377f23832"):
+    def attach_tag(tag_id, subscriber, list_id="4d91e9cc64"):
 
         print("Attaching tag {} to {} from list {}".format(tag_id, subscriber, list_id))
 
@@ -105,7 +108,7 @@ class MailchimpHandler:
         return response.text
 
     @staticmethod
-    def get_tag_id(name, list_id="0377f23832"):
+    def get_tag_id(name, list_id="4d91e9cc64"):
 
         url = '{}/lists/{}/segments'.format(MailchimpHandler.API_URL, list_id)
 
@@ -117,7 +120,7 @@ class MailchimpHandler:
 
         # if tag is found, return its id
         for segment in segments:
-            # print("Analyzing segments...found {}".format(segment['name']))
+            print("Analyzing segments...found {}".format(segment['name']))
             if segment['name'] == name:
                 print("Found tag: {}".format(segment['name']))
                 return segment['id']
