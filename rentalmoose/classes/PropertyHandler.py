@@ -161,17 +161,16 @@ class PropertyHandler:
             properties_same_neighborhood_id = Property.objects.filter(neighborhood_id=resume_neighborhood_id,
                                                                       rental_value__lte=resume.maximum_rental_budget)
 
-            if not property in properties_list:
+            for property in properties_same_neighborhood_id:
+                # check if user was already warned about this porperty
+                notified_properties = Log.objects.filter(
+                    event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                )
 
-                properties_places.append(property.neighborhood.name)
+                if len(notified_properties) is 0:
 
-                for property in properties_same_neighborhood_id:
-                    # check if user was already warned about this porperty
-                    notified_properties = Log.objects.filter(
-                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                    )
-
-                    if len(notified_properties) is 0:
+                    if not property in properties_list:
+                        properties_places.append(property.neighborhood.name)
                         properties_list.append({
                             "title": property.title,
                             "rental_value": property.rental_value,
@@ -180,12 +179,12 @@ class PropertyHandler:
 
                         })
 
-                        # add warning on logs
+                    # add warning on logs
 
-                        user_notified_log = Log(
-                            event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                        )
-                        user_notified_log.save()
+                    user_notified_log = Log(
+                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                    )
+                    user_notified_log.save()
 
         # send e-mail to user
 
