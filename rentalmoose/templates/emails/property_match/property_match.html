@@ -8,25 +8,26 @@
             <!-- Body content -->
             <tr>
                 <td class="content-cell">
-                    <h1>Hi, {{name}}!</h1>
-                    <p>Those are our latest listings that matches your filter criteria for properties in {{places}}
-                        within a maximum budget of {{maximum_budget}} cad</p>
+                    <h1>Hi, {{name}}! How are you doing?</h1>
+                    <p>Those are our latest listings in {{places}}.</p>
 
                     <div class="cards">
 
                         {% for property in properties %}
 
-                            <a href="{{property.link}}" class="card">
-                                <img src="{{property.image_url}}" alt="Property image" style="width:100%">
-                                <div class="container">
-                                    <h4>{{property.title}}</h4>
-                                    <p>{{property.rental_value}}</p>
-                                </div>
-                            </a>
+                        <a href="{{property.link}}" class="card">
+                            <img src="{{property.image_url}}" alt="Property image" style="width:100%">
+                            <div class="container">
+                                <h4>{{property.title}}</h4>
+
+                            </div>
+                        </a>
 
                         {% endfor %}
 
                     </div>
+
+                    <p>I hope you find some place soon! Good luck</p>
 
 
                     <br>

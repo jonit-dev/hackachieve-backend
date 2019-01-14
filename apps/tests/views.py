@@ -16,30 +16,31 @@ from rentalmoose.classes.EmailHandler import *
 from rentalmoose.classes.PropertyHandler import PropertyHandler
 from rentalmoose.classes.SecurityHandler import *
 
-
-@csrf_exempt
-@api_view(['GET'])
-@permission_classes((AllowAny,))
-def property_match(request):
-    # fetch all resumes
-
-    resumes = Resume.objects.filter(pk=58)
-
-    # first get all cities and neighborhoods from resume
-
-    # Fetching same city =========================== #
-
-    for resume in resumes:
-        resume_cities = resume.resume_city_set.all()
-        resume_neighborhoods = resume.resume_neighborhood_set.all()
-
-        matches = PropertyHandler.check_matches(resume, resume_cities, resume_neighborhoods)
-
-        print(matches)
-
-        return API.json_response({
-            "status": "done"
-        })
+#
+# @csrf_exempt
+# @api_view(['GET'])
+# @permission_classes((AllowAny,))
+# def property_match(request):
+#     # fetch all resumes
+#
+#     # resumes = Resume.objects.filter(pk=58) #prod test
+#     resumes = Resume.objects.all()
+#
+#     # first get all cities and neighborhoods from resume
+#
+#     # Fetching same city =========================== #
+#
+#     for resume in resumes:
+#         resume_cities = resume.resume_city_set.all()
+#         resume_neighborhoods = resume.resume_neighborhood_set.all()
+#
+#         matches = PropertyHandler.check_matches(resume, resume_cities, resume_neighborhoods)
+#
+#         print(matches)
+#
+#         return API.json_response({
+#             "status": "done"
+#         })
 
 # @csrf_exempt
 # @api_view(['GET'])

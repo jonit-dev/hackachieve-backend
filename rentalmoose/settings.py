@@ -145,6 +145,7 @@ INSTALLED_APPS = [
     'apps.resumes_neighborhoods',
     'apps.tests',
     'apps.logs',
+    'apps.cronjobs',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -152,8 +153,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_crontab',
 
 ]
+
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # CorsMiddleware should be as high as possible
@@ -174,6 +179,7 @@ ROOT_URLCONF = 'rentalmoose.urls'
 
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 TEMPLATES_PATH = os.path.join(SETTINGS_PATH, 'rentalmoose')
+LOGS_PATH = os.path.join(SETTINGS_PATH, 'rentalmoose/logs')
 
 TEMPLATES = [
     {
@@ -313,7 +319,7 @@ SIMPLE_JWT = {
 #                      DJANGO LOGGER
 # ================================================================= #
 
-LOGS_PATH = os.path.join(SETTINGS_PATH, 'rentalmoose/logs')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -353,6 +359,18 @@ LOGGING = {
         },
     },
 }
+
+
+# ================================================================= #
+#                      CRON JOBS
+# ================================================================= #
+
+
+CRONJOBS = [
+    ('* * * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH))
+]
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+
 
 # ================================================================= #
 #                      SSL

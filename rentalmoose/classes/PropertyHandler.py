@@ -6,6 +6,7 @@ import shutil
 from django.core.files.base import ContentFile
 from django.http import HttpResponse
 
+from apps.logs.models import Log
 from apps.properties.models import Property
 from rentalmoose import settings
 from rentalmoose.classes.API import API
@@ -129,28 +130,48 @@ class PropertyHandler:
 
             for property in properties_same_city_id:
 
-                if not property in properties_list:
-                    properties_places.append(property.city.name)
+                # check if user was already warned about this porperty
+                notified_properties = Log.objects.filter(
+                    event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                )
 
-                    properties_list.append({
-                        "title": property.title,
-                        "rental_value": property.rental_value,
-                        "link": HOST_NAME + "/property/" + str(property.id),
-                        "image_url": API_HOST + "static/images/properties/10/0.jpeg"
-                    })
+                if len(notified_properties) is 0:
 
-            # neighborhood check =========================== #
+                    if not property in properties_list:
+                        properties_places.append(property.city.name)
 
-            for resume_neighborhood in resume_neighborhoods:
-                resume_neighborhood_id = resume_neighborhood.neighborhood.id
-                properties_same_neighborhood_id = Property.objects.filter(neighborhood_id=resume_neighborhood_id,
-                                                                          rental_value__lte=resume.maximum_rental_budget)
+                        properties_list.append({
+                            "title": property.title,
+                            "rental_value": property.rental_value,
+                            "link": HOST_NAME + "/property/" + str(property.id),
+                            "image_url": API_HOST + "static/images/properties/10/0.jpeg"
+                        })
 
-                if not property in properties_list:
+                        # add warning on logs
 
-                    properties_places.append(property.neighborhood.name)
+                        user_notified_log = Log(
+                            event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                        )
+                        user_notified_log.save()
 
-                    for property in properties_same_neighborhood_id:
+        # neighborhood check =========================== #
+
+        for resume_neighborhood in resume_neighborhoods:
+            resume_neighborhood_id = resume_neighborhood.neighborhood.id
+            properties_same_neighborhood_id = Property.objects.filter(neighborhood_id=resume_neighborhood_id,
+                                                                      rental_value__lte=resume.maximum_rental_budget)
+
+            if not property in properties_list:
+
+                properties_places.append(property.neighborhood.name)
+
+                for property in properties_same_neighborhood_id:
+                    # check if user was already warned about this porperty
+                    notified_properties = Log.objects.filter(
+                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                    )
+
+                    if len(notified_properties) is 0:
                         properties_list.append({
                             "title": property.title,
                             "rental_value": property.rental_value,
@@ -159,10 +180,18 @@ class PropertyHandler:
 
                         })
 
-            # send e-mail to user
+                        # add warning on logs
 
+                        user_notified_log = Log(
+                            event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                        )
+                        user_notified_log.save()
+
+        # send e-mail to user
+
+        if len(properties_list) > 0:
             send = EmailHandler.send_email(
-                'New rentals available in {}'.format(", ".join(properties_places)),
+                '{}, I found these properties in {}'.format(resume.tenant.first_name, ", ".join(properties_places)),
                 [resume.tenant.email],
                 "property_match",
                 {
@@ -170,7 +199,7 @@ class PropertyHandler:
                     "name": resume.tenant.first_name,
                     "places": ", ".join(properties_places)
                 })
+        else:
+            print("No properties found, skipping email for {}".format(resume.tenant.first_name))
 
-            return properties_list
-
-        return
+        return properties_list
