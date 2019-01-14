@@ -73,6 +73,8 @@ urlpatterns = [
     # url(r'^test/ip', tests_view.ipcheck),
     # url(r'^test/phone', tests_view.phonecheck),
     # url(r'^test/mailchimp', tests_view.mailchimp),
+    url(r'^test/property-match', tests_view.property_match),
+
 
     url(r'^prerender/property/(?P<property_id>[0-9]+)', properties_view.prerender),
 

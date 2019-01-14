@@ -35,7 +35,7 @@ if ENV == "prod":
 else:
     DEBUG = True
     API_HOST = 'http://localhost:8000/'
-    HOST_NAME = 'http://localhost/rentalMoose'
+    HOST_NAME = 'http://rentalmoose.local'
 
 # ================================================================= #
 #                      TRANSACTIONAL EMAILS

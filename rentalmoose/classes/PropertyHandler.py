@@ -12,7 +12,8 @@ from rentalmoose.classes.API import API
 
 from apps.cities.models import City
 from apps.neighborhoods.models import Neighborhood
-
+from rentalmoose.classes.EmailHandler import EmailHandler
+from rentalmoose.settings import HOST_NAME, API_HOST
 
 
 class PropertyHandler:
@@ -48,7 +49,6 @@ class PropertyHandler:
     @staticmethod
     def save_property(request_data, owner, property_type):
 
-
         city = City.objects.get(pk=request_data['city']['id'])
 
         # Neighborhood is optional. Lets check if user passed it. If so, save. If not, set to None (null).
@@ -57,8 +57,7 @@ class PropertyHandler:
         else:
             neighborhood = None
 
-
-        #before saving, lets reformat dates
+        # before saving, lets reformat dates
 
         move_in_date = request_data['available_to_move_in_date'].split("T")[0]
         open_view_start = request_data['open_view_start'].split("T")[0]
@@ -114,3 +113,64 @@ class PropertyHandler:
             return False
         else:
             return True
+
+    @staticmethod
+    def check_matches(resume, resume_cities, resume_neighborhoods):
+
+        properties_list = []  # this will store properties to be notified
+        properties_places = []
+
+        # city check =========================== #
+
+        for resume_city in resume_cities:
+            resume_city_id = resume_city.city.id
+            properties_same_city_id = Property.objects.filter(city_id=resume_city_id,
+                                                              rental_value__lte=resume.maximum_rental_budget)
+
+            for property in properties_same_city_id:
+
+                if not property in properties_list:
+                    properties_places.append(property.city.name)
+
+                    properties_list.append({
+                        "title": property.title,
+                        "rental_value": property.rental_value,
+                        "link": HOST_NAME + "/property/" + str(property.id),
+                        "image_url": API_HOST + "static/images/properties/10/0.jpeg"
+                    })
+
+            # neighborhood check =========================== #
+
+            for resume_neighborhood in resume_neighborhoods:
+                resume_neighborhood_id = resume_neighborhood.neighborhood.id
+                properties_same_neighborhood_id = Property.objects.filter(neighborhood_id=resume_neighborhood_id,
+                                                                          rental_value__lte=resume.maximum_rental_budget)
+
+                if not property in properties_list:
+
+                    properties_places.append(property.neighborhood.name)
+
+                    for property in properties_same_neighborhood_id:
+                        properties_list.append({
+                            "title": property.title,
+                            "rental_value": property.rental_value,
+                            "link": HOST_NAME + "/property/" + str(property.id),
+                            "image_url": API_HOST + "static/images/properties/{}/0.jpeg".format(property.id)
+
+                        })
+
+            # send e-mail to user
+
+            send = EmailHandler.send_email(
+                'New rentals available in {}'.format(", ".join(properties_places)),
+                [resume.tenant.email],
+                "property_match",
+                {
+                    "properties": properties_list,
+                    "name": resume.tenant.first_name,
+                    "places": ", ".join(properties_places)
+                })
+
+            return properties_list
+
+        return

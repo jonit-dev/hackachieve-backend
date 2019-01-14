@@ -1,0 +1,10 @@
+Hi, {{name}}! Thanks for creating your account at RentalMoose. We’re thrilled to have you on  board.
+
+Your login information is:
+Login: {{login}}
+Password: {{password}}
+
+Please, store it somewhere safe.
+
+
+Joao Paulo Furtado - Co-founder of RentalMoose
