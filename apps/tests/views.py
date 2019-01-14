@@ -23,7 +23,7 @@ from rentalmoose.classes.SecurityHandler import *
 def property_match(request):
     # fetch all resumes
 
-    resumes = Resume.objects.get(pk=58)
+    resumes = Resume.objects.filter(pk=58)
 
     # first get all cities and neighborhoods from resume
 
