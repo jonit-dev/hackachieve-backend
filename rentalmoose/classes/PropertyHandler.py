@@ -8,6 +8,7 @@ from django.http import HttpResponse
 
 from apps.logs.models import Log
 from apps.properties.models import Property
+from apps.user_property_filter.models import User_property_filter
 from rentalmoose import settings
 from rentalmoose.classes.API import API
 
@@ -121,6 +122,14 @@ class PropertyHandler:
         properties_list = []  # this will store properties to be notified
         properties_places = []
 
+        # Get property filter =========================== #
+
+        property_filter = User_property_filter.objects.get(pk=resume.id)
+        property_filter_pet_friendly = property_filter.pet_friendly
+        property_filter_rent_anywhere = property_filter.rent_anywhere
+
+        # IF USER SPECIFIED SOME PLACES TO RENT =========================== #
+
         # city check =========================== #
 
         for resume_city in resume_cities:
@@ -138,13 +147,15 @@ class PropertyHandler:
                 if len(notified_properties) is 0:
 
                     if not property in properties_list:
-                        properties_places.append(property.city.name)
+
+                        if not property.city.name in properties_places:
+                            properties_places.append(property.city.name)
 
                         properties_list.append({
                             "title": property.title,
                             "rental_value": property.rental_value,
                             "link": HOST_NAME + "/property/" + str(property.id),
-                            "image_url": API_HOST + "static/images/properties/10/0.jpeg"
+                            "image_url": API_HOST + "static/images/properties/{}/0.jpeg"
                         })
 
                         # add warning on logs
@@ -170,7 +181,10 @@ class PropertyHandler:
                 if len(notified_properties) is 0:
 
                     if not property in properties_list:
-                        properties_places.append(property.neighborhood.name)
+
+                        if not property.neighborhood.name in properties_places:
+                            properties_places.append(property.neighborhood.name)
+
                         properties_list.append({
                             "title": property.title,
                             "rental_value": property.rental_value,
@@ -186,11 +200,23 @@ class PropertyHandler:
                     )
                     user_notified_log.save()
 
-        # send e-mail to user
+        # END: FINISH BY WARNING USER ABOUT PROPERTIES =========================== #
 
         if len(properties_list) > 0:
+
+            if len(properties_list) >= 3:
+                property_title = '{}, I found these properties in {}'.format(resume.tenant.first_name,
+                                                                             ", ".join(properties_places))
+            elif len(properties_list) == 2:
+                property_title = '{}, I found these properties in {} and {}'.format(resume.tenant.first_name,
+                                                                                    properties_places[0],
+                                                                                    properties_places[1])
+            else:
+                property_title = '{}, I found these properties in {}'.format(resume.tenant.first_name,
+                                                                             properties_places[0])
+
             send = EmailHandler.send_email(
-                '{}, I found these properties in {}'.format(resume.tenant.first_name, ", ".join(properties_places)),
+                property_title,
                 [resume.tenant.email],
                 "property_match",
                 {

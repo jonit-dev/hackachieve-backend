@@ -367,7 +367,8 @@ LOGGING = {
 
 
 CRONJOBS = [
-    ('0 9 * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH))
+    # ('0 9 * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #production
+    ('* * * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #dev
 ]
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 
