@@ -1,8 +1,7 @@
 {% extends "templates/emails/layout/base.html" %}
 
-<style type="text/css" rel="stylesheet" media="all">
-
-  .card {
+{% block custom_style %}
+ .card {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             flex: 1 1 22%;
 
@@ -39,7 +38,7 @@
 
         }
 
-</style>
+{% endblock custom_style %}
 
 {% block content %}
 
