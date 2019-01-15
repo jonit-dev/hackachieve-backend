@@ -54,8 +54,12 @@ class PropertyHandler:
         city = City.objects.get(pk=request_data['city']['id'])
 
         # Neighborhood is optional. Lets check if user passed it. If so, save. If not, set to None (null).
-        if 'neighborhood' in request_data:
-            neighborhood = Neighborhood.objects.get(pk=request_data['neighborhood']['id'])
+        if 'optional_neighborhood' in request_data:
+
+            if request_data['optional_neighborhood'] is not None:
+                neighborhood = Neighborhood.objects.get(pk=request_data['optional_neighborhood']['id'])
+            else:
+                neighborhood = None
         else:
             neighborhood = None
 
@@ -129,22 +133,21 @@ class PropertyHandler:
         property_filter_rent_anywhere = property_filter.rent_anywhere
 
         if property_filter_pet_friendly is True:
-            no_pets = False
+            no_pets = 1
         else:
-            no_pets = True
+            no_pets = 0
 
         # IF USER SPECIFIED SOME PLACES TO RENT =========================== #
 
-
         if property_filter_rent_anywhere is False:
-
 
             # city check =========================== #
 
             for resume_city in resume_cities:
                 resume_city_id = resume_city.city.id
                 properties_same_city_id = Property.objects.filter(city_id=resume_city_id,
-                                                                  rental_value__lte=resume.maximum_rental_budget, no_pets=no_pets)
+                                                                  rental_value__lte=resume.maximum_rental_budget,
+                                                                  no_pets__gte=no_pets)
 
                 for property in properties_same_city_id:
 
@@ -178,10 +181,14 @@ class PropertyHandler:
 
             for resume_neighborhood in resume_neighborhoods:
                 resume_neighborhood_id = resume_neighborhood.neighborhood.id
-                properties_same_neighborhood_id = Property.objects.filter(neighborhood_id=resume_neighborhood_id,
-                                                                          rental_value__lte=resume.maximum_rental_budget, no_pets=no_pets)
+
+                properties_same_neighborhood_id = Property.objects.filter(
+                    neighborhood_id=resume_neighborhood_id,
+                    rental_value__lte=resume.maximum_rental_budget,
+                    no_pets__gte=no_pets)
 
                 for property in properties_same_neighborhood_id:
+
                     # check if user was already warned about this porperty
                     notified_properties = Log.objects.filter(
                         event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
@@ -209,9 +216,9 @@ class PropertyHandler:
                         )
                         user_notified_log.save()
 
-        else: #if user wants to know about every property added...
+        else:  # if user wants to know about every property added...
 
-            properties = Property.objects.filter(rental_value__lte=resume.maximum_rental_budget, no_pets=no_pets)
+            properties = Property.objects.filter(rental_value__lte=resume.maximum_rental_budget, no_pets__gte=no_pets)
 
             for property in properties:
 
@@ -220,9 +227,15 @@ class PropertyHandler:
                     event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
                 )
 
-                if len(notified_properties) is 0:
+                if property.neighborhood:
+                    if not property.neighborhood.name in properties_places:
+                        properties_places.append(property.neighborhood.name)
 
-                    #append to list
+                if not property.city.name in properties_places:
+                    properties_places.append(property.city.name)
+
+                if len(notified_properties) is 0:
+                    # append to list
                     properties_list.append({
                         "title": property.title,
                         "rental_value": property.rental_value,
@@ -230,29 +243,37 @@ class PropertyHandler:
                         "image_url": API_HOST + "static/images/properties/{}/0.jpeg".format(property.id)
                     })
 
+                    # add warning on logs
 
-
-
-
+                    user_notified_log = Log(
+                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                    )
+                    user_notified_log.save()
 
         # END: FINISH BY WARNING USER ABOUT PROPERTIES =========================== #
 
         if len(properties_list) > 0:
+
+            print(properties_places)
 
             pet_friendly_string = ""
             if property_filter_pet_friendly is True:
                 pet_friendly_string = "pet friendly"
 
             if len(properties_list) >= 3:
-                property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,pet_friendly_string,
-                                                                             ", ".join(properties_places))
-            elif len(properties_list) == 2:
-                property_title = '{}, I found these {} properties in {} and {}'.format(resume.tenant.first_name,pet_friendly_string,
-                                                                                    properties_places[0],
-                                                                                    properties_places[1])
+                property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,
+                                                                                pet_friendly_string,
+                                                                                ", ".join(properties_places))
+            elif len(properties_places) == 2:
+                property_title = '{}, I found these {} properties in {} and {}'.format(resume.tenant.first_name,
+                                                                                       pet_friendly_string,
+                                                                                       properties_places[0],
+                                                                                       properties_places[1])
             else:
-                property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,pet_friendly_string,
-                                                                             properties_places[0])
+
+                property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,
+                                                                                pet_friendly_string,
+                                                                                properties_places[0])
 
             send = EmailHandler.send_email(
                 property_title,
