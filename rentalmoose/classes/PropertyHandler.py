@@ -155,7 +155,7 @@ class PropertyHandler:
                             "title": property.title,
                             "rental_value": property.rental_value,
                             "link": HOST_NAME + "/property/" + str(property.id),
-                            "image_url": API_HOST + "static/images/properties/{}/0.jpeg"
+                            "image_url": API_HOST + "static/images/properties/{}/0.jpeg".format(property.id)
                         })
 
                         # add warning on logs
