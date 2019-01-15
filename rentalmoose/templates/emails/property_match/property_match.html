@@ -1,42 +1,6 @@
 {% extends "templates/emails/layout/base.html" %}
 
 {% block custom_style %}
- .card {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            flex: 1 1 22%;
-
-            margin: 1rem;
-            box-sizing: border-box;
-        }
-
-        .card h4 {
-            color: #868686;
-            font-weight: bold;
-        }
-
-        .card p {
-            color: #868686;
-        }
-
-        .card .container {
-            padding: 1rem;
-        }
-
-        .card img {
-            width: 100%;
-            height: 161px;
-            object-fit: cover;
-        }
-
-        .cards {
-            font-family: "Roboto", sans-serif;
-            font-size: 0.9rem;
-            display: flex;
-            flex-wrap: wrap;
-            max-width: 794px;
-            margin: 0 auto;
-
-        }
 
 {% endblock custom_style %}
 
@@ -51,14 +15,17 @@
                     <h1>Hi, {{name}}! How are you doing?</h1>
                     <p>Those are our latest listings in {{places}}.</p>
 
-                    <div class="cards">
+                    <div class="cards"
+                         style="font-family: 'Roboto', sans-serif;font-size: 0.9rem;display: flex;flex-wrap: wrap;max-width: 794px;margin: 0 auto;">
 
                         {% for property in properties %}
 
-                        <a href="{{property.link}}" class="card">
-                            <img src="{{property.image_url}}" alt="Property image" style="width:100%">
-                            <div class="container">
-                                <h4>{{property.title}}</h4>
+                        <a href="{{property.link}}" class="card"
+                           style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);flex: 1 1 22%;margin: 1rem;box-sizing: border-box;">
+                            <img src="{{property.image_url}}" alt="Property image"
+                                 style="width: 100%;height: 161px;object-fit: cover;">
+                            <div class="container" style="padding: 1rem;">
+                                <h4 style="color: #868686;font-weight: bold;">{{property.title}}</h4>
 
                             </div>
                         </a>
