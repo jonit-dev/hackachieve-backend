@@ -2,6 +2,13 @@
 
 {% block custom_style %}
 
+
+@media screen and (min-width: 700px) {
+
+   .cards {
+       width: 805px;
+   }
+}
 {% endblock custom_style %}
 
 {% block content %}
@@ -16,7 +23,7 @@
                     <p>Those are our latest listings in {{places}}.</p>
 
                     <div class="cards"
-                         style="font-family: 'Roboto', sans-serif;font-size: 0.9rem;max-width: 794px;margin: 0 auto;display: inline-block;">
+                         style="font-family: 'Roboto', sans-serif;font-size: 0.9rem;margin: 0 auto;display: inline-block;">
 
                         {% for property in properties %}
 
