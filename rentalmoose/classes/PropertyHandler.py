@@ -179,9 +179,9 @@ class PropertyHandler:
                         event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
                     )
                     user_notified_log.save()
-        print("FUNCTION OUTPUT >>>>")
-        print(properties_list)
-        print(properties_places)
+        # print("FUNCTION OUTPUT >>>>")
+        # print(properties_list)
+        # print(properties_places)
         return {
             "properties_places": properties_places,
             "properties_list": properties_list
@@ -261,16 +261,16 @@ class PropertyHandler:
             if property_filter_pet_friendly is True:
                 pet_friendly_string = "pet friendly"
 
-            print("PROPERTIES PLACES DEBUG")
-            print(properties_places)
+            # print("PROPERTIES PLACES DEBUG")
+            # print(properties_places)
 
             property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,
                                                                             pet_friendly_string,
                                                                             PropertyHandler.generate_places_names_string(
                                                                                 properties_places))
-            print("EMAIL INPUT >>>>")
-            print(properties_list)
-            print(properties_places)
+            # print("EMAIL INPUT >>>>")
+            # print(properties_list)
+            # print(properties_places)
             send = EmailHandler.send_email(
                 property_title,
                 [resume.tenant.email],
