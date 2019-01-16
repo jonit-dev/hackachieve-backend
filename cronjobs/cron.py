@@ -8,9 +8,9 @@ def check_resume_matches():
     # fetch all resumes
 
 
-    # resumes = Resume.objects.filter(pk=1) #dev test
+    resumes = Resume.objects.filter(pk=1) #dev test
     # resumes = Resume.objects.filter(pk=58) #prod test
-    resumes = Resume.objects.all()
+    # resumes = Resume.objects.all()
 
     for resume in resumes:
         resume_cities = resume.resume_city_set.all()

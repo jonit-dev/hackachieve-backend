@@ -1,17 +1,17 @@
-from threading import Thread
-
-from apps.neighborhoods.models import Neighborhood
-from rentalmoose.classes.MailchimpHandler import *
-
-#     list_id = "0377f23832"
+places_names = ['Burnaby','Stanley Park','Yaletown','Oakridge']
 
 
-#
-# tag_id = MailchimpHandler.get_tag_id('Commercial Drive', '0377f23832')
-#
-# print(tag_id)
+def generate_places_names_string(places_names):
+    if len(places_names) == 3:
+        output = ", ".join(places_names)
+    elif len(places_names) == 2:
+        output = places_names[0] + " and " + places_names[1]
+    elif len(places_names) == 1:
+        output = places_names[0]
+    else:
+        output = places_names[0] + ", " + places_names[1] + ", " + places_names[2] + " and more"
+
+    return output
 
 
-# MailchimpHandler.add_subscriber("info@hello.com", "ainha", "Silva")
-# MailchimpHandler.attach_tags(['Commercial Drive'], "info@hello.com")
-
+print(generate_places_names_string(places_names))

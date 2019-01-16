@@ -121,6 +121,19 @@ class PropertyHandler:
             return True
 
     @staticmethod
+    def generate_places_names_string(places_names):
+        if len(places_names) == 3:
+            output = ", ".join(places_names)
+        elif len(places_names) == 2:
+            output = places_names[0] + " and " + places_names[1]
+        elif len(places_names) == 1:
+            output = places_names[0]
+        else:
+            output = places_names[0] + ", " + places_names[1] + ", " + places_names[2] + " and more"
+
+        return output
+
+    @staticmethod
     def check_matches(resume, resume_cities, resume_neighborhoods):
 
         properties_list = []  # this will store properties to be notified
@@ -133,9 +146,9 @@ class PropertyHandler:
         property_filter_rent_anywhere = property_filter.rent_anywhere
 
         if property_filter_pet_friendly is True:
-            no_pets = 1
-        else:
             no_pets = 0
+        else:
+            no_pets = 1
 
         # IF USER SPECIFIED SOME PLACES TO RENT =========================== #
 
@@ -147,7 +160,7 @@ class PropertyHandler:
                 resume_city_id = resume_city.city.id
                 properties_same_city_id = Property.objects.filter(city_id=resume_city_id,
                                                                   rental_value__lte=resume.maximum_rental_budget,
-                                                                  no_pets__gte=no_pets)
+                                                                  no_pets=no_pets)
 
                 for property in properties_same_city_id:
 
@@ -185,7 +198,7 @@ class PropertyHandler:
                 properties_same_neighborhood_id = Property.objects.filter(
                     neighborhood_id=resume_neighborhood_id,
                     rental_value__lte=resume.maximum_rental_budget,
-                    no_pets__gte=no_pets)
+                    no_pets=no_pets)
 
                 for property in properties_same_neighborhood_id:
 
@@ -218,7 +231,7 @@ class PropertyHandler:
 
         else:  # if user wants to know about every property added...
 
-            properties = Property.objects.filter(rental_value__lte=resume.maximum_rental_budget, no_pets__gte=no_pets)
+            properties = Property.objects.filter(rental_value__lte=resume.maximum_rental_budget, no_pets=no_pets)
 
             for property in properties:
 
@@ -263,17 +276,8 @@ class PropertyHandler:
             if len(properties_list) >= 3:
                 property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,
                                                                                 pet_friendly_string,
-                                                                                ", ".join(properties_places))
-            elif len(properties_places) == 2:
-                property_title = '{}, I found these {} properties in {} and {}'.format(resume.tenant.first_name,
-                                                                                       pet_friendly_string,
-                                                                                       properties_places[0],
-                                                                                       properties_places[1])
-            else:
-
-                property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,
-                                                                                pet_friendly_string,
-                                                                                properties_places[0])
+                                                                                PropertyHandler.generate_places_names_string(
+                                                                                    properties_places))
 
             send = EmailHandler.send_email(
                 property_title,
