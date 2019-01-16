@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from apps.logs.models import Log
 from apps.properties.models import Property
 from apps.user_property_filter.models import User_property_filter
+from apps.user_property_filter_property_types.models import User_property_filter_property_type
 from rentalmoose import settings
 from rentalmoose.classes.API import API
 
@@ -129,9 +130,62 @@ class PropertyHandler:
         elif len(places_names) == 1:
             output = places_names[0]
         else:
-            output = places_names[0] + ", " + places_names[1] + ", " + places_names[2] + " and more"
+            output = ", ".join(places_names[:2]) + " and more"
 
         return output
+
+    @staticmethod
+    def add_properties_to_notification(place_type, filtered_properties, resume):
+
+        properties_list = []
+        properties_places = []
+
+        for property in filtered_properties:
+
+            # check if user was already warned about this porperty
+            notified_properties = Log.objects.filter(
+                event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+            )
+
+            if len(notified_properties) is 0:
+
+                if not property in properties_list:
+
+                    if place_type == 'city':
+                        if not property.city.name in properties_places:
+                            properties_places.append(property.city.name)
+                    elif place_type == 'neighborhood':
+                        if not property.neighborhood.name in properties_places:
+                            properties_places.append(property.neighborhood.name)
+
+                    elif place_type == 'anywhere':
+                        if property.neighborhood:
+                            if not property.neighborhood.name in properties_places:  # avoid adding duplicated names
+                                properties_places.append(property.neighborhood.name)
+
+                        if not property.city.name in properties_places:
+                            properties_places.append(property.city.name)
+
+                    properties_list.append({
+                        "title": property.title,
+                        "rental_value": property.rental_value,
+                        "link": HOST_NAME + "/property/" + str(property.id),
+                        "image_url": API_HOST + "static/images/properties/{}/0.jpeg".format(property.id)
+                    })
+
+                    # Register that user was already notified, so theres no need to notify again
+
+                    user_notified_log = Log(
+                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
+                    )
+                    user_notified_log.save()
+        print("FUNCTION OUTPUT >>>>")
+        print(properties_list)
+        print(properties_places)
+        return {
+            "properties_places": properties_places,
+            "properties_list": properties_list
+        }
 
     @staticmethod
     def check_matches(resume, resume_cities, resume_neighborhoods):
@@ -144,6 +198,7 @@ class PropertyHandler:
         property_filter = User_property_filter.objects.get(pk=resume.id)
         property_filter_pet_friendly = property_filter.pet_friendly
         property_filter_rent_anywhere = property_filter.rent_anywhere
+        # property_filter_property_types = User_property_filter_property_type.objects.get(pk=property_filter.id)
 
         if property_filter_pet_friendly is True:
             no_pets = 0
@@ -162,33 +217,12 @@ class PropertyHandler:
                                                                   rental_value__lte=resume.maximum_rental_budget,
                                                                   no_pets=no_pets)
 
-                for property in properties_same_city_id:
+                output = PropertyHandler.add_properties_to_notification('city', properties_same_city_id, resume)
 
-                    # check if user was already warned about this porperty
-                    notified_properties = Log.objects.filter(
-                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                    )
-
-                    if len(notified_properties) is 0:
-
-                        if not property in properties_list:
-
-                            if not property.city.name in properties_places:
-                                properties_places.append(property.city.name)
-
-                            properties_list.append({
-                                "title": property.title,
-                                "rental_value": property.rental_value,
-                                "link": HOST_NAME + "/property/" + str(property.id),
-                                "image_url": API_HOST + "static/images/properties/{}/0.jpeg".format(property.id)
-                            })
-
-                            # add warning on logs
-
-                            user_notified_log = Log(
-                                event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                            )
-                            user_notified_log.save()
+                if output['properties_list'] is not None:
+                    properties_list = properties_list + output['properties_list']
+                if output['properties_places'] is not None:
+                    properties_places = properties_places + output['properties_places']
 
             # neighborhood check =========================== #
 
@@ -200,85 +234,43 @@ class PropertyHandler:
                     rental_value__lte=resume.maximum_rental_budget,
                     no_pets=no_pets)
 
-                for property in properties_same_neighborhood_id:
+                output = PropertyHandler.add_properties_to_notification('neighborhood', properties_same_neighborhood_id,
+                                                                        resume)
 
-                    # check if user was already warned about this porperty
-                    notified_properties = Log.objects.filter(
-                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                    )
+                if output['properties_list'] is not None:
+                    properties_list = properties_list + output['properties_list']
+                if output['properties_places'] is not None:
+                    properties_places = properties_places + output['properties_places']
 
-                    if len(notified_properties) is 0:
-
-                        if not property in properties_list:
-
-                            if not property.neighborhood.name in properties_places:
-                                properties_places.append(property.neighborhood.name)
-
-                            properties_list.append({
-                                "title": property.title,
-                                "rental_value": property.rental_value,
-                                "link": HOST_NAME + "/property/" + str(property.id),
-                                "image_url": API_HOST + "static/images/properties/{}/0.jpeg".format(property.id)
-
-                            })
-
-                        # add warning on logs
-
-                        user_notified_log = Log(
-                            event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                        )
-                        user_notified_log.save()
-
-        else:  # if user wants to know about every property added...
+        else:  # if user wants to know about every property added... (RENT ANYWHERE)
 
             properties = Property.objects.filter(rental_value__lte=resume.maximum_rental_budget, no_pets=no_pets)
 
-            for property in properties:
+            output = PropertyHandler.add_properties_to_notification('anywhere', properties, resume)
 
-                # check if user was already warned about this property
-                notified_properties = Log.objects.filter(
-                    event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                )
-
-                if property.neighborhood:
-                    if not property.neighborhood.name in properties_places:
-                        properties_places.append(property.neighborhood.name)
-
-                if not property.city.name in properties_places:
-                    properties_places.append(property.city.name)
-
-                if len(notified_properties) is 0:
-                    # append to list
-                    properties_list.append({
-                        "title": property.title,
-                        "rental_value": property.rental_value,
-                        "link": HOST_NAME + "/property/" + str(property.id),
-                        "image_url": API_HOST + "static/images/properties/{}/0.jpeg".format(property.id)
-                    })
-
-                    # add warning on logs
-
-                    user_notified_log = Log(
-                        event="USER_PROPERTY_NOTIFICATION", emitter=property.id, target=resume.tenant.id
-                    )
-                    user_notified_log.save()
+            if output['properties_list'] is not None:
+                properties_list = properties_list + output['properties_list']
+            if output['properties_places'] is not None:
+                properties_places = properties_places + output['properties_places']
 
         # END: FINISH BY WARNING USER ABOUT PROPERTIES =========================== #
 
         if len(properties_list) > 0:
 
-            print(properties_places)
-
             pet_friendly_string = ""
             if property_filter_pet_friendly is True:
                 pet_friendly_string = "pet friendly"
 
-            if len(properties_list) >= 3:
-                property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,
-                                                                                pet_friendly_string,
-                                                                                PropertyHandler.generate_places_names_string(
-                                                                                    properties_places))
+            print("PROPERTIES PLACES DEBUG")
+            print(properties_places)
 
+            property_title = '{}, I found these {} properties in {}'.format(resume.tenant.first_name,
+                                                                            pet_friendly_string,
+                                                                            PropertyHandler.generate_places_names_string(
+                                                                                properties_places))
+            print("EMAIL INPUT >>>>")
+            print(properties_list)
+            print(properties_places)
             send = EmailHandler.send_email(
                 property_title,
                 [resume.tenant.email],
@@ -286,7 +278,7 @@ class PropertyHandler:
                 {
                     "properties": properties_list,
                     "name": resume.tenant.first_name,
-                    "places": ", ".join(properties_places)
+                    "places": PropertyHandler.generate_places_names_string(properties_places)
                 })
         else:
             print("No properties found, skipping email for {}".format(resume.tenant.first_name))
