@@ -269,7 +269,7 @@ class PropertyHandler:
                                                                             PropertyHandler.generate_places_names_string(
                                                                                 properties_places))
             # print("EMAIL INPUT >>>>")
-            # print(properties_list)
+            print(properties_list)
             # print(properties_places)
             send = EmailHandler.send_email(
                 property_title,
