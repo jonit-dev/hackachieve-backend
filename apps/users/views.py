@@ -165,7 +165,6 @@ def resume_create(request):
                             args=(cities_of_interest, user.email))
                 t1.start()
 
-
         # User filter =========================== #
 
         if resume_data['hasMoveInDate'] is True:
@@ -296,9 +295,7 @@ def user_register(request):
 
                                            })
 
-
-
-            t2 = Thread(target= MailchimpHandler.add_subscriber,
+            t2 = Thread(target=MailchimpHandler.add_subscriber,
                         args=(json_data['email'], json_data['firstName'], json_data['lastName']))
             t2.start()
 
@@ -311,8 +308,6 @@ def user_register(request):
                 t3 = Thread(target=MailchimpHandler.attach_tags,
                             args=(['Landlord'], json_data['email']))
                 t3.start()
-
-
 
             return API.json_response({
                 "status": "success",
@@ -353,6 +348,21 @@ def user_info(request):
     ip = SecurityHandler.get_client_ip(request)
     log = Log(event="IP_ACCESS", emitter=user_id, target=None, value=ip)
     log.save()
+
+    # Check Landlord IP address =========================== #
+
+    if SecurityHandler.is_allowed_ip(ip, "CA") is False and user.type is not 1:
+        log = Log(
+            event="SUSPICIOUS_LOGIN_ATTEMPT", emitter=None, target=None, value=ip,
+        )
+        log.save()
+        return API.json_response({
+            "status": "error",
+            "message": "Error while trying to login.",
+            "type": "danger"
+        })
+
+
 
     has_resume = len(user.resume_set.all()) > 0
 
