@@ -351,17 +351,18 @@ def user_info(request):
 
     # Check Landlord IP address =========================== #
 
-    if SecurityHandler.is_allowed_ip(ip, "CA") is False and user.type is not 1:
-        log = Log(
-            event="SUSPICIOUS_LOGIN_ATTEMPT", emitter=None, target=None, value=ip,
-        )
-        log.save()
-        return API.json_response({
-            "status": "error",
-            "message": "Error while trying to login.",
-            "type": "danger"
-        })
+    if user.type is not 1:
 
+        if SecurityHandler.is_allowed_ip(ip, "CA") is False:
+            log = Log(
+                event="SUSPICIOUS_LOGIN_ATTEMPT", emitter=None, target=None, value=ip,
+            )
+            log.save()
+            return API.json_response({
+                "status": "error",
+                "message": "Error while trying to login.",
+                "type": "danger"
+            })
 
 
     has_resume = len(user.resume_set.all()) > 0
