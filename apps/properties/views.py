@@ -236,7 +236,7 @@ def applicant_info(request, property_id, applicant_id):
     if PropertyHandler.is_owner(property, user) is False:
         return API.json_response({
             "status": "error",
-            "message": "You cannot access applications from properties that are not yours.",
+            "message": "You cannot access applications from properties that you don't own.",
             "type": "danger"
         })
 
@@ -315,7 +315,7 @@ def applications(request, property_id):
     elif PropertyHandler.is_owner(property, user) is False:
         return API.json_response({
             "status": "error",
-            "message": "You cannot access applications from properties that are not yours.",
+            "message": "You cannot access applications from properties that you don't own.",
             "type": "danger"
         })
 

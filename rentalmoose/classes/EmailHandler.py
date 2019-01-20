@@ -39,12 +39,12 @@ class EmailHandler(Thread):
     @staticmethod
     def send_email(subject, to, filename, params, from_email="noreply@rentalmoose.ca", ):
 
-        # TURNED_OFF_ON_DEV = True
-        # print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
-        #
-        # if ENV == "dev":
-        #     if TURNED_OFF_ON_DEV == True: #avoid sending emails on dev mode
-        #         return None
+        TURNED_OFF_ON_DEV = True
+        print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
+
+        if ENV == "dev":
+            if TURNED_OFF_ON_DEV == True: #avoid sending emails on dev mode
+                return None
 
         print("threading and sending e-mail to {} - subject: {}".format(to, subject))
 
