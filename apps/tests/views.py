@@ -6,15 +6,15 @@ from apps.resumes.models import Resume
 from apps.resumes_cities.models import Resume_city
 from apps.resumes_neighborhoods.models import Resume_neighborhood
 from apps.users.models import User
-from rentalmoose.classes.MailchimpHandler import *
+from hackachieve.classes.MailchimpHandler import *
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from rentalmoose.classes.API import *
+from hackachieve.classes.API import *
 
-from rentalmoose.classes.EmailHandler import *
-from rentalmoose.classes.PropertyHandler import PropertyHandler
-from rentalmoose.classes.SecurityHandler import *
+from hackachieve.classes.EmailHandler import *
+from hackachieve.classes.PropertyHandler import PropertyHandler
+from hackachieve.classes.SecurityHandler import *
 
 #
 # @csrf_exempt
@@ -130,7 +130,7 @@ from rentalmoose.classes.SecurityHandler import *
 # @permission_classes((AllowAny,))
 # def email_threading(request):
 #
-#     send = EmailHandler.send_email('Welcome to RentalMoose', ["therentalmoose@gmail.com"],
+#     send = EmailHandler.send_email('Welcome to hackachieve', ["thehackachieve@gmail.com"],
 #                               "welcome",
 #                               {
 #                                   "name": "rental",

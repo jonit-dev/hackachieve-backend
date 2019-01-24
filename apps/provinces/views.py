@@ -2,7 +2,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.cities.models import City
-from rentalmoose.classes.API import *
+from hackachieve.classes.API import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes

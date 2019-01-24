@@ -1,7 +1,7 @@
 from time import sleep
 
 from apps.resumes.models import Resume
-from rentalmoose.classes.PropertyHandler import *
+from hackachieve.classes.PropertyHandler import *
 
 
 def check_resume_matches():
