@@ -5,6 +5,7 @@ from rest_framework import routers
 from apps.provinces.api import views as api_provinces_view  # class based serializer
 from apps.cities.api import views as api_cities_view
 from apps.countries.api import views as api_countries_view
+from apps.users import views as user_views
 
 router = routers.DefaultRouter()
 
@@ -18,6 +19,6 @@ urlpatterns = [
 
     # USER ROUTES =========================== #
 
-    # url('user/info', user_views.user_info),
+    url('user/register', user_views.user_register),
 
 ]

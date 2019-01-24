@@ -55,13 +55,12 @@ class Validator:
     @staticmethod
     def are_request_fields_valid(user_fields):
 
-        print(">> checking user fields")
 
         empty_fields = []
         pretty_fields = []  # store the final results, that we'll make pretty for user output
 
         for key in user_fields:
-            print(key)
+
 
             if key.startswith("optional_") == False:  # if its not an optional field...
 
