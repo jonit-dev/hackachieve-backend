@@ -1,8 +1,10 @@
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
+
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
+from hackachieve.classes.UserHandler import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -52,13 +54,20 @@ def user_register(request):
                 last_name=json_data['lastName']
             )
 
+            # setup boards and columns
+
+            # by default, user will have long term board / short term board and a Sprint, on going and backlog column for each
+
+
         if create_user:
+
+            UserHandler.generate_initial_boards_columns(create_user)
 
             # Register on maillist
 
             # adjust firstname to first letter uppercase (eg. Joao)
-            adjusted_name = json_data['firstName'].lower()
-            adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
+            # adjusted_name = json_data['firstName'].lower()
+            # adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
 
             # send = EmailHandler.send_email('Welcome to hackachieve', [json_data['email']],
             #                                "welcome",

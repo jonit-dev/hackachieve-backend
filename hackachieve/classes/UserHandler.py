@@ -1,3 +1,5 @@
+from apps.boards.models import Board
+from apps.columns.models import Column
 from hackachieve.classes.API import API
 
 
@@ -12,12 +14,51 @@ class UserHandler:
         return adjusted_name
 
     @staticmethod
-    def is_landlord(user):
-        if user.type != 2:
-            return False
-        else:
-            return True
+    def generate_initial_boards_columns(user):
 
+        # BOARDS =========================== #
+
+        long_term_board = Board(
+            name="Long Term Goals",
+            type=1,
+            user_id=user.id
+        )
+        long_term_board.save()
+
+        short_term_board = Board(
+            name="Short Term Goals",
+            type=2,
+            user_id=user.id
+        )
+        short_term_board.save()
+
+        # COLUMNS =========================== #
+
+        boards = Board.objects.filter(user_id=user.id)
+
+        for b in boards:
+            column_sprint = Column(
+                name="Weekly Sprint",
+                user_id=user.id,
+                board_id=b.id
+            )
+            column_sprint.save()
+
+            column_on_going = Column(
+                name="On Going",
+                user_id=user.id,
+                board_id=b.id
+            )
+            column_on_going.save()
+
+            column_done = Column(
+                name="Done",
+                user_id=user.id,
+                board_id=b.id
+            )
+            column_done.save()
+
+        return True
 
     @staticmethod
     def shorten_name(name):

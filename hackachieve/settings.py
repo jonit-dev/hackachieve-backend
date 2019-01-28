@@ -133,6 +133,7 @@ INSTALLED_APPS = [
     'apps.provinces',
     'apps.cities',
     'apps.boards',
+    'apps.columns',
     'apps.tests',
     'apps.logs',
     'apps.cronjobs',

@@ -29,4 +29,7 @@ urlpatterns = [
     url(r'^boards/show/(?P<board_id>[0-9]+)/$', board_views.show_board),
     url(r'^boards/delete/(?P<board_id>[0-9]+)/$', board_views.delete_board),
 
+
+    #columns
+
 ]
