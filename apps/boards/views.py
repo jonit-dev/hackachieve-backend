@@ -21,6 +21,7 @@ from django.forms.models import model_to_dict
 def create_board(request):
     json_data = API.json_get_data(request)
 
+
     # Empty fields valitation =========================== #
     check_user_fields = Validator.are_request_fields_valid(json_data)
 
@@ -37,7 +38,7 @@ def create_board(request):
 
     try:
 
-        user = User.objects.get(pk=int(json_data['user_id']))
+        user = User.objects.get(pk=API.getUserByToken(request))
 
     except Exception as e:
 
@@ -49,7 +50,7 @@ def create_board(request):
 
     # check if user already has a board with the same name
 
-    check_board = Board.objects.filter(name=json_data['name'], user_id=json_data['user_id'])
+    check_board = Board.objects.filter(name=json_data['name'], user_id=user.id)
 
     if len(check_board) >= 1:
         return API.json_response({

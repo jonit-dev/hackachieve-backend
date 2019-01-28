@@ -8,6 +8,7 @@ from apps.countries.api import views as api_countries_view
 from apps.users import views as user_views
 
 from apps.boards import views as board_views
+from apps.columns import views as column_views
 
 router = routers.DefaultRouter()
 router.register('provinces', api_provinces_view.ProvinceView)
@@ -29,7 +30,7 @@ urlpatterns = [
     url(r'^boards/show/(?P<board_id>[0-9]+)/$', board_views.show_board),
     url(r'^boards/delete/(?P<board_id>[0-9]+)/$', board_views.delete_board),
 
-
     #columns
+    url(r'^columns/create$', column_views.create),
 
 ]
