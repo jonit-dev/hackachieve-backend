@@ -28,14 +28,14 @@ SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-# if ENV == "prod":
-#     DEBUG = False
-#     API_HOST = 'https://www.thehackachieve.com:8000/'
-#     HOST_NAME = 'https://www.thehackachieve.com'
-# else:
-#     DEBUG = True
-#     API_HOST = 'http://localhost:8000/'
-#     HOST_NAME = 'http://hackachieve.local'
+if ENV == "prod":
+    DEBUG = False
+    API_HOST = 'https://www.thehackachieve.com:8000/'
+    HOST_NAME = 'https://www.thehackachieve.com'
+else:
+    DEBUG = True
+    API_HOST = 'http://localhost:8000/'
+    HOST_NAME = 'http://hackachieve.local'
 
 # ================================================================= #
 #                      TRANSACTIONAL EMAILS
@@ -132,6 +132,7 @@ INSTALLED_APPS = [
     'apps.countries',
     'apps.provinces',
     'apps.cities',
+    'apps.boards',
     'apps.tests',
     'apps.logs',
     'apps.cronjobs',
