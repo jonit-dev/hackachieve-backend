@@ -11,6 +11,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
 from django.core import serializers
 
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
+
 
 @csrf_exempt
 @api_view(['post'])
@@ -44,6 +47,17 @@ def create_board(request):
             "type": "danger"
         })
 
+    # check if user already has a board with the same name
+
+    check_board = Board.objects.filter(name=json_data['name'], user_id=json_data['user_id'])
+
+    if len(check_board) >= 1:
+        return API.json_response({
+            "status": "error",
+            "message": "This board already exists",
+            "type": "danger"
+        })
+
     board = Board(
         name=json_data['name'],
         type=json_data['type'],
@@ -57,3 +71,52 @@ def create_board(request):
         "type": "success"
     })
 
+
+@csrf_exempt
+@api_view(['get'])
+@permission_classes((IsAuthenticated,))
+def show_all_boards(request):
+    user = User.objects.get(pk=API.getUserByToken(request))
+
+    # fetch only your own boards
+    boards = Board.objects.filter(user_id=user.id)
+
+    return API.json_response(API.serialize_model(boards))
+
+
+@csrf_exempt
+@api_view(['get'])
+@permission_classes((IsAuthenticated,))
+def show_board(request, board_id):
+    from django.core import serializers
+    user = User.objects.get(pk=API.getUserByToken(request))
+    board = Board.objects.get(id=board_id, user_id=user.id)
+
+    board_dict = model_to_dict(board)
+
+    return JsonResponse(board_dict, safe=False)
+
+
+@csrf_exempt
+@api_view(['delete'])
+@permission_classes((IsAuthenticated,))
+def delete_board(request, board_id):
+    user = User.objects.get(pk=API.getUserByToken(request))
+
+    try:
+        board = Board.objects.get(id=board_id, user_id=user.id)
+    except Exception as e:  # and more generic exception handling on bottom
+        return API.json_response({
+            "status": "error",
+            "message": "Error while trying to delete the board",
+            "type": "error"
+        })
+
+    b = board.delete()
+
+    if b:
+        return API.json_response({
+            "status": "success",
+            "message": "Your board was deleted!",
+            "type": "success"
+        })

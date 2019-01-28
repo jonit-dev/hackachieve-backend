@@ -6,6 +6,7 @@ from apps.provinces.api import views as api_provinces_view  # class based serial
 from apps.cities.api import views as api_cities_view
 from apps.countries.api import views as api_countries_view
 from apps.users import views as user_views
+
 from apps.boards import views as board_views
 
 router = routers.DefaultRouter()
@@ -22,6 +23,10 @@ urlpatterns = [
     url('user/register', user_views.user_register),
 
     # Boards
-    url('boards/create', board_views.create_board),
+
+    url(r'^boards/create$', board_views.create_board),
+    url(r'^boards/$', board_views.show_all_boards),
+    url(r'^boards/show/(?P<board_id>[0-9]+)/$', board_views.show_board),
+    url(r'^boards/delete/(?P<board_id>[0-9]+)/$', board_views.delete_board),
 
 ]
