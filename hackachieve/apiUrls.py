@@ -39,6 +39,6 @@ urlpatterns = [
     #goals
     url(r'^goals/create$', goal_views.create),
     url(r'^goals/delete/(?P<goal_id>[0-9]+)/$', goal_views.delete),
-    url(r'^goals/(?P<goal_id>[0-9]+)/attach/column/(?P<column_id>[0-9]+)/$', goal_views.attach_to_column),
+    url(r'^goals/attach/columns$', goal_views.attach_to_column),
 
 ]

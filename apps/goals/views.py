@@ -101,19 +101,24 @@ def delete(request, goal_id):
 @csrf_exempt
 @api_view(['post'])
 @permission_classes((IsAuthenticated,))
-def attach_to_column(request, goal_id, column_id):
+def attach_to_column(request):
     json_data = API.json_get_data(request)
     print(json_data)
     user = User.objects.get(pk=API.getUserByToken(request))
 
-    # User exists check
-    if User.check_user_exists(user.id) is False:
-        return API.error_user_doesnt_exists()
-
     # check if column exists
-    if Column.check_exists(column_id) is False:
+    if Column.check_exists(json_data['column_id']) is False:
         return API.error_goal_inexistent_column()
 
-    # column_goal = Column_goal.attach()
+    column = Column.objects.get(pk=json_data['column_id'])
+    goal = Goal.objects.get(pk=json_data['goal_id'])
 
-    return
+    print("Attaching goal '{}' to column '{}'".format(goal.title, column.name))
+
+    Column_goal.attach(column, goal)
+
+    return API.json_response({
+        "status": "success",
+        "message": "Goal {} attached to column {}".format(goal.id, column.id),
+        "type": "success"
+    })

@@ -6,8 +6,8 @@ from apps.goals.models import Goal
 
 
 class Column_goal(models.Model):
-    column = models.ForeignKey(Column, on_delete=models.CASCADE)
-    goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
+    column = models.ManyToManyField(Column)
+    goal = models.ManyToManyField(Goal)
 
     def __str__(self):  # title on dashboard
         return self.column
