@@ -17,10 +17,4 @@ class User(AbstractUser):
 
     @staticmethod
     def check_user_exists(user_id):
-
-        user = User.objects.filter(pk=user_id)
-
-        if len(user) > 0:
-            return True
-        else:
-            return False
+        return User.objects.filter(pk=user_id).exists()

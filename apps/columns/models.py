@@ -16,8 +16,4 @@ class Column(models.Model):
 
     @staticmethod
     def check_exists(column_id):
-        check_column = Column.objects.filter(id=column_id)
-        if len(check_column) is 0:
-            return False
-        else:
-            return True
+        return Column.objects.filter(id=column_id).exists()

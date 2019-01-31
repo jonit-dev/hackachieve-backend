@@ -20,10 +20,9 @@ class Goal(models.Model):
         return self.title
 
     @staticmethod
-    def check_goal(user_id, goal_title):
-        check_goal = Goal.objects.filter(user_id=user_id, title=goal_title)
+    def check_goal_by_id(user_id, goal_id):
+        return Goal.objects.filter(user_id=user_id, id=goal_id).exists()
 
-        if len(check_goal) >= 1:
-            return True
-        else:
-            return False
+    @staticmethod
+    def check_goal_by_title(user_id, goal_title):
+        return Goal.objects.filter(user_id=user_id, title=goal_title).exists()

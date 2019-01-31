@@ -50,7 +50,7 @@ def create(request):
 
     # check if theres a column with the same name for this user
 
-    if Goal.check_goal(user.id, json_data['title']) is True:
+    if Goal.check_goal_by_title(user.id, json_data['title']) is True:
         return API.error_goal_already_exists()
 
     # if not, create it
@@ -112,7 +112,6 @@ def attach_to_column(request):
     column = Column.objects.get(pk=json_data['column_id'])
     goal = Goal.objects.get(pk=json_data['goal_id'])
 
-
     if Column_goal.objects.filter(column=json_data['column_id'], goal=json_data['goal_id']).exists() is True:
         return API.json_response({
             "status": "error",
@@ -128,3 +127,19 @@ def attach_to_column(request):
         "message": "Goal {} attached to column {}".format(goal.id, column.id),
         "type": "success"
     })
+
+
+@csrf_exempt
+@api_view(['get'])
+@permission_classes((IsAuthenticated,))
+def show(request, goal_id):
+    user = User.objects.get(pk=API.getUserByToken(request))
+
+    if Goal.check_goal_by_id(user.id, goal_id) is False:
+        return API.error_goal_not_found()
+
+    goal = Goal.objects.get(pk=goal_id)
+
+    goal_dict = model_to_dict(goal)
+
+    return JsonResponse(goal_dict, safe=False)

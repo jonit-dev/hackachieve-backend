@@ -14,20 +14,8 @@ class Board(models.Model):
 
     @staticmethod
     def check_board_exists(board_id):
-
-        check_board = Board.objects.filter(pk=board_id)
-
-        if len(check_board) > 0:
-            return True
-        else:
-            return False
+        return Board.objects.filter(pk=board_id).exists()
 
     @staticmethod
     def check_user_has_board(user_id, board_name):
-
-        check_board = Board.objects.filter(name=board_name, user_id=user_id)
-
-        if len(check_board) >= 1:
-            return True
-        else:
-            return False
+        return Board.objects.filter(name=board_name, user_id=user_id).exists()

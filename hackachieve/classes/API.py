@@ -140,6 +140,14 @@ class API:
         })
 
     @staticmethod
+    def error_goal_not_found():
+        return API.json_response({
+            "status": "error",
+            "message": "Goal not found.",
+            "type": "danger"
+        })
+
+    @staticmethod
     def error_goal_inexistent_column():
         return API.json_response({
             "status": "error",
