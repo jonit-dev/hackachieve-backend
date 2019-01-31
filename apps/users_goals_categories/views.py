@@ -4,18 +4,14 @@ from apps.boards.models import Board
 from apps.columns.models import Column
 from apps.columns_goals.models import Column_goal
 from apps.goals.models import Goal
+from apps.goals_categories.models import Goal_category
+from apps.users_goals_categories.models import User_Goal_Category
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
-import json
-from django.core import serializers
-
-from django.http import JsonResponse
-from django.forms.models import model_to_dict
 
 
 # Create your views here.
@@ -39,36 +35,18 @@ def create(request):
             "type": "danger"
         })
 
-    # if all fields are set to create our board
+    if User_Goal_Category.check_category_exists(json_data['category_name'], user.id) is True:
+        return API.error_category_already_exists()
 
-    if User.check_user_exists(user.id) is False:
-        return API.error_user_doesnt_exists()
-
-    # check if column exists
-    if Column.check_exists(json_data['column_id']) is False:
-        return API.error_goal_inexistent_column()
-
-    # check if theres a column with the same name for this user
-
-    if Goal.check_goal(user.id, json_data['title']) is True:
-        return API.error_goal_already_exists()
-
-    # if not, create it
-    new_goal = Goal(
-        user=User.objects.get(pk=user.id),
-        title=json_data['title'],
-        description=json_data['description'],
-        duration_hrs=0,
-        deadline=json_data['deadline'],
-        column=Column.objects.get(pk=json_data['column_id']),
-        column_day=json_data['column_day'],
-        priority=json_data['priority']
+    category = User_Goal_Category(
+        category_name=json_data['category_name'],
+        user=user
     )
-    new_goal.save()
+    category.save()
 
     return API.json_response({
         "status": "success",
-        "message": "Your new goal was created successfully!",
+        "message": "Your new category was created successfully!",
         "type": "success"
     })
 
@@ -76,24 +54,24 @@ def create(request):
 @csrf_exempt
 @api_view(['delete'])
 @permission_classes((IsAuthenticated,))
-def delete(request, goal_id):
+def delete(request, category_id):
     user = User.objects.get(pk=API.getUserByToken(request))
 
     try:
-        goal = Goal.objects.get(id=goal_id, user_id=user.id)
+        category = User_Goal_Category.objects.get(id=category_id, user_id=user.id)
     except Exception as e:  # and more generic exception handling on bottom
         return API.json_response({
             "status": "error",
-            "message": "Error while trying to delete the goal",
+            "message": "Error while trying to delete your category",
             "type": "error"
         })
 
-    c = goal.delete()
+    c = category.delete()
 
     if c:
         return API.json_response({
             "status": "success",
-            "message": "Your goal was deleted!",
+            "message": "Your category was deleted!",
             "type": "success"
         })
 
@@ -101,30 +79,38 @@ def delete(request, goal_id):
 @csrf_exempt
 @api_view(['post'])
 @permission_classes((IsAuthenticated,))
-def attach_to_column(request):
+def attach(request):
     json_data = API.json_get_data(request)
+
     user = User.objects.get(pk=API.getUserByToken(request))
 
-    # check if column exists
-    if Column.check_exists(json_data['column_id']) is False:
-        return API.error_goal_inexistent_column()
-
-    column = Column.objects.get(pk=json_data['column_id'])
-    goal = Goal.objects.get(pk=json_data['goal_id'])
-
-
-    if Column_goal.objects.filter(column=json_data['column_id'], goal=json_data['goal_id']).exists() is True:
+    try:
+        category = User_Goal_Category.objects.get(pk=json_data['category_id'])
+        goal = Goal.objects.get(pk=json_data['goal_id'])
+    except Exception as e:
         return API.json_response({
             "status": "error",
-            "message": "This goal is already attached to this column".format(goal.id, column.id),
+            "message": "Error while trying to attach your category",
             "type": "error"
         })
 
-    print("Attaching goal '{}' to column '{}'".format(goal.title, column.name))
-    Column_goal.attach(column, goal)
+    print("Attaching category '{}' to goal '{}'".format(goal.title, category.category_name))
+
+    # check if goal already has this category
+
+    gc = Goal_category.objects.filter(goal=json_data['goal_id'], category=json_data['category_id']).exists()
+
+    if gc is True:
+        return API.json_response({
+            "status": "error",
+            "message": "This goal is already attached to this category",
+            "type": "error"
+        })
+
+    Goal_category.attach(goal, category)
 
     return API.json_response({
         "status": "success",
-        "message": "Goal {} attached to column {}".format(goal.id, column.id),
+        "message": "Goal {} attached to category {}".format(goal.id, category.id),
         "type": "success"
     })

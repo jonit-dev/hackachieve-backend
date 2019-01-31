@@ -136,6 +136,8 @@ INSTALLED_APPS = [
     'apps.columns',
     'apps.goals',
     'apps.columns_goals',
+    'apps.users_goals_categories',
+    'apps.goals_categories',
     'apps.tests',
     'apps.logs',
     'apps.cronjobs',

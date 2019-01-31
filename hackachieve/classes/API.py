@@ -170,3 +170,11 @@ class API:
             "message": "This user already has this board",
             "type": "danger"
         })
+
+    @staticmethod
+    def error_category_already_exists():
+        return API.json_response({
+            "status": "error",
+            "message": "This category already exists",
+            "type": "danger"
+        })
