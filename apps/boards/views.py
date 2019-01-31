@@ -21,7 +21,6 @@ from django.forms.models import model_to_dict
 def create_board(request):
     json_data = API.json_get_data(request)
 
-
     # Empty fields valitation =========================== #
     check_user_fields = Validator.are_request_fields_valid(json_data)
 
@@ -36,28 +35,12 @@ def create_board(request):
 
         # if all fields are set to create our board
 
-    try:
-
-        user = User.objects.get(pk=API.getUserByToken(request))
-
-    except Exception as e:
-
-        return API.json_response({
-            "status": "error",
-            "message": "This user does not exists",
-            "type": "danger"
-        })
+    user = User.objects.get(pk=API.getUserByToken(request))
 
     # check if user already has a board with the same name
 
-    check_board = Board.objects.filter(name=json_data['name'], user_id=user.id)
-
-    if len(check_board) >= 1:
-        return API.json_response({
-            "status": "error",
-            "message": "This board already exists",
-            "type": "danger"
-        })
+    if Board.check_user_has_board(user.id, json_data['name']) is True:
+        return API.error_user_already_has_this_board()
 
     board = Board(
         name=json_data['name'],
@@ -90,7 +73,12 @@ def show_all_boards(request):
 @permission_classes((IsAuthenticated,))
 def show_board(request, board_id):
     from django.core import serializers
+
     user = User.objects.get(pk=API.getUserByToken(request))
+
+    if Board.check_board_exists(board_id) is False:
+        return API.error_board_not_found()
+
     board = Board.objects.get(id=board_id, user_id=user.id)
 
     board_dict = model_to_dict(board)
@@ -104,15 +92,11 @@ def show_board(request, board_id):
 def delete_board(request, board_id):
     user = User.objects.get(pk=API.getUserByToken(request))
 
-    try:
-        board = Board.objects.get(id=board_id, user_id=user.id)
-    except Exception as e:  # and more generic exception handling on bottom
-        return API.json_response({
-            "status": "error",
-            "message": "Error while trying to delete the board",
-            "type": "error"
-        })
+    # Check board exists
+    if Board.check_board_exists(board_id) is False:
+        return API.error_board_not_found()
 
+    board = Board.objects.get(id=board_id, user_id=user.id)
     b = board.delete()
 
     if b:

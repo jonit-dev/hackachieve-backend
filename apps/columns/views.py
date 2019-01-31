@@ -63,7 +63,7 @@ def create(request):
 
     check_column = Column.objects.filter(user_id=user.id, name=json_data['name'])
 
-    if len(check_column) > 1:
+    if len(check_column) >= 1:
         return API.json_response({
             "status": "error",
             "message": "Column with the same name already exists, for this user",

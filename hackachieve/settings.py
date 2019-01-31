@@ -134,6 +134,8 @@ INSTALLED_APPS = [
     'apps.cities',
     'apps.boards',
     'apps.columns',
+    'apps.goals',
+    'apps.columns_goals',
     'apps.tests',
     'apps.logs',
     'apps.cronjobs',

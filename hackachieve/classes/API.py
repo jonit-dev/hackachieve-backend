@@ -126,3 +126,47 @@ class API:
             final_results.append(d)
 
         return final_results
+
+    # ================================================================= #
+    #                      ERROR MESSAGES
+    # ================================================================= #
+
+    @staticmethod
+    def error_goal_already_exists():
+        return API.json_response({
+            "status": "error",
+            "message": "Goal with the same title already exists",
+            "type": "danger"
+        })
+
+    @staticmethod
+    def error_goal_inexistent_column():
+        return API.json_response({
+            "status": "error",
+            "message": "Trying to add goal to inexistent column",
+            "type": "danger"
+        })
+
+    @staticmethod
+    def error_user_doesnt_exists():
+        return API.json_response({
+            "status": "error",
+            "message": "This user does not exists",
+            "type": "danger"
+        })
+
+    @staticmethod
+    def error_board_not_found():
+        return API.json_response({
+            "status": "error",
+            "message": "Board not found",
+            "type": "error"
+        })
+
+    @staticmethod
+    def error_user_already_has_this_board():
+        return API.json_response({
+            "status": "error",
+            "message": "This user already has this board",
+            "type": "danger"
+        })
