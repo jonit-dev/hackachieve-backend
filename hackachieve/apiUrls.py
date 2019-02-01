@@ -31,17 +31,19 @@ urlpatterns = [
     url(r'^boards/$', board_views.show_all_boards),
     url(r'^boards/show/(?P<board_id>[0-9]+)/$', board_views.show_board),
     url(r'^boards/delete/(?P<board_id>[0-9]+)/$', board_views.delete_board),
+    url(r'^boards/attach/goals/$', board_views.attach_to_goal),
+    url(r'^boards/(?P<board_id>[0-9]+)/goals/$', board_views.show_goals), #list of goals associated with a particular board
 
     #columns
-    url(r'^columns/create$', column_views.create),
-    url(r'^columns/board/(?P<board_id>[0-9]+)$', column_views.show_columns_from_board), #show all columns from a particular board
+    url(r'^columns/create/$', column_views.create),
+    url(r'^columns/board/(?P<board_id>[0-9]+)/$', column_views.show_columns_from_board), #show all columns from a particular board
     url(r'^columns/delete/(?P<column_id>[0-9]+)/$', column_views.delete),
 
     #goals
-    url(r'^goals/create$', goal_views.create),
+    url(r'^goals/create/$', goal_views.create),
     url(r'^goals/delete/(?P<goal_id>[0-9]+)/$', goal_views.delete),
-    url(r'^goals/attach/columns$', goal_views.attach_to_column),
-    url(r'^goals/show/(?P<goal_id>[0-9]+)$', goal_views.show),
+    url(r'^goals/attach/columns/$', goal_views.attach_to_column),
+    url(r'^goals/show/(?P<goal_id>[0-9]+)/$', goal_views.show),
 
     #categories
     url(r'^categories/create$', categories_views.create),

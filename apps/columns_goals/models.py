@@ -9,9 +9,6 @@ class Column_goal(models.Model):
     column = models.ManyToManyField(Column)
     goal = models.ManyToManyField(Goal)
 
-    def __str__(self):  # title on dashboard
-        return self.column
-
     @classmethod
     def attach(cls, column, goal):
         # first create empty record on database
