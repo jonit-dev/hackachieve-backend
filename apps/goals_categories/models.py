@@ -9,8 +9,7 @@ class Goal_category(models.Model):
     goal = models.ManyToManyField(Goal)
     category = models.ManyToManyField(User_Goal_Category)
 
-    def __str__(self):  # title on dashboard
-        return self.goal
+
 
     @classmethod
     def attach(cls, goal, category):

@@ -2,9 +2,7 @@ from django.db import models
 
 # Create your models here.
 from apps.columns.models import Column
-from apps.goals_categories.models import Goal_category
 from apps.users.models import User
-from hackachieve.classes.API import API
 
 
 class Goal(models.Model):
@@ -19,7 +17,6 @@ class Goal(models.Model):
     type = models.IntegerField(default=0)  # long term (0) or short term (1) goal
     status = models.BooleanField(default=1)  # active (1), inactive (0)
 
-
     def __str__(self):  # title on dashboard
         return self.title
 
@@ -30,3 +27,4 @@ class Goal(models.Model):
     @staticmethod
     def check_goal_by_title(user_id, goal_title):
         return Goal.objects.filter(user_id=user_id, title=goal_title).exists()
+

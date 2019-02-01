@@ -145,3 +145,19 @@ def show(request, goal_id):
     goal_dict = model_to_dict(goal)
 
     return JsonResponse(goal_dict, safe=False)
+
+
+@csrf_exempt
+@api_view(['get'])
+@permission_classes((IsAuthenticated,))
+def long_short(request, long_term_goal_id):
+    user = User.objects.get(pk=API.getUserByToken(request))
+
+    if Goal.check_goal_by_id(user.id, long_term_goal_id) is False:
+        return API.error_goal_not_found()
+
+    goal = Goal.objects.get(pk=long_term_goal_id)
+
+    goal_dict = model_to_dict(goal)
+
+    return JsonResponse(goal_dict, safe=False)
