@@ -8,10 +8,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-To run hackachieve server, make sure you have installed
+To run hackachieve server, make sure you have installed.
 
 ```
 MAMP or XAMP or LAMP stack
+mysql should be running before you try to run your server.
 ```
 
 ### Installing
