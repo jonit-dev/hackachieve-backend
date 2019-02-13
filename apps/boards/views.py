@@ -2,6 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.boards.models import Board
 from apps.boards_goals.models import Board_goal
+from apps.columns.models import Column
 from apps.goals.models import Goal
 from apps.goals_categories.models import Goal_category
 from hackachieve.classes.Validator import *
@@ -84,9 +85,23 @@ def show_board(request, board_id):
 
     board = Board.objects.get(id=board_id, user_id=user.id)
 
-    board_dict = model_to_dict(board)
+    columns = Column.objects.filter(board_id=board.id)
 
-    return JsonResponse(board_dict, safe=False)
+    columns = list(columns.values('name',
+                                  'id'))  # convert queryset (django model) into list of objects. On this case, get only name and id attributes
+
+    for column in columns:
+        goals = Goal.objects.filter(column_id=column['id'])
+        # get this model using a filter
+        goals = list(goals.values())
+        column['goals'] = goals
+
+    response = {
+        'board': model_to_dict(board),
+    }
+    response['board']['columns'] = columns
+
+    return JsonResponse(response, safe=False)
 
 
 @csrf_exempt
@@ -155,8 +170,7 @@ def show_goals(request, board_id):
 
     goals = Board_goal.objects.get(board=board_id).goal.all()
 
-
-    #custom goals serialization
+    # custom goals serialization
 
     data = serializers.serialize('json', goals)
     final_results = []
