@@ -5,7 +5,7 @@ from apps.columns.models import Column
 from apps.columns_goals.models import Column_goal
 from apps.goals.models import Goal
 from apps.goals_categories.models import Goal_category
-from apps.users_goals_categories.models import User_Goal_Category
+from apps.users_categories.models import User_Category
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -35,10 +35,10 @@ def create(request):
             "type": "danger"
         })
 
-    if User_Goal_Category.check_category_exists(json_data['category_name'], user.id) is True:
+    if User_Category.check_category_exists(json_data['category_name'], user.id) is True:
         return API.error_category_already_exists()
 
-    category = User_Goal_Category(
+    category = User_Category(
         category_name=json_data['category_name'],
         user=user
     )
@@ -58,7 +58,7 @@ def delete(request, category_id):
     user = User.objects.get(pk=API.getUserByToken(request))
 
     try:
-        category = User_Goal_Category.objects.get(id=category_id, user_id=user.id)
+        category = User_Category.objects.get(id=category_id, user_id=user.id)
     except Exception as e:  # and more generic exception handling on bottom
         return API.json_response({
             "status": "error",
@@ -85,7 +85,7 @@ def attach(request):
     user = User.objects.get(pk=API.getUserByToken(request))
 
     try:
-        category = User_Goal_Category.objects.get(pk=json_data['category_id'])
+        category = User_Category.objects.get(pk=json_data['category_id'])
         goal = Goal.objects.get(pk=json_data['goal_id'])
     except Exception as e:
         return API.json_response({

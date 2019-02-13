@@ -3,6 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.boards.models import Board
 from apps.columns.models import Column
+from apps.columns_categories.models import Column_category
+from apps.users_categories.models import User_Category
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -82,6 +84,27 @@ def create(request):
     return API.json_response({
         "status": "success",
         "message": "Your new column was created successfully!",
+        "type": "success"
+    })
+
+
+@csrf_exempt
+@api_view(['post'])
+@permission_classes((IsAuthenticated,))
+def attach_category(request, column_id):
+    json_data = API.json_get_data(request)
+    user = User.objects.get(pk=API.getUserByToken(request))
+    category = User_Category.objects.get(id=json_data['category_id'])
+
+    # first we get the column
+    column = Column.objects.get(id=column_id, user_id=user.id)
+
+    # set relationship
+    Column_category.attach(column, category)
+
+    return JsonResponse({
+        "status": "success",
+        "message": "Your category was attached to the column!",
         "type": "success"
     })
 

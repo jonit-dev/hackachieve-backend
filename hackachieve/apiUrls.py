@@ -10,7 +10,7 @@ from apps.users import views as user_views
 from apps.boards import views as board_views
 from apps.columns import views as column_views
 from apps.goals import views as goal_views
-from apps.users_goals_categories import views as categories_views
+from apps.users_categories import views as categories_views
 
 router = routers.DefaultRouter()
 router.register('provinces', api_provinces_view.ProvinceView)
@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^columns/board/(?P<board_id>[0-9]+)/$', column_views.show_columns_from_board),
     # show all columns from a particular board
     url(r'^columns/delete/(?P<column_id>[0-9]+)/$', column_views.delete),
+    url(r'^columns/attach-category/(?P<column_id>[0-9]+)/$', column_views.attach_category),
 
     # goals
     url(r'^goals/create/$', goal_views.create),

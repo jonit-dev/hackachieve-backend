@@ -2,12 +2,12 @@ from django.db import models
 
 # Create your models here.
 from apps.goals.models import Goal
-from apps.users_goals_categories.models import User_Goal_Category
+from apps.users_categories.models import User_Category
 
 
 class Goal_category(models.Model):
     goal = models.ManyToManyField(Goal)
-    category = models.ManyToManyField(User_Goal_Category)
+    category = models.ManyToManyField(User_Category)
 
 
 
