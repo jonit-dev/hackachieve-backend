@@ -1,5 +1,9 @@
+import datetime
 from apps.boards.models import Board
 from apps.columns.models import Column
+from apps.columns_categories.models import Column_category
+from apps.goals.models import Goal
+from apps.users_categories.models import User_Category
 from hackachieve.classes.API import API
 
 
@@ -15,6 +19,8 @@ class UserHandler:
 
     @staticmethod
     def generate_initial_boards_columns(user):
+
+        # This script is responsible for generating board default columns, goals and categories after user registering
 
         # BOARDS =========================== #
 
@@ -32,37 +38,66 @@ class UserHandler:
         )
         short_term_board.save()
 
+        # CATEGORIES =========================== #
+
+        health = User_Category(
+            category_name='Health',
+            user_id=user.id
+        )
+        health.save()
+
+        professional = User_Category(
+            category_name='Professional',
+            user_id=user.id
+        )
+        professional.save()
+
+        financial = User_Category(
+            category_name='Financial',
+            user_id=user.id
+        )
+        financial.save()
+
+        leisure = User_Category(
+            category_name='Leisure',
+            user_id=user.id
+        )
+        leisure.save()
+
         # COLUMNS =========================== #
 
-        boards = Board.objects.filter(user_id=user.id)
+        now = datetime.datetime.now()
 
-        for b in boards:
-            column_sprint = Column(
-                name="Weekly Sprint",
-                user_id=user.id,
-                board_id=b.id
-            )
-            column_sprint.save()
+        column_sprint = Column(
+            name="Lose 1kg in 10 days",
+            user_id=user.id,
+            board_id=short_term_board.id,
+            deadline=now + datetime.timedelta(days=10)  # set a default 10 days deadline for this sample column
+        )
+        column_sprint.save()
 
-            column_on_going = Column(
-                name="On Going",
-                user_id=user.id,
-                board_id=b.id
-            )
-            column_on_going.save()
+        Column_category.attach(column_sprint, health)  # set a sample category for this one
 
-            column_done = Column(
-                name="Done",
-                user_id=user.id,
-                board_id=b.id
-            )
-            column_done.save()
+        # todo: set column category
 
-        return True
+        # GOALS =========================== #
+        # sample goals
+
+
+        goal = Goal(
+            title="This is a sample goal",
+            description="Description here",
+            duration_hrs=None,
+            deadline=now + datetime.timedelta(days=3),
+            priority=0,
+            column_id=column_sprint.id,
+            user_id=user.id,
+            status=1)  # active
+        goal.save()
+
 
     @staticmethod
     def shorten_name(name):
-
         name_data = name.split(" ")
 
         first_name = name_data[0]

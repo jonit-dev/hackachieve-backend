@@ -78,8 +78,10 @@ def show_all_boards(request):
 @csrf_exempt
 @api_view(['get'])
 @permission_classes((IsAuthenticated,))
-def show_board(request, board_id):
+def show_board(request, board_id, goal_type):
     from django.core import serializers
+
+
 
     user = User.objects.get(pk=API.getUserByToken(request))
 
@@ -88,7 +90,8 @@ def show_board(request, board_id):
 
     board = Board.objects.get(id=board_id, user_id=user.id)
 
-    board_columns_goals = BoardHandler.get_columns_and_goals(board)
+
+    board_columns_goals = BoardHandler.get_columns_and_goals(board, goal_type)
 
     return JsonResponse(board_columns_goals, safe=False)
 

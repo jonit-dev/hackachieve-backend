@@ -61,9 +61,7 @@ def create(request):
         duration_hrs=0,
         deadline=json_data['deadline'],
         column=Column.objects.get(pk=json_data['column_id']),
-        column_day=json_data['column_day'],
         priority=json_data['priority'],
-        type=json_data['type'],
         status=1 #always active on creation
     )
     new_goal.save()

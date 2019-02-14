@@ -12,10 +12,8 @@ class Goal(models.Model):
     duration_hrs = models.IntegerField(default=None, null=True)
     deadline = models.DateTimeField(auto_now_add=True)
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
-    column_day = models.IntegerField(default=0)
     priority = models.BooleanField(default=0)
-    type = models.IntegerField(default=0)  # long term (0) or short term (1) goal
-    status = models.BooleanField(default=1)  # active (1), inactive (0)
+    status = models.IntegerField(default=1)  # 1 = standby, 2 = ongoing, 3=done
 
     def __str__(self):  # title on dashboard
         return self.title
