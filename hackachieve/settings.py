@@ -30,8 +30,8 @@ SECRET_KEY = 'kj%%mx99x(&77^1k60oiij3yq*@19luw#-r4b26w4tybu$-zva'
 
 if ENV == "prod":
     DEBUG = False
-    API_HOST = 'https://www.thehackachieve.com:8000/'
-    HOST_NAME = 'https://www.thehackachieve.com'
+    API_HOST = 'https://www.hackachieve.com:8000/'
+    HOST_NAME = 'https://www.hackachieve.com'
 else:
     DEBUG = True
     API_HOST = 'http://localhost:8000/'
@@ -81,6 +81,9 @@ else:
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    '13.56.71.199',
+    'hackachieve.com',
+    'www.hackachieve.com',
     # '104.248.222.108',
     # 'thehackachieve.com',
     # 'www.thehackachieve.com'
@@ -121,9 +124,9 @@ CORS_ALLOW_HEADERS = (
 CSRF_TRUSTED_ORIGINS = (
     'localhost:8000',
     '127.0.0.1:8000',
-    '104.248.222.108:8000',
-    'thehackachieve.com:8000',
-    'www.thehackachieve.com:8000'
+    '13.56.71.199:8000',
+    'hackachieve.com:8000',
+    'www.hackachieve.com:8000'
 )
 
 INSTALLED_APPS = [
