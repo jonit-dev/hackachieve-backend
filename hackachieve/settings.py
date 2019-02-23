@@ -136,7 +136,7 @@ INSTALLED_APPS = [
     'apps.provinces',
     'apps.cities',
     'apps.boards',
-    'apps.boards_goals',
+
     'apps.columns',
     'apps.columns_categories',
     'apps.goals',

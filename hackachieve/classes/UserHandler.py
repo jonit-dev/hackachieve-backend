@@ -24,77 +24,100 @@ class UserHandler:
 
         # BOARDS =========================== #
 
-        long_term_board = Board(
-            name="Long Term Goals",
-            type=1,
-            user_id=user.id
+        board = Board(
+            name="Family",
+            user_id=user.id,
+            description="Everything"
         )
-        long_term_board.save()
+        board.save()
 
-        short_term_board = Board(
-            name="Short Term Goals",
-            type=2,
-            user_id=user.id
+        health_board = Board(
+            name="Health",
+            user_id=user.id,
+            description="Goals to get in shape until the summer"
         )
-        short_term_board.save()
+        health_board.save()
+
+        board = Board(
+            name="Career",
+            user_id=user.id,
+            description="Things to learn to leverage my career"
+        )
+        board.save()
+
+        board = Board(
+            name="Finances",
+            user_id=user.id,
+            description="Achieve financial freedom"
+        )
+        board.save()
+
+        board = Board(
+            name="Personal Development",
+            user_id=user.id,
+            description="Improve myself"
+        )
+        board.save()
+
+        board = Board(
+            name="Spiritual",
+            user_id=user.id,
+            description="Become a meditation master"
+        )
+        board.save()
+
+        board = Board(
+            name="Leisure & Fun",
+            user_id=user.id,
+            description="Everybody needs to relax"
+        )
+        board.save()
 
         # CATEGORIES =========================== #
 
-        health = User_Category(
-            category_name='Health',
+        high_priority_category = User_Category(
+            category_name='High Priority',
             user_id=user.id
         )
-        health.save()
+        high_priority_category.save()
 
-        professional = User_Category(
-            category_name='Professional',
+        medium_priority_category = User_Category(
+            category_name='Medium Priority',
             user_id=user.id
         )
-        professional.save()
+        medium_priority_category.save()
 
-        financial = User_Category(
-            category_name='Financial',
+        low_priority_category = User_Category(
+            category_name='Low Priority',
             user_id=user.id
         )
-        financial.save()
-
-        leisure = User_Category(
-            category_name='Leisure',
-            user_id=user.id
-        )
-        leisure.save()
+        low_priority_category.save()
 
         # COLUMNS =========================== #
 
         now = datetime.datetime.now()
 
         column_sprint = Column(
-            name="Lose 1kg in 10 days",
+            name="Lose 10kg in 20 days",
             user_id=user.id,
-            board_id=short_term_board.id,
-            deadline=now + datetime.timedelta(days=10)  # set a default 10 days deadline for this sample column
+            board_id=health_board.id,
+            deadline=now + datetime.timedelta(days=20)  # set a default 20 days deadline for this sample column
         )
         column_sprint.save()
 
-        Column_category.attach(column_sprint, health)  # set a sample category for this one
-
-        # todo: set column category
+        Column_category.attach(column_sprint, high_priority_category)  # set a sample category for this one
 
         # GOALS =========================== #
         # sample goals
 
-
         goal = Goal(
-            title="This is a sample goal",
-            description="Description here",
+            title="Subscribe to a gym plan",
+            description="This is just a short term goal sample",
             duration_hrs=None,
             deadline=now + datetime.timedelta(days=3),
-            priority=0,
             column_id=column_sprint.id,
-            user_id=user.id,
-            status=1)  # active
+            user_id=user.id)  # active
         goal.save()
-
 
     @staticmethod
     def shorten_name(name):

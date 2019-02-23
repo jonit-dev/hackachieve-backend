@@ -31,8 +31,6 @@ urlpatterns = [
     url(r'^boards/$', board_views.show_all_boards),
     url(r'^boards/show/(?P<board_id>[0-9]+)/(?P<goal_type>[a-zA-z]+)$', board_views.show_board),
     url(r'^boards/delete/(?P<board_id>[0-9]+)/$', board_views.delete_board),
-    url(r'^boards/attach/goals/$', board_views.attach_to_goal),
-    url(r'^boards/(?P<board_id>[0-9]+)/goals/$', board_views.show_goals),
     # list of goals associated with a particular board
 
     # columns
@@ -51,8 +49,8 @@ urlpatterns = [
     # fetch list of short term goals associated with a long term one
 
     # categories
-    url(r'^categories/create$', categories_views.create),
+    url(r'^categories/create/$', categories_views.create),
     url(r'^categories/delete/(?P<category_id>[0-9]+)/$', categories_views.delete),
-    url(r'^categories/attach/goals', categories_views.attach),
+    url(r'^categories/attach/goals/$', categories_views.attach),
 
 ]

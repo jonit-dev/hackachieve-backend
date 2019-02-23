@@ -4,8 +4,8 @@ from apps.users.models import User
 
 class Board(models.Model):
     name = models.CharField(max_length=255)
-    type = models.IntegerField(default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.CharField(max_length=255, default=None)
 
     def __str__(self):  # title on dashboard
         return self.name
