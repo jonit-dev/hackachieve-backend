@@ -79,21 +79,33 @@ def show_all_boards(request):
 @api_view(['get'])
 @permission_classes((IsAuthenticated,))
 def show_board(request, board_id, goal_type):
-    from django.core import serializers
-
-
-
     user = User.objects.get(pk=API.getUserByToken(request))
 
-    if Board.check_board_exists(board_id) is False:
-        return API.error_board_not_found()
+    print(board_id)
 
-    board = Board.objects.get(id=board_id, user_id=user.id)
+    if int(board_id) == 0:  # get all boards information
 
 
-    board_columns_goals = BoardHandler.get_columns_and_goals(board, goal_type)
+        boards = Board.objects.filter(user_id=user.id)  # get all boards that I own
 
-    return JsonResponse(board_columns_goals, safe=False)
+        boards_info = []
+
+        for board in boards:
+            board_columns_goals = BoardHandler.get_columns_and_goals(board, goal_type)
+
+            boards_info.append(board_columns_goals)
+
+        return JsonResponse(boards_info, safe=False)
+
+    else:
+        if Board.check_board_exists(board_id) is False:
+            return API.error_board_not_found()
+
+        board = Board.objects.get(id=board_id, user_id=user.id)
+
+        board_columns_goals = BoardHandler.get_columns_and_goals(board, goal_type)
+
+        return JsonResponse(board_columns_goals, safe=False)
 
 
 @csrf_exempt
