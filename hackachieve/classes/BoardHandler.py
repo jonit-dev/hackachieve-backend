@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from django.forms import model_to_dict
 
+from apps.boards.models import Board
 from apps.columns.models import Column
 from apps.columns_categories.models import Column_category
 from apps.goals.models import Goal
@@ -18,6 +19,8 @@ class BoardHandler:
     def get_columns_and_goals(board, goal_type):
 
         # THIS FUNCTION IS RESPONSIBLE FOR FETCHING ALL BOARD RELATED DATA (columns, goals) AND CONSTRUCTING IT INTO A DICTIONARY (what will be sent over to the client as JSON)
+
+        board = Board.objects.get(id=board.id)
 
         columns = Column.objects.filter(board_id=board.id)
 
@@ -49,14 +52,21 @@ class BoardHandler:
 
             # get this model using a filter
             goals = list(goals.values())
+            column['board_name'] = board.name
+            column['board_description'] = board.description
             column['goals'] = goals
             column['total_completed_goals'] = total_completed_goals
             column['total_goals'] = len(goals)
             column['categories'] = categories_data
             column['days_to_complete'] = BoardHandler.diff_dates(datetime.now(timezone.utc), column['deadline'])
 
+        board = model_to_dict(board)
         response = {
-            'board': model_to_dict(board),
+            'name': board['name'],
+            'description': board['description'],
+            'columns': columns
         }
-        response['board']['columns'] = columns
+
+
+
         return response

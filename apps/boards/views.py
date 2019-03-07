@@ -81,7 +81,7 @@ def show_all_boards(request):
 def show_board(request, board_id, goal_type):
     user = User.objects.get(pk=API.getUserByToken(request))
 
-    print(board_id)
+
 
     if int(board_id) == 0:  # get all boards information
 
