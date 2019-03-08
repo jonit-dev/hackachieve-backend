@@ -82,21 +82,14 @@ def update(request, goal_id):
     user = User.objects.get(pk=API.getUserByToken(request))
     json_data = API.json_get_data(request)
 
-    # Convert string based deadline into DATETIME (if we dont do it, server will thrown an error)
-    exploded_deadline = json_data['deadline'].split('/')
-    goal_deadline_datetime = datetime.datetime(int(exploded_deadline[2]), int(exploded_deadline[0]),
-                                               int(exploded_deadline[1]))
-    json_data['deadline'] = goal_deadline_datetime
-
-    goal = Goal.objects.filter(id=goal_id, user_id=user.id).update(**json_data)
-    # try:
-    #
-    # except Exception as e:  # and more generic exception handling on bottom
-    #     return API.json_response({
-    #         "status": "error",
-    #         "message": "Error while trying to update your goal",
-    #         "type": "error"
-    #     })
+    try:
+        goal = Goal.objects.filter(id=goal_id, user_id=user.id).update(**json_data)
+    except Exception as e:  # and more generic exception handling on bottom
+        return API.json_response({
+            "status": "error",
+            "message": "Error while trying to update your goal",
+            "type": "error"
+        })
 
     if goal:
         return API.json_response({
