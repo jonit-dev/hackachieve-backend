@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^columns/attach-category/(?P<column_id>[0-9]+)/$', column_views.attach_category),
 
     # goals
+    url(r'^goals/update/(?P<goal_id>[0-9]+)/$', goal_views.update),
     url(r'^goals/create/$', goal_views.create),
     url(r'^goals/delete/(?P<goal_id>[0-9]+)/$', goal_views.delete),
     url(r'^goals/attach/columns/$', goal_views.attach_to_column),

@@ -1,3 +1,5 @@
+import datetime
+
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.boards.models import Board
@@ -62,7 +64,7 @@ def create(request):
         deadline=json_data['deadline'],
         column=Column.objects.get(pk=json_data['column_id']),
         priority=json_data['priority'],
-        status=1 #always active on creation
+        status=1  # always active on creation
     )
     new_goal.save()
 
@@ -71,6 +73,37 @@ def create(request):
         "message": "Your new goal was created successfully!",
         "type": "success"
     })
+
+
+@csrf_exempt
+@api_view(['put', 'patch'])
+@permission_classes((IsAuthenticated,))
+def update(request, goal_id):
+    user = User.objects.get(pk=API.getUserByToken(request))
+    json_data = API.json_get_data(request)
+
+    # Convert string based deadline into DATETIME (if we dont do it, server will thrown an error)
+    exploded_deadline = json_data['deadline'].split('/')
+    goal_deadline_datetime = datetime.datetime(int(exploded_deadline[2]), int(exploded_deadline[0]),
+                                               int(exploded_deadline[1]))
+    json_data['deadline'] = goal_deadline_datetime
+
+    goal = Goal.objects.filter(id=goal_id, user_id=user.id).update(**json_data)
+    # try:
+    #
+    # except Exception as e:  # and more generic exception handling on bottom
+    #     return API.json_response({
+    #         "status": "error",
+    #         "message": "Error while trying to update your goal",
+    #         "type": "error"
+    #     })
+
+    if goal:
+        return API.json_response({
+            "status": "success",
+            "message": "Your goal was updated!",
+            "type": "success"
+        })
 
 
 @csrf_exempt
