@@ -84,6 +84,7 @@ ALLOWED_HOSTS = [
     '13.56.71.199',
     'hackachieve.com',
     'www.hackachieve.com',
+    'ip-172-31-2-208.us-west-1.compute.internal'
     # '104.248.222.108',
     # 'thehackachieve.com',
     # 'www.thehackachieve.com'
@@ -126,7 +127,8 @@ CSRF_TRUSTED_ORIGINS = (
     '127.0.0.1:8000',
     '13.56.71.199:8000',
     'hackachieve.com:8000',
-    'www.hackachieve.com:8000'
+    'www.hackachieve.com:8000',
+    'ip-172-31-2-208.us-west-1.compute.internal:8000'
 )
 
 INSTALLED_APPS = [
