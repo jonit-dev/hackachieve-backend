@@ -8,6 +8,7 @@ from hackachieve.classes.API import API
 
 class Column(models.Model):
     name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, default=None)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     deadline = models.DateTimeField(null=True, default=None)

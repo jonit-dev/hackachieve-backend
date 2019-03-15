@@ -76,8 +76,10 @@ def create(request):
 
     new_column = Column(
         name=json_data['name'],
+        description=json_data['description'],
         board=Board.objects.get(pk=json_data['board_id']),
-        user=user
+        user=user,
+        deadline=json_data['deadline']
     )
     new_column.save()
 
