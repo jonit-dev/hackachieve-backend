@@ -26,7 +26,6 @@ from django.forms.models import model_to_dict
 def create(request):
     json_data = API.json_get_data(request)
     user = User.objects.get(pk=API.getUserByToken(request))
-
     # Empty fields valitation =========================== #
     check_user_fields = Validator.are_request_fields_valid(json_data)
 
