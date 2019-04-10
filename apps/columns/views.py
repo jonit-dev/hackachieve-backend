@@ -84,7 +84,7 @@ def create(request):
 
     return API.json_response({
         "status": "success",
-        "message": "Your new column was created successfully!",
+        "message": "Your new main goal was created successfully!",
         "type": "success"
     })
 

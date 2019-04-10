@@ -67,7 +67,7 @@ class UserHandler:
         board.save()
 
         board = Board(
-            name="Leisure & Fun",
+            name="Leisure and Fun",
             user_id=user.id,
             description="Everybody needs to relax"
         )
