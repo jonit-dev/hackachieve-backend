@@ -27,7 +27,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hackachieve',
         'USER': 'django-admin',
-        'PASSWORD': '32258190',
+        'PASSWORD': 'yourpasswordhere',
         'HOST': '127.0.0.1',
         'POST': '3306',
         'OPTIONS': {
