@@ -101,7 +101,8 @@ class UserHandler:
             name="Lose 10kg in 20 days",
             user_id=user.id,
             board_id=health_board.id,
-            deadline=now + datetime.timedelta(days=20)  # set a default 20 days deadline for this sample column
+            deadline=now + datetime.timedelta(days=20),  # set a default 20 days deadline for this sample column
+            description='Get in shape'
         )
         column_sprint.save()
 

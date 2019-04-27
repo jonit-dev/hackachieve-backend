@@ -61,6 +61,9 @@ def user_register(request):
 
         if create_user:
 
+
+
+
             UserHandler.generate_initial_boards_columns(create_user)
 
             # Register on maillist
