@@ -52,9 +52,9 @@ class BoardHandler:
 
             # get this model using a filter
             goals = list(goals.values())
-            column['board_name'] = board.name
-            column['board_description'] = board.description
-            column['goals'] = goals
+            column['long_term_goal_name'] = board.name
+            column['long_term_goal_description'] = board.description
+            column['short_term_goals'] = goals
             column['total_completed_goals'] = total_completed_goals
             column['total_goals'] = len(goals)
             column['categories'] = categories_data
@@ -64,7 +64,7 @@ class BoardHandler:
         response = {
             'name': board['name'],
             'description': board['description'],
-            'columns': columns
+            'long_term_goals': columns
         }
 
 
