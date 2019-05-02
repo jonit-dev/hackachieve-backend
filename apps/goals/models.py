@@ -10,7 +10,7 @@ class Goal(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     duration_hrs = models.IntegerField(default=None, null=True)
-    deadline = models.DateTimeField(auto_now_add=True)
+    deadline = models.DateTimeField()
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
     priority = models.BooleanField(default=0)
     status = models.IntegerField(default=1)  # 1 = standby, 2 = ongoing, 3=done

@@ -1,5 +1,7 @@
 import datetime
 
+from datetime import *
+
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.boards.models import Board
@@ -55,13 +57,40 @@ def create(request):
     if Goal.check_goal_by_title(user.id, json_data['title']) is True:
         return API.error_goal_already_exists()
 
-    # if not, create it
+    # check if short term goal deadline > long term goal deadline
+
+    short_term_deadline = datetime.strptime(json_data['deadline'], '%Y-%m-%d')
+    long_term_deadline = datetime.strptime(Column.objects.get(pk=json_data['column_id']).deadline.strftime('%Y-%m-%d'),
+                                           '%Y-%m-%d')
+
+    if short_term_deadline > long_term_deadline:
+        return API.json_response({
+            "status": "error",
+            "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
+                short_term_deadline.date(), long_term_deadline.date()),
+            "type": "danger"
+        })
+
+    # check if user is trying to schedule a goal to the past
+    today = datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+    if today > short_term_deadline:
+        return API.json_response({
+            "status": "error",
+            "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
+            "type": "danger"
+        })
+
+    # create new datetime
+    date = json_data['deadline'].split('-')
+
+    # # if not, create it
     new_goal = Goal(
         user=User.objects.get(pk=user.id),
         title=json_data['title'],
         description=json_data['description'],
         duration_hrs=0,
-        deadline=json_data['deadline'],
+        deadline=datetime(int(date[0]), int(date[1]), int(date[2])),
         column=Column.objects.get(pk=json_data['column_id']),
         priority=json_data['priority'],
         status=1  # always active on creation

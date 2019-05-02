@@ -1,17 +1,7 @@
-places_names = ['Burnaby','Stanley Park','Yaletown','Oakridge']
+import datetime
 
+date_1 = datetime.datetime.strptime('2020-09-20', '%Y-%m-%d').date()
+date_2 = datetime.datetime.strptime('2020-05-20', '%Y-%m-%d').date()
 
-def generate_places_names_string(places_names):
-    if len(places_names) == 3:
-        output = ", ".join(places_names)
-    elif len(places_names) == 2:
-        output = places_names[0] + " and " + places_names[1]
-    elif len(places_names) == 1:
-        output = places_names[0]
-    else:
-        output = places_names[0] + ", " + places_names[1] + ", " + places_names[2] + " and more"
-
-    return output
-
-
-print(generate_places_names_string(places_names))
+print(date_1)
+print(date_1 > date_2)
