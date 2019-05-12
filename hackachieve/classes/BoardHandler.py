@@ -31,17 +31,17 @@ class BoardHandler:
         for column in columns:
 
             if goal_type == 'standby':
-                goals = Goal.objects.filter(column_id=column['id'], status=1)
+                goals = Goal.objects.filter(column_id=column['id'], status=1).order_by('-priority')
             elif goal_type == 'ongoing':
-                goals = Goal.objects.filter(column_id=column['id'], status=2)
+                goals = Goal.objects.filter(column_id=column['id'], status=2).order_by('-priority')
             elif goal_type == 'completed' or goal_type == 'done':
-                goals = Goal.objects.filter(column_id=column['id'], status=3)  # done
+                goals = Goal.objects.filter(column_id=column['id'], status=3).order_by('-priority')  # done
             elif goal_type == 'all':
-                goals = Goal.objects.filter(column_id=column['id'])
+                goals = Goal.objects.filter(column_id=column['id']).order_by('-priority')
             else:
-                goals = Goal.objects.filter(column_id=column['id'])
+                goals = Goal.objects.filter(column_id=column['id']).order_by('-priority')
 
-            total_completed_goals = len(goals.filter(status=False))  # status = False means the goal was accomplished
+            total_completed_goals = len(goals.filter(status=3))
 
             categories = Column_category.objects.filter(column=column['id'])
 
