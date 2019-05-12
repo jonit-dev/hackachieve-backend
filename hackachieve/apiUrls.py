@@ -47,6 +47,7 @@ urlpatterns = [
     url(r'^goals/attach/columns/$', goal_views.attach_to_column),
     url(r'^goals/show/(?P<goal_id>[0-9]+)/$', goal_views.show),
     url(r'^goals/long-short/(?P<goal_id>[0-9]+)/$', goal_views.long_short),
+    url(r'^goals/update-status/(?P<goal_id>[0-9]+)/(?P<status_id>[0-9]+)$', goal_views.update_status),
     # fetch list of short term goals associated with a long term one
 
     # categories

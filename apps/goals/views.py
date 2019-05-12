@@ -185,6 +185,28 @@ def attach_to_column(request):
 
 
 @csrf_exempt
+@api_view(['patch'])
+@permission_classes((IsAuthenticated,))
+def update_status(request, goal_id, status_id):
+    user = User.objects.get(pk=API.getUserByToken(request))
+
+    if Goal.check_user_owns_goal(user.id, goal_id) is False:
+        return API.error_goal_user_is_not_owner()
+
+    if Goal.check_goal_by_id(user.id, goal_id) is False:
+        return API.error_goal_not_found()
+
+    goal = Goal.objects.get(pk=goal_id)
+    goal.status = int(status_id)
+
+    goal.save()
+
+    goal_dict = model_to_dict(goal)
+
+    return JsonResponse(goal_dict, safe=False)
+
+
+@csrf_exempt
 @api_view(['get'])
 @permission_classes((IsAuthenticated,))
 def show(request, goal_id):

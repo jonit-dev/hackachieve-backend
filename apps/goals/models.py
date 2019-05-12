@@ -19,10 +19,18 @@ class Goal(models.Model):
         return self.title
 
     @staticmethod
+    def check_user_owns_goal(user_id, goal_id):
+        goal = Goal.objects.get(pk=goal_id)
+
+        if goal.user.id is user_id:
+            return True
+        else:
+            return False
+
+    @staticmethod
     def check_goal_by_id(user_id, goal_id):
         return Goal.objects.filter(user_id=user_id, id=goal_id).exists()
 
     @staticmethod
     def check_goal_by_title(user_id, goal_title):
         return Goal.objects.filter(user_id=user_id, title=goal_title).exists()
-

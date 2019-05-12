@@ -132,6 +132,15 @@ class API:
     # ================================================================= #
 
     @staticmethod
+    def error_goal_user_is_not_owner():
+        return API.json_response({
+            "status": "error",
+            "message": "This user is not allowed to access this goal",
+            "type": "danger"
+        })
+
+
+    @staticmethod
     def error_goal_already_exists():
         return API.json_response({
             "status": "error",
