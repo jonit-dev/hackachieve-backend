@@ -8,7 +8,7 @@ from apps.users.models import User
 class Goal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    description = models.TextField()
     duration_hrs = models.IntegerField(default=None, null=True)
     deadline = models.DateTimeField()
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
