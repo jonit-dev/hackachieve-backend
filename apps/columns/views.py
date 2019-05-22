@@ -120,6 +120,7 @@ def update(request, column_id):
             "type": "danger"
         })
 
+
     # check if column exists
     if Column.check_exists(column_id) is False:
         return API.error_goal_inexistent_column()
@@ -130,7 +131,7 @@ def update(request, column_id):
 
     column.name = json_data['name']
     column.description = json_data['description']
-    column.board = json_data['board_id']
+    column.board = Board.objects.get(pk=json_data['board_id'])
     column.deadline = json_data['deadline']
 
     column.save()
