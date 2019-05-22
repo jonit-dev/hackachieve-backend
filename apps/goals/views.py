@@ -111,6 +111,32 @@ def update(request, goal_id):
     user = User.objects.get(pk=API.getUserByToken(request))
     json_data = API.json_get_data(request)
 
+    # validation =========================== #
+
+    short_term_deadline = datetime.strptime(json_data['deadline'], '%Y-%m-%d')
+    long_term_deadline = datetime.strptime(Column.objects.get(pk=json_data['column_id']).deadline.strftime('%Y-%m-%d'),
+                                           '%Y-%m-%d')
+
+    if short_term_deadline > long_term_deadline:
+        return API.json_response({
+            "status": "error",
+            "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
+                short_term_deadline.date(), long_term_deadline.date()),
+            "type": "danger"
+        })
+
+    # check if user is trying to schedule a goal to the past
+    today = datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+    if today > short_term_deadline:
+        return API.json_response({
+            "status": "error",
+            "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
+            "type": "danger"
+        })
+
+    # updating =========================== #
+
     try:
         goal = Goal.objects.filter(id=goal_id, user_id=user.id).update(**json_data)
     except Exception as e:  # and more generic exception handling on bottom
