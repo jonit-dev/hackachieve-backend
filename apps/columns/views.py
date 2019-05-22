@@ -90,7 +90,7 @@ def create(request):
 
 
 @csrf_exempt
-@api_view(['update'])
+@api_view(['put'])
 @permission_classes((IsAuthenticated,))
 def update(request, column_id):
     json_data = API.json_get_data(request)
