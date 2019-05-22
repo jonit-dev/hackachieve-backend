@@ -1,5 +1,7 @@
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from hackachieve.classes.Validator import *
@@ -12,6 +14,20 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 import json
 from django.core import serializers
+
+
+@csrf_exempt
+@api_view(['get'])
+@permission_classes((IsAuthenticated,))
+def info(request):
+    user_id = API.getUserByToken(request)
+    user = User.objects.get(pk=user_id)
+
+    return API.json_response({
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email
+    })
 
 
 @csrf_exempt
@@ -58,11 +74,7 @@ def user_register(request):
 
             # by default, user will have long term board / short term board and a Sprint, on going and backlog column for each
 
-
         if create_user:
-
-
-
 
             UserHandler.generate_initial_boards_columns(create_user)
 

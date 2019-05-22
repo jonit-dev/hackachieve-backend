@@ -24,6 +24,8 @@ urlpatterns = [
     # USER ROUTES =========================== #
 
     url('user/register', user_views.user_register),
+    url('user/info/$', user_views.info),
+
 
     # Boards
 
