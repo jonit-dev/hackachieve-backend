@@ -90,6 +90,59 @@ def create(request):
 
 
 @csrf_exempt
+@api_view(['update'])
+@permission_classes((IsAuthenticated,))
+def update(request, column_id):
+    json_data = API.json_get_data(request)
+    user = User.objects.get(pk=API.getUserByToken(request))
+    # Empty fields valitation =========================== #
+    check_user_fields = Validator.are_request_fields_valid(json_data)
+
+    # Check is theres no empty fields
+    if check_user_fields is not True:
+        return API.json_response({
+            "status": "error",
+            "message": "Error while trying to create your board. The following fields are empty: {}".format(
+                check_user_fields),
+            "type": "danger"
+        })
+
+        # if all fields are set to create our board
+
+    try:
+        user = User.objects.get(pk=user.id)
+
+    except Exception as e:
+
+        return API.json_response({
+            "status": "error",
+            "message": "This user does not exists",
+            "type": "danger"
+        })
+
+    # check if column exists
+    if Column.check_exists(column_id) is False:
+        return API.error_goal_inexistent_column()
+
+    # get column instance
+
+    column = Column.objects.get(pk=column_id)
+
+    column.name = json_data['name']
+    column.description = json_data['description']
+    column.board = json_data['board_id']
+    column.deadline = json_data['deadline']
+
+    column.save()
+
+    return API.json_response({
+        "status": "success",
+        "message": "Your new column was updated successfully!",
+        "type": "success"
+    })
+
+
+@csrf_exempt
 @api_view(['post'])
 @permission_classes((IsAuthenticated,))
 def attach_category(request, column_id):

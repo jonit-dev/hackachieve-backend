@@ -35,6 +35,8 @@ urlpatterns = [
 
     # columns
     url(r'^columns/create/$', column_views.create),
+    url(r'^columns/update/(?P<column_id>[0-9]+)/$', column_views.update),
+
     url(r'^columns/board/(?P<board_id>[0-9]+)/$', column_views.show_columns_from_board),
     # show all columns from a particular board
     url(r'^columns/delete/(?P<column_id>[0-9]+)/$', column_views.delete),
