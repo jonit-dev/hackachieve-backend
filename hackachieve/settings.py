@@ -47,16 +47,14 @@ current_provider = "mailgun"  # options: postmark, sendgrid, mailgun
 
 if current_provider == 'mailgun':
 
-    if ENV is "dev":
-
+    if ENV == "dev":
         EMAIL_HOST = 'smtp.mailgun.org'
         EMAIL_PORT = 587
         EMAIL_HOST_USER = Environment.getkey('mailgun_sandbox_login')
         EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_sandbox_password')
         EMAIL_USE_TLS = True
 
-    elif ENV is "prod":
-
+    if ENV == "prod":
         EMAIL_HOST = 'smtp.mailgun.org'
         EMAIL_PORT = 587
         EMAIL_HOST_USER = Environment.getkey('mailgun_login')
@@ -162,9 +160,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_crontab',
 ]
-
-
-
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # CorsMiddleware should be as high as possible
@@ -366,7 +361,6 @@ LOGGING = {
     },
 }
 
-
 # ================================================================= #
 #                      CRON JOBS
 # ================================================================= #
@@ -378,7 +372,6 @@ CRONJOBS = [
     # ('* * * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #dev - every minute
 ]
 CRONTAB_COMMAND_SUFFIX = '2>&1'
-
 
 # ================================================================= #
 #                      SSL
