@@ -26,7 +26,7 @@ class EmailHandler(Thread):
         msg_plain = render_to_string(plain_text_path, params)
         msg_html = render_to_string(html_path, params)
 
-        print("email sent")
+        print("EmailHandler: Email SENT!")
 
         return send_mail(
             subject,
@@ -38,15 +38,14 @@ class EmailHandler(Thread):
 
     @staticmethod
     def send_email(subject, to, filename, params, from_email="hackachieve <admin@hackachieve.ca>", ):
-
         TURNED_OFF_ON_DEV = Environment.getkey('turn_off_transactional_emails_on_dev')
+
         print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
 
-        if ENV is "dev":
-            if TURNED_OFF_ON_DEV is True:  # avoid sending emails on dev mode
-                return None
+        if ENV is "dev" and TURNED_OFF_ON_DEV is True:  # avoid sending emails on dev mode
+            return None
 
-        print("threading and sending e-mail to {} - subject: {}".format(to, subject))
+        print("EmailHandler: Threading and sending e-mail to {} - subject: {}".format(to, subject))
 
         t1 = Thread(target=EmailHandler.trigger_email, args=(subject, to, filename, params, from_email))
         t1.start()
