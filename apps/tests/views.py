@@ -126,7 +126,7 @@ from hackachieve.classes.SecurityHandler import *
 def mailgun(request):
     try:
 
-        send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
+        send = EmailHandler.send_email('Welcome to Hackachieve', ["joaopaulofurtado@live.com"],
                                        "welcome",
                                        {
                                            "name": "Sample user",

@@ -269,6 +269,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = "/var/www/hackachieve-backend/static/"
+
 MEDIA_URL = '/images/'
 MEDIA_ROOT = BASE_DIR
 STATICFILES_DIRS = [
