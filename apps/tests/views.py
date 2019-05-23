@@ -126,7 +126,7 @@ from hackachieve.classes.SecurityHandler import *
 def mailgun(request):
     try:
 
-        send = EmailHandler.send_email('Welcome to Hackachieve', ["jfurtado141@gmail.com"],
+        send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
                                        "welcome",
                                        {
                                            "name": "Sample user",
@@ -145,7 +145,7 @@ def mailgun(request):
 
         return API.json_response({
             "status": "Error",
-            "message": e,
+            "message": 'Sending your email failed',
             "type": "Error",
             "title": "Error while sending your e-mail"
         })
