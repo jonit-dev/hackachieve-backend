@@ -269,8 +269,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/var/www/hackachieve-backend/static/"
-
 MEDIA_URL = '/images/'
 MEDIA_ROOT = BASE_DIR
 STATICFILES_DIRS = [
@@ -278,7 +276,7 @@ STATICFILES_DIRS = [
     '/var/www/static/',
 ]
 
-PROPERTIES_IMAGES_ROOT = os.path.join(BASE_DIR, "static") + "/images/properties"
+# PROPERTIES_IMAGES_ROOT = os.path.join(BASE_DIR, "static") + "/images/properties"
 
 # CUSTOM USER
 AUTH_USER_MODEL = 'users.User'
