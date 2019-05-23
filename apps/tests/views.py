@@ -129,14 +129,14 @@ def mailgun(request):
         send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
                                        "welcome",
                                        {
-                                           "name": "rental",
-                                           "login": "moose",
+                                           "name": "Sample user",
+                                           "login": "usernamehere",
                                            "password": "123"
                                        })
 
         return API.json_response({
             "status": "success",
-            "message": 'Email sent',
+            "message": 'Email sent successfully!',
             "type": "success",
             "title": "Success"
         })
@@ -144,8 +144,8 @@ def mailgun(request):
     except Exception as e:
 
         return API.json_response({
-            "status": "success",
+            "status": "Error",
             "message": e,
-            "type": "success",
-            "title": "Success"
+            "type": "Error",
+            "title": "Error while sending your e-mail"
         })
