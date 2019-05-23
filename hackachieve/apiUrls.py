@@ -63,6 +63,6 @@ urlpatterns = [
 
     # TESTING ROUTS =========================== #
 
-    url(r'^test/mailgun/newuser/$', test_view.mailgun),
+    #url(r'^test/mailgun/newuser/$', test_view.mailgun),
 
 ]

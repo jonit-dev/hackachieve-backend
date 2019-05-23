@@ -4,6 +4,7 @@ from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from hackachieve.classes.EmailHandler import EmailHandler
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 from hackachieve.classes.UserHandler import *
@@ -74,9 +75,19 @@ def user_register(request):
 
             # by default, user will have long term board / short term board and a Sprint, on going and backlog column for each
 
+        # After user creation...
+
         if create_user:
 
             UserHandler.generate_initial_boards_columns(create_user)
+
+            send = EmailHandler.send_email('Welcome to Hackachieve', [json_data['email']],
+                                           "welcome",
+                                           {
+                                               "name": json_data['firstName'],
+                                               "login": json_data['email'],
+                                               "password": json_data['password']
+                                           })
 
             # Register on maillist
 

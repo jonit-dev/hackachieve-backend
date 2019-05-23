@@ -119,33 +119,33 @@ from hackachieve.classes.SecurityHandler import *
 #             "status": "forbidden_phone"
 #         })
 
-
-@csrf_exempt
-@api_view(['GET'])
-@permission_classes((AllowAny,))
-def mailgun(request):
-    try:
-
-        send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
-                                       "welcome",
-                                       {
-                                           "name": "Sample user",
-                                           "login": "usernamehere",
-                                           "password": "123"
-                                       })
-
-        return API.json_response({
-            "status": "success",
-            "message": 'Email sent successfully!',
-            "type": "success",
-            "title": "Success"
-        })
-
-    except Exception as e:
-
-        return API.json_response({
-            "status": "Error",
-            "message": 'Sending your email failed',
-            "type": "Error",
-            "title": "Error while sending your e-mail"
-        })
+#
+# @csrf_exempt
+# @api_view(['GET'])
+# @permission_classes((AllowAny,))
+# def mailgun(request):
+#     try:
+#
+#         send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
+#                                        "welcome",
+#                                        {
+#                                            "name": "Sample user",
+#                                            "login": "usernamehere",
+#                                            "password": "123"
+#                                        })
+#
+#         return API.json_response({
+#             "status": "success",
+#             "message": 'Email sent successfully!',
+#             "type": "success",
+#             "title": "Success"
+#         })
+#
+#     except Exception as e:
+#
+#         return API.json_response({
+#             "status": "Error",
+#             "message": 'Sending your email failed',
+#             "type": "Error",
+#             "title": "Error while sending your e-mail"
+#         })
