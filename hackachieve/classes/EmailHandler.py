@@ -40,9 +40,9 @@ class EmailHandler(Thread):
     def send_email(subject, to, filename, params, from_email="hackachieve <admin@hackachieve.ca>", ):
         TURNED_OFF_ON_DEV = Environment.getkey('turn_off_transactional_emails_on_dev')
 
-        print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
 
         if ENV is "dev" and TURNED_OFF_ON_DEV is True:  # avoid sending emails on dev mode
+            print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
             return None
 
         print("EmailHandler: Threading and sending e-mail to {} - subject: {}".format(to, subject))

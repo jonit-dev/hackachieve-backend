@@ -124,17 +124,28 @@ from hackachieve.classes.SecurityHandler import *
 @api_view(['GET'])
 @permission_classes((AllowAny,))
 def mailgun(request):
-    send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
-                                   "welcome",
-                                   {
-                                       "name": "rental",
-                                       "login": "moose",
-                                       "password": "123"
-                                   })
+    try:
 
-    return API.json_response({
-        "status": "success",
-        "message": send,
-        "type": "success",
-        "title": "Success"
-    })
+        send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
+                                       "welcome",
+                                       {
+                                           "name": "rental",
+                                           "login": "moose",
+                                           "password": "123"
+                                       })
+
+        return API.json_response({
+            "status": "success",
+            "message": 'Email sent',
+            "type": "success",
+            "title": "Success"
+        })
+
+    except Exception as e:
+
+        return API.json_response({
+            "status": "success",
+            "message": e,
+            "type": "success",
+            "title": "Success"
+        })
