@@ -37,7 +37,7 @@ class EmailHandler(Thread):
         )
 
     @staticmethod
-    def send_email(subject, to, filename, params, from_email="Hackachieve <admin@hackachieve.ca>", ):
+    def send_email(subject, to, filename, params, from_email="Hackachieve <admin@mg.hackachieve.com>", ):
         TURNED_OFF_ON_DEV = Environment.getkey('turn_off_transactional_emails_on_dev')
 
 
