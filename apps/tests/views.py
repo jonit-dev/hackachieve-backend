@@ -134,7 +134,7 @@ def mailgun(request):
 
     return API.json_response({
         "status": "success",
-        "message": "Your e-mail has been sent",
+        "message": send,
         "type": "success",
         "title": "Success"
     })
