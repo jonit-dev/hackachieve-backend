@@ -41,18 +41,28 @@ else:
 #                      TRANSACTIONAL EMAILS
 # ================================================================= #
 
-# current_provider = "mailgun"  # options: postmark, sendgrid, mailgun
-#
-# # Mailgun =========================== #
-#
-# if current_provider == 'mailgun':
-#
-#     EMAIL_HOST = 'smtp.mailgun.org'
-#     EMAIL_PORT = 587
-#     EMAIL_HOST_USER = Environment.getkey('mailgun_login')
-#     EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
-#     EMAIL_USE_TLS = True
-#
+current_provider = "mailgun"  # options: postmark, sendgrid, mailgun
+
+# Mailgun =========================== #
+
+if current_provider == 'mailgun':
+
+    if ENV is "dev":
+
+        EMAIL_HOST = 'smtp.mailgun.org'
+        EMAIL_PORT = 587
+        EMAIL_HOST_USER = Environment.getkey('mailgun_sandbox_login')
+        EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_sandbox_password')
+        EMAIL_USE_TLS = True
+
+    elif ENV is "prod":
+
+        EMAIL_HOST = 'smtp.mailgun.org'
+        EMAIL_PORT = 587
+        EMAIL_HOST_USER = Environment.getkey('mailgun_login')
+        EMAIL_HOST_PASSWORD = Environment.getkey('mailgun_password')
+        EMAIL_USE_TLS = True
+
 #
 # # SENDGRID =========================== #
 # elif current_provider == 'sendgrid':

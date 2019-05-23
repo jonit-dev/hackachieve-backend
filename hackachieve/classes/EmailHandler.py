@@ -11,7 +11,7 @@ from hackachieve.settings import HOST_NAME, API_HOST, ENV
 class EmailHandler(Thread):
 
     @staticmethod
-    def trigger_email(subject, to, filename, params, from_email="hackachieve <admin@hackachieve.ca>", ):
+    def trigger_email(subject, to, filename, params, from_email="Hackachieve <admin@hackachieve.com>", ):
         # both txt and html should be named the same, and they should be inside a folder with the same name!
         # eg. /templates/emails/welcome/welcome.txt
         # /templates/emails/welcome/welcome.html
@@ -39,11 +39,11 @@ class EmailHandler(Thread):
     @staticmethod
     def send_email(subject, to, filename, params, from_email="hackachieve <admin@hackachieve.ca>", ):
 
-        TURNED_OFF_ON_DEV = True
+        TURNED_OFF_ON_DEV = Environment.getkey('turn_off_transactional_emails_on_dev')
         print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
 
-        if ENV == "dev":
-            if TURNED_OFF_ON_DEV == True: #avoid sending emails on dev mode
+        if ENV is "dev":
+            if TURNED_OFF_ON_DEV is True:  # avoid sending emails on dev mode
                 return None
 
         print("threading and sending e-mail to {} - subject: {}".format(to, subject))

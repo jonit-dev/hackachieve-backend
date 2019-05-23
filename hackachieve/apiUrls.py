@@ -6,6 +6,7 @@ from apps.provinces.api import views as api_provinces_view  # class based serial
 from apps.cities.api import views as api_cities_view
 from apps.countries.api import views as api_countries_view
 from apps.users import views as user_views
+from apps.tests import views as test_view
 
 from apps.boards import views as board_views
 from apps.columns import views as column_views
@@ -59,5 +60,9 @@ urlpatterns = [
     url(r'^categories/create/$', categories_views.create),
     url(r'^categories/delete/(?P<category_id>[0-9]+)/$', categories_views.delete),
     url(r'^categories/attach/goals/$', categories_views.attach),
+
+    # TESTING ROUTS =========================== #
+
+    url(r'^test/mailgun/newuser/$', test_view.mailgun),
 
 ]

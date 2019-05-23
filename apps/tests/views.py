@@ -1,10 +1,5 @@
 import time
 
-from apps.neighborhoods.models import Neighborhood
-from apps.properties.models import Property
-from apps.resumes.models import Resume
-from apps.resumes_cities.models import Resume_city
-from apps.resumes_neighborhoods.models import Resume_neighborhood
 from apps.users.models import User
 from hackachieve.classes.MailchimpHandler import *
 from django.views.decorators.csrf import csrf_exempt
@@ -13,8 +8,8 @@ from rest_framework.permissions import AllowAny
 from hackachieve.classes.API import *
 
 from hackachieve.classes.EmailHandler import *
-from hackachieve.classes.PropertyHandler import PropertyHandler
 from hackachieve.classes.SecurityHandler import *
+
 
 #
 # @csrf_exempt
@@ -124,25 +119,22 @@ from hackachieve.classes.SecurityHandler import *
 #             "status": "forbidden_phone"
 #         })
 
-#
-# @csrf_exempt
-# @api_view(['GET'])
-# @permission_classes((AllowAny,))
-# def email_threading(request):
-#
-#     send = EmailHandler.send_email('Welcome to hackachieve', ["thehackachieve@gmail.com"],
-#                               "welcome",
-#                               {
-#                                   "name": "rental",
-#                                   "login": "moose",
-#                                   "password": "123"
-#
-#                               })
-#
-#
-#     return API.json_response({
-#         "status": "success",
-#         "message": "Your property was listed successfully!",
-#         "type": "success",
-#         "title": "Success"
-#     })
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def mailgun(request):
+    send = EmailHandler.send_email('Welcome to Hackachieve', ["hackachieve@gmail.com"],
+                                   "welcome",
+                                   {
+                                       "name": "rental",
+                                       "login": "moose",
+                                       "password": "123"
+                                   })
+
+    return API.json_response({
+        "status": "success",
+        "message": "Your e-mail has been sent",
+        "type": "success",
+        "title": "Success"
+    })
