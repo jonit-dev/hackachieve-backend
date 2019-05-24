@@ -1,0 +1,10 @@
+Hi, {{name}}!
+We're sending this notification just to remind you about the deadline of your {{ goal_type }} goal.
+Remember: "Discipline is freedom!"
+
+Goal: {{goal_name}}
+Description: {{goal_description}}
+Deadline: {{goal_deadline}} (in {{ goal_diff_days }} days)
+
+Thank you,
+Hackachieve Team

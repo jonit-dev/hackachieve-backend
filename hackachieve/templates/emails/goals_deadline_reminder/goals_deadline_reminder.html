@@ -1,0 +1,53 @@
+{% extends "templates/emails/layout/base.html" %}
+
+{% block content %}
+
+<tr>
+    <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
+        <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
+            <!-- Body content -->
+            <tr>
+                <td class="content-cell">
+                    <h1>Hi, {{name}}!</h1>
+                    <p>We're sending this notification just to remind you about the deadline of your {{ goal_type }} goal. </p>
+
+                    <table class="attributes" width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="attributes_content">
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td class="attributes_item"><strong> Goal:</strong> {{goal_name}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="attributes_item"><strong>Description:</strong>
+                                            {{goal_description}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="attributes_item"><strong>Deadline:</strong>
+                                            {{goal_deadline}} <strong> (in {{ goal_diff_days }} days) </strong>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <p>Remember: <strong>"Discipline is freedom!"</strong></p>
+
+                    <br>
+
+                    <p>Thank you,
+
+                        <br>Hackachieve Team</p>
+
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+
+
+{% endblock %}

@@ -369,7 +369,12 @@ LOGGING = {
 CRONJOBS = [
     # ('0 9 * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #production - everyday at 9am
     # ('0 9 */2 * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #production - every two days at 9am
-    # ('* * * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #dev - every minute
+
+    ('0 0 * * *', 'cronjobs.goal_deadline_reminder.goal_reminder', ['long-term'], {},
+     '>> {}/long_term_reminder.log'.format(LOGS_PATH)),  # dev - every minute
+
+    ('0 0 * * *', 'cronjobs.goal_deadline_reminder.goal_reminder', ['short-term'], {},
+     '>> {}/short_term_reminder.log'.format(LOGS_PATH))  # dev - every minute
 ]
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 
