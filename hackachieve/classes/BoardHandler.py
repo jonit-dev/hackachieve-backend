@@ -4,9 +4,7 @@ from django.forms import model_to_dict
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.columns_categories.models import Column_category
 from apps.goals.models import Goal
-from apps.users_categories.models import User_Category
 
 
 class BoardHandler:
@@ -43,12 +41,10 @@ class BoardHandler:
 
             total_completed_goals = len(goals.filter(status=3))
 
-            categories = Column_category.objects.filter(column=column['id'])
-
-            categories_data = []
-            for category in categories:
-                categories_data.append(
-                    {'id': category.id, 'name': User_Category.objects.get(pk=category.id).category_name})
+            # categories_data = []
+            # for category in categories:
+            #     categories_data.append(
+            #         {'id': category.id, 'name': User_Category.objects.get(pk=category.id).category_name})
 
             # get this model using a filter
             goals = list(goals.values())
@@ -57,7 +53,7 @@ class BoardHandler:
             column['short_term_goals'] = goals
             column['total_completed_goals'] = total_completed_goals
             column['total_goals'] = len(goals)
-            column['categories'] = categories_data
+            # column['categories'] = categories_data
             column['days_to_complete'] = BoardHandler.diff_dates(datetime.now(timezone.utc), column['deadline'])
 
         board = model_to_dict(board)

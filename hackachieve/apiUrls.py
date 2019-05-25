@@ -2,8 +2,6 @@ from django.conf.urls import url, include
 from rest_framework import routers
 
 # Views =========================== #
-from apps.provinces.api import views as api_provinces_view  # class based serializer
-from apps.cities.api import views as api_cities_view
 from apps.countries.api import views as api_countries_view
 from apps.users import views as user_views
 from apps.tests import views as test_view
@@ -11,11 +9,8 @@ from apps.tests import views as test_view
 from apps.boards import views as board_views
 from apps.columns import views as column_views
 from apps.goals import views as goal_views
-from apps.users_categories import views as categories_views
 
 router = routers.DefaultRouter()
-router.register('provinces', api_provinces_view.ProvinceView)
-router.register('cities', api_cities_view.CityView)
 router.register('countries', api_countries_view.CountryView)
 
 urlpatterns = [
@@ -57,9 +52,9 @@ urlpatterns = [
     # fetch list of short term goals associated with a long term one
 
     # categories
-    url(r'^categories/create/$', categories_views.create),
-    url(r'^categories/delete/(?P<category_id>[0-9]+)/$', categories_views.delete),
-    url(r'^categories/attach/goals/$', categories_views.attach),
+    # url(r'^categories/create/$', categories_views.create),
+    # url(r'^categories/delete/(?P<category_id>[0-9]+)/$', categories_views.delete),
+    # url(r'^categories/attach/goals/$', categories_views.attach),
 
     # TESTING ROUTS =========================== #
 

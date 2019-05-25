@@ -3,8 +3,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.columns_categories.models import Column_category
-from apps.users_categories.models import User_Category
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -155,7 +153,7 @@ def attach_category(request, column_id):
     column = Column.objects.get(id=column_id, user_id=user.id)
 
     # set relationship
-    Column_category.attach(column, category)
+    # Column_category.attach(column, category)
 
     return JsonResponse({
         "status": "success",

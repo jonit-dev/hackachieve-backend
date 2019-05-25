@@ -3,10 +3,6 @@ import json
 from django.http import HttpResponse
 from django.core import serializers
 
-from apps.cities.models import City
-from apps.provinces.models import Province
-
-
 class API:
 
     @staticmethod
@@ -99,15 +95,7 @@ class API:
                 del d['model']
                 d = d['fields']
 
-                if 'province' in d:
-                    province = Province.objects.get(pk=d['province'])
 
-                    d['province_abbrev'] = province.abbrev
-                    d['type'] = "city"
-                if 'city' in d:
-                    city = City.objects.get(pk=d['city'])
-                    d['city_name'] = city.name
-                    d['type'] = "neighborhood"
 
                 final_results.append(d)
 

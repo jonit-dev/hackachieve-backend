@@ -6,7 +6,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.columns_goals.models import Column_goal
 from apps.goals.models import Goal
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
@@ -193,15 +192,15 @@ def attach_to_column(request):
     column = Column.objects.get(pk=json_data['column_id'])
     goal = Goal.objects.get(pk=json_data['goal_id'])
 
-    if Column_goal.objects.filter(column=json_data['column_id'], goal=json_data['goal_id']).exists() is True:
-        return API.json_response({
-            "status": "error",
-            "message": "This goal is already attached to this column".format(goal.id, column.id),
-            "type": "error"
-        })
-
-    print("Attaching goal '{}' to column '{}'".format(goal.title, column.name))
-    Column_goal.attach(column, goal)
+    # if Column_goal.objects.filter(column=json_data['column_id'], goal=json_data['goal_id']).exists() is True:
+    #     return API.json_response({
+    #         "status": "error",
+    #         "message": "This goal is already attached to this column".format(goal.id, column.id),
+    #         "type": "error"
+    #     })
+    #
+    # print("Attaching goal '{}' to column '{}'".format(goal.title, column.name))
+    # Column_goal.attach(column, goal)
 
     return API.json_response({
         "status": "success",

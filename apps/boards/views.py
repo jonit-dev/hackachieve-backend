@@ -1,12 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-
 from apps.boards.models import Board
-
-from apps.columns.models import Column
-from apps.columns_categories.models import Column_category
-from apps.goals.models import Goal
-from apps.goals_categories.models import Goal_category
-from apps.users_categories.models import User_Category
 from hackachieve.classes.BoardHandler import BoardHandler
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
@@ -14,12 +7,7 @@ from hackachieve.classes.API import *
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
-import json
-from django.core import serializers
-
 from django.http import JsonResponse
-from django.forms.models import model_to_dict
 
 
 @csrf_exempt
