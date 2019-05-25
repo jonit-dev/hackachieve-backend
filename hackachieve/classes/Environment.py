@@ -14,7 +14,7 @@ class Environment:
             'mailgun_password': os.environ.get('MAILGUN_PASSWORD'),
             'mailgun_sandbox_login': os.environ.get('MAILGUN_SANDBOX_LOGIN'),
             'mailgun_sandbox_password': os.environ.get('MAILGUN_SANDBOX_PASSWORD'),
-            'turn_off_transactional_emails_on_dev': os.environ.get('TURN_OFF_TRANSACTIONAL_EMAILS_ON_DEV'),
+            'send_transactional_emails': os.environ.get('SEND_TRANSACTIONAL_EMAILS'),
             'support_email': os.environ.get('SUPPORT_EMAIL'),
             'sendgrid_login': os.environ.get('SENDGRID_LOGIN'),
             'sendgrid_password': os.environ.get('SENDGRID_PASSWORD'),

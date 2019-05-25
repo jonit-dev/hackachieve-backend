@@ -38,10 +38,10 @@ class EmailHandler(Thread):
 
     @staticmethod
     def send_email(subject, to, filename, params, from_email="Hackachieve <admin@mg.hackachieve.com>", ):
-        TURNED_OFF_ON_DEV = Environment.getkey('turn_off_transactional_emails_on_dev')
+        SEND_TRANSACTIONAL_EMAILS = Environment.getkey('send_transactional_emails')
 
-        if TURNED_OFF_ON_DEV:  # avoid sending emails on dev mode
-            print("skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
+        if SEND_TRANSACTIONAL_EMAILS == 'off':  # avoid sending emails on dev mode
+            print("EmailHandler: Skipping email sending. If you want to turn on this feature on dev, check EmailHandler.py")
             return None
         else:
 
