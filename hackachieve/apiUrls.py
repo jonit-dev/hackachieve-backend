@@ -10,18 +10,12 @@ from apps.boards import views as board_views
 from apps.columns import views as column_views
 from apps.goals import views as goal_views
 
-router = routers.DefaultRouter()
-router.register('countries', api_countries_view.CountryView)
-
 urlpatterns = [
-
-    url('', include(router.urls)),
 
     # USER ROUTES =========================== #
 
     url('user/register', user_views.user_register),
     url('user/info/$', user_views.info),
-
 
     # Boards
 
@@ -60,10 +54,12 @@ urlpatterns = [
 
     url(r'^labels/(?P<label_id>[0-9]+)/attach/(?P<resource_name>[-\w]+)/(?P<resource_id>[0-9]+)/$', labels_view.attach),
 
+    url(r'^labels/(?P<label_id>[0-9]+)/$', labels_view.REST),
+    url(r'^labels/$', labels_view.REST),
 
 
     # TESTING ROUTS =========================== #
 
-    #url(r'^test/mailgun/newuser/$', test_view.mailgun),
+    # url(r'^test/mailgun/newuser/$', test_view.mailgun),
 
 ]

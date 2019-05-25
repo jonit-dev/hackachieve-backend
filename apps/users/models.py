@@ -2,8 +2,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from apps.labels.models import Label
-
 
 class User(AbstractUser):
     # add additional fields in here
@@ -13,8 +11,6 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['']
-
-    labels = models.ManyToManyField(Label, default=None)
 
     def __str__(self):
         return self.email

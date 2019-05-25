@@ -76,14 +76,10 @@ class UserHandler:
 
         # creating default ones
 
-        high_priority_label = Label.objects.get(name='High Priority')
-        medium_priority_label = Label.objects.get(name='Medium Priority')
-        low_priority_label = Label.objects.get(name='Low Priority')
+        high_priority_label = Label(name='High Priority', user=user).save()
+        medium_priority_label = Label(name='Medium Priority', user=user).save()
+        low_priority_label = Label(name='Low Priority', user=user).save()
 
-        user.labels.add(high_priority_label)
-        user.labels.add(medium_priority_label)
-        user.labels.add(low_priority_label)
-        user.save()
 
         # COLUMNS =========================== #
 
