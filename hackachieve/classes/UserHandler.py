@@ -2,6 +2,7 @@ import datetime
 from apps.boards.models import Board
 from apps.columns.models import Column
 from apps.goals.models import Goal
+from apps.labels.models import Label
 from hackachieve.classes.API import API
 
 
@@ -71,25 +72,18 @@ class UserHandler:
         )
         board.save()
 
-        # CATEGORIES =========================== #
+        # LABELS =========================== #
 
-        # high_priority_category = User_Category(
-        #     category_name='High Priority',
-        #     user_id=user.id
-        # )
-        # high_priority_category.save()
-        #
-        # medium_priority_category = User_Category(
-        #     category_name='Medium Priority',
-        #     user_id=user.id
-        # )
-        # medium_priority_category.save()
-        #
-        # low_priority_category = User_Category(
-        #     category_name='Low Priority',
-        #     user_id=user.id
-        # )
-        # low_priority_category.save()
+        # creating default ones
+
+        high_priority_label = Label.objects.get(name='High Priority')
+        medium_priority_label = Label.objects.get(name='Medium Priority')
+        low_priority_label = Label.objects.get(name='Low Priority')
+
+        user.labels.add(high_priority_label)
+        user.labels.add(medium_priority_label)
+        user.labels.add(low_priority_label)
+        user.save()
 
         # COLUMNS =========================== #
 

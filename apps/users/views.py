@@ -71,6 +71,8 @@ def user_register(request):
                 last_name=json_data['lastName']
             )
 
+
+
             # setup boards and columns
 
             # by default, user will have long term board / short term board and a Sprint, on going and backlog column for each
