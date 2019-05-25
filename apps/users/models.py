@@ -11,8 +11,8 @@ class User(AbstractUser):
     # type 1 = tenant, type 2 = landlord, type 3 = real estate agency
     email = models.CharField(max_length=255, unique=True)
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['']
 
     labels = models.ManyToManyField(Label, default=None)
 
