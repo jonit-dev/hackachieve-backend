@@ -5,7 +5,7 @@ from rest_framework import routers
 from apps.countries.api import views as api_countries_view
 from apps.users import views as user_views
 from apps.tests import views as test_view
-
+from apps.labels import views as labels_view
 from apps.boards import views as board_views
 from apps.columns import views as column_views
 from apps.goals import views as goal_views
@@ -55,6 +55,12 @@ urlpatterns = [
     # url(r'^categories/create/$', categories_views.create),
     # url(r'^categories/delete/(?P<category_id>[0-9]+)/$', categories_views.delete),
     # url(r'^categories/attach/goals/$', categories_views.attach),
+
+    # Labels
+
+    url(r'^labels/(?P<label_id>[0-9]+)/attach/(?P<resource_name>[-\w]+)/(?P<resource_id>[0-9]+)/$', labels_view.attach),
+
+
 
     # TESTING ROUTS =========================== #
 

@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from apps.columns.models import Column
+from apps.labels.models import Label
 from apps.users.models import User
 
 
@@ -14,6 +15,9 @@ class Goal(models.Model):
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
     priority = models.IntegerField(default=0)
     status = models.IntegerField(default=1)  # 1 = standby, 2 = ongoing, 3=done
+    labels = models.ManyToManyField(Label, default=None)
+
+
 
     def __str__(self):  # title on dashboard
         return self.title
