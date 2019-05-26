@@ -134,22 +134,31 @@ def update(request, goal_id):
             "type": "danger"
         })
 
+    goal = Goal.objects.get(pk=goal_id)
+
+    if goal.user.id is not user.id:
+        return API.json_response({
+            "status": "error",
+            "message": "You cannot update a goal that is not yours.",
+            "type": "error"
+        })
+
     # updating =========================== #
 
     try:
         goal = Goal.objects.filter(id=goal_id, user_id=user.id).update(**json_data)
+        return API.json_response({
+            "status": "success",
+            "message": "Your goal was updated successfully!",
+            "type": "success"
+        })
+
+
     except Exception as e:  # and more generic exception handling on bottom
         return API.json_response({
             "status": "error",
             "message": "Error while trying to update your goal",
             "type": "error"
-        })
-
-    if goal:
-        return API.json_response({
-            "status": "success",
-            "message": "Your goal was updated!",
-            "type": "success"
         })
 
 
@@ -161,20 +170,19 @@ def delete(request, goal_id):
 
     try:
         goal = Goal.objects.get(id=goal_id, user_id=user.id)
+
+        goal.delete()
+
+        return API.json_response({
+            "status": "success",
+            "message": "Your goal was deleted!",
+            "type": "success"
+        })
     except Exception as e:  # and more generic exception handling on bottom
         return API.json_response({
             "status": "error",
             "message": "Error while trying to delete the goal",
             "type": "error"
-        })
-
-    c = goal.delete()
-
-    if c:
-        return API.json_response({
-            "status": "success",
-            "message": "Your goal was deleted!",
-            "type": "success"
         })
 
 
@@ -226,9 +234,9 @@ def update_status(request, goal_id, status_id):
 
     goal.save()
 
-    goal_dict = model_to_dict(goal)
+    response = json.loads(serializers.serialize('json', [goal]))[0]['fields']
 
-    return JsonResponse(goal_dict, safe=False)
+    return API.json_response(response)
 
 
 @csrf_exempt
@@ -248,9 +256,9 @@ def update_priority(request, goal_id, priority):
 
     goal.save()
 
-    goal_dict = model_to_dict(goal)
+    response = json.loads(serializers.serialize('json', [goal]))[0]['fields']
 
-    return JsonResponse(goal_dict, safe=False)
+    return JsonResponse(response, safe=False)
 
 
 @csrf_exempt
