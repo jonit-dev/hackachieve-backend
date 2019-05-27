@@ -5,7 +5,6 @@ from apps.area_of_knowledges.models import Area_of_knowledge
 
 class AreaOfKnowledgeSerializer(serializers.Serializer):
     name = serializers.CharField()
-    id = serializers.IntegerField()
 
     def create(self, validated_data):
         request = self.context['request']
