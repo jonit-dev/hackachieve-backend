@@ -54,7 +54,7 @@ class ChecklistView(APIView):
         # check if the request origin is coming from the owner
         if request.user.id is not checklist.user.id:
             return Response({"error": "You cannot delete a checklist that's not yours"}, status=204)
+        else:
 
-        checklist.delete()
-
-        return Response({"message": "Checklist with id `{}` has been deleted.".format(pk)}, status=204)
+            checklist.delete()
+            return Response({"success": "Checklist with id `{}` has been deleted.".format(pk)})
