@@ -16,14 +16,14 @@ class AreaOfKnowledgeSerializer(serializers.Serializer):
 
         # if exists, attach to request user
         if aok_check.exists():
-            print('AOK already exists, attaching to user...')
+
             user.areas_of_knowledge.add(aok_check.first())
             user.save()
 
             return aok_check.first()
 
         else:
-            print('AOK does not exists. Creating new one')
+
             # if not, create a new one
 
             aok = Area_of_knowledge(

@@ -21,12 +21,15 @@ class AreaOfKnowledgeView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        json_data = request.data.get('area_of_knowledge')
+        json_data = request.data.get('areas_of_knowledge')
 
         # Create an article from the above data
-        serializer = AreaOfKnowledgeSerializer(data=json_data, context={'request': request})
 
-        if serializer.is_valid(raise_exception=True):
-            saved = serializer.save()
+        for data in json_data:
 
-        return Response({"success": "Area of knowledge saved successfully"})
+            serializer = AreaOfKnowledgeSerializer(data=json_data, context={'request': request}, many=True)
+
+            if serializer.is_valid(raise_exception=True):
+                saved = serializer.save()
+
+        return Response({"success": "Areas of knowledge saved successfully"})
