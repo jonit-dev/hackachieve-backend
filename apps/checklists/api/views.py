@@ -25,7 +25,7 @@ class ChecklistView(APIView):
         json_data = request.data.get('checklist')
 
         # Create an article from the above data
-        serializer = ChecklistSerializer(data=json_data)
+        serializer = ChecklistSerializer(data=json_data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             article_saved = serializer.save()
 
@@ -34,9 +34,13 @@ class ChecklistView(APIView):
     def put(self, request, pk):
 
         checklist = get_object_or_404(Checklist.objects.all(), pk=pk)
+
+        if request.user.id is not checklist.user.id:
+            return Response({"error": "You cannot edit a checklist that's not yours"})
+
         data = request.data.get('checklist')
         # partial=True means were only updating some fields that were passed. Not all at once
-        serializer = ChecklistSerializer(instance=checklist, data=data, partial=True)
+        serializer = ChecklistSerializer(instance=checklist, data=data, partial=True, context={'request': request})
 
         if serializer.is_valid(raise_exception=True):
             article_saved = serializer.save()
@@ -45,7 +49,11 @@ class ChecklistView(APIView):
 
     def delete(self, request, pk):
         # Get object with this pk
-        article = get_object_or_404(Checklist.objects.all(), pk=pk)
-        article.delete()
-        return Response({"message": "Checklist with id `{}` has been deleted.".format(pk)}, status=204)
+        checklist = get_object_or_404(Checklist.objects.all(), pk=pk)
 
+        # check if the request origin is coming from the owner
+        if request.user.id is not checklist.user.id:
+            return Response({"error": "You cannot delete a checklist that's not yours"}, status=204)
+
+        checklist.delete()
+        return Response({"message": "Checklist with id `{}` has been deleted.".format(pk)}, status=204)
