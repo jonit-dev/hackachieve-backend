@@ -56,4 +56,5 @@ class ChecklistView(APIView):
             return Response({"error": "You cannot delete a checklist that's not yours"}, status=204)
 
         checklist.delete()
+
         return Response({"message": "Checklist with id `{}` has been deleted.".format(pk)}, status=204)
