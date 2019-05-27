@@ -57,9 +57,11 @@ urlpatterns = [
     url(r'^labels/(?P<label_id>[0-9]+)/$', labels_view.REST),
     url(r'^labels/$', labels_view.REST),
 
-
     # TESTING ROUTS =========================== #
 
     # url(r'^test/mailgun/newuser/$', test_view.mailgun),
+
+    # DRF SERIALIZED BASED ROUTES =========================== #
+    url('', include('apps.checklists.api.urls')),
 
 ]
