@@ -140,6 +140,7 @@ INSTALLED_APPS = [
     'apps.countries',
     'apps.boards',
     'apps.labels',
+    'apps.area_of_knowledges',
     'apps.checklists',
     'apps.columns',
     'apps.goals',

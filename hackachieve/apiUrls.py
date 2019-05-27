@@ -63,5 +63,6 @@ urlpatterns = [
 
     # DRF SERIALIZED BASED ROUTES =========================== #
     url('', include('apps.checklists.api.urls')),
+    url('', include('apps.area_of_knowledges.api.urls')),
 
 ]

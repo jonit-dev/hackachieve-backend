@@ -43,7 +43,7 @@ class ChecklistView(APIView):
         serializer = ChecklistSerializer(instance=checklist, data=data, partial=True, context={'request': request})
 
         if serializer.is_valid(raise_exception=True):
-            article_saved = serializer.save()
+            saved = serializer.save()
 
         return Response({"success": "Checklist '{}' updated successfully".format(checklist.description)})
 
