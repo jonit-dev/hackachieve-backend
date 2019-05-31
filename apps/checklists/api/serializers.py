@@ -8,7 +8,7 @@ class ChecklistSerializer(serializers.Serializer):
     description = serializers.CharField()
     status = serializers.BooleanField()
     goal_id = serializers.IntegerField()
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(required=False)
 
     def create(self, validated_data):
         request = self.context['request']
@@ -35,5 +35,3 @@ class ChecklistSerializer(serializers.Serializer):
 
         instance.save()
         return instance
-
-
