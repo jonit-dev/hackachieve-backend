@@ -91,3 +91,17 @@ You can find our api docs here:
 ```
 https://documenter.getpostman.com/view/2492528/RztppSdX
 ```
+
+
+### Required files
+
+- Create .env file on the project root
+
+- Setup a basic env configuration:
+
+```
+ENV=dev
+```
+
+
+- You must also create a /logs folder inside /hackachieve. Inside this logs folder, add a myapp.log file with writing permissions
