@@ -13,8 +13,8 @@ class ChecklistView(APIView):
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request):  # get checklists from user
-        checklists = Checklist.objects.filter(user=request.user)
+    def get(self, request, pk):  # get checklists from user
+        checklists = Checklist.objects.filter(user=request.user, goal_id=pk)
 
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = ChecklistSerializer(checklists, many=True)
