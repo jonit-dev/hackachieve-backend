@@ -86,7 +86,7 @@ def REST(request, label_id=None):
 
 
 @csrf_exempt
-@api_view(['post'])
+@api_view(['get'])
 @permission_classes((IsAuthenticated,))
 def attach(request, label_id, resource_name, resource_id):
     if resource_name in ['goal']:  # for now, only goal //todo: add label to other resources
