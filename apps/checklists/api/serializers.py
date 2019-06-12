@@ -35,5 +35,3 @@ class ChecklistSerializer(serializers.Serializer):
 
         instance.save()
         return instance
-
-
