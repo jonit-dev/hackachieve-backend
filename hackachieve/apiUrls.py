@@ -20,7 +20,7 @@ urlpatterns = [
 
     # Boards
 
-    url(r'^boards/create$', board_views.create_board),
+    url(r'^boards/create/$', board_views.create_board),
     url(r'^boards/$', board_views.show_all_boards),
     url(r'^boards/show/(?P<board_id>[0-9]+)/(?P<goal_type>[a-zA-z]+)$', board_views.show_board),
     url(r'^boards/delete/(?P<board_id>[0-9]+)/$', board_views.delete_board),
