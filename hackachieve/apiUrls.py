@@ -13,6 +13,13 @@ from apps.area_of_knowledges import views as aok_views
 
 urlpatterns = [
 
+    # DRF SERIALIZED BASED ROUTES =========================== #
+    url('', include('apps.checklists.api.urls')),
+    url('', include('apps.area_of_knowledges.api.urls')),
+    url('', include('apps.labels.api.urls')),
+
+
+
     # USER ROUTES =========================== #
 
     url('user/register', user_views.user_register),
@@ -51,11 +58,16 @@ urlpatterns = [
     # url(r'^categories/delete/(?P<category_id>[0-9]+)/$', categories_views.delete),
     # url(r'^categories/attach/goals/$', categories_views.attach),
 
-    # Labels
+
+    # LABELS =========================== #
 
     url(r'^labels/(?P<label_id>[0-9]+)/attach/(?P<resource_name>[-\w]+)/(?P<resource_id>[0-9]+)/$', labels_view.attach),
-    url(r'^labels/(?P<label_id>[0-9]+)/$', labels_view.REST),
-    url(r'^labels/$', labels_view.REST),
+
+
+
+
+
+
 
     url(r'^areas-of-knowledge/search/(?P<keyword>[-\w]+)/$', aok_views.keyword),
 
@@ -63,8 +75,6 @@ urlpatterns = [
 
     # url(r'^test/mailgun/newuser/$', test_view.mailgun),
 
-    # DRF SERIALIZED BASED ROUTES =========================== #
-    url('', include('apps.checklists.api.urls')),
-    url('', include('apps.area_of_knowledges.api.urls')),
+
 
 ]
