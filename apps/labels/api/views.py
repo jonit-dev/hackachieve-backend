@@ -15,7 +15,7 @@ class LabelView(APIView):
 
     def get(self, request, pk):
 
-        print('Triggering labels from goals')
+        # print('Triggering labels from goals')
 
         labels = Label.objects.filter(user=request.user, goal=pk)
         serializer = LabelSerializer(labels, many=True)

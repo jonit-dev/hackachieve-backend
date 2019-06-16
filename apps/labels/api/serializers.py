@@ -41,7 +41,7 @@ class LabelSerializer(serializers.Serializer):
             return label
         else:  # if label exists
 
-            print('>>> Label exists, attaching to goal')
+            # print('>>> Label exists, attaching to goal')
 
             # just attach to user
 
