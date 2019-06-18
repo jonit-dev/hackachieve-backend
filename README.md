@@ -101,6 +101,7 @@ https://documenter.getpostman.com/view/2492528/RztppSdX
 
 ```
 ENV=dev
+SEND_TRANSACTIONAL_EMAILS=off
 ```
 
 
