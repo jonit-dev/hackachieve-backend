@@ -106,3 +106,18 @@ SEND_TRANSACTIONAL_EMAILS=off
 
 
 - You must also create a /logs folder inside /hackachieve. Inside this logs folder, add a myapp.log file with writing permissions
+
+
+### mySQL Error
+
+If some mysql error occurs while trying to setup the server, please install
+
+```
+sudo apt-get install libmysqlclient-dev
+```
+
+then instal mysql client:
+
+```
+pip3 install mysqlclient
+```
