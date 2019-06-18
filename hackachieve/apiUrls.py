@@ -3,6 +3,7 @@ from rest_framework import routers
 
 # Views =========================== #
 from apps.countries.api import views as api_countries_view
+from apps.goals.views import GoalFeedsViewSet
 from apps.users import views as user_views
 from apps.tests import views as test_view
 from apps.labels import views as labels_view
@@ -43,6 +44,7 @@ urlpatterns = [
     url(r'^columns/attach-category/(?P<column_id>[0-9]+)/$', column_views.attach_category),
 
     # goals
+    url(r'^goals/feeds/$', GoalFeedsViewSet.as_view({'get': 'list'})),
     url(r'^goals/update/(?P<goal_id>[0-9]+)/$', goal_views.update),
     url(r'^goals/create/$', goal_views.create),
     url(r'^goals/delete/(?P<goal_id>[0-9]+)/$', goal_views.delete),

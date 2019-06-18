@@ -3,10 +3,13 @@ import datetime
 from datetime import *
 
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import viewsets
+from rest_framework.response import Response
 
 from apps.boards.models import Board
 from apps.columns.models import Column
 from apps.goals.models import Goal
+from apps.goals.serializer import GoalSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -272,9 +275,8 @@ def show(request, goal_id):
 
     goal = Goal.objects.get(pk=goal_id)
 
-    goal_dict = model_to_dict(goal)
-
-    return JsonResponse(goal_dict, safe=False)
+    serializer = GoalSerializer(goal)
+    return Response(serializer.data)
 
 
 @csrf_exempt
@@ -291,3 +293,13 @@ def long_short(request, long_term_goal_id):
     goal_dict = model_to_dict(goal)
 
     return JsonResponse(goal_dict, safe=False)
+
+
+class GoalFeedsViewSet(viewsets.ViewSet):
+    """
+    A Goal ViewSet for listing or retrieving users.
+    """
+    def list(self, request):
+        queryset = Goal.objects.filter(is_public=True)
+        serializer = GoalSerializer(queryset, many=True)
+        return Response(serializer.data)
