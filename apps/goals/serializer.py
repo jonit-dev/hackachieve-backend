@@ -7,3 +7,10 @@ class GoalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
         fields = '__all__'
+
+
+class GoalPublicStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        fields = ['is_public']
+

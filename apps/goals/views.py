@@ -4,12 +4,15 @@ from datetime import *
 
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from apps.boards.models import Board
 from apps.columns.models import Column
 from apps.goals.models import Goal
-from apps.goals.serializer import GoalSerializer
+from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -295,11 +298,32 @@ def long_short(request, long_term_goal_id):
     return JsonResponse(goal_dict, safe=False)
 
 
-class GoalFeedsViewSet(viewsets.ViewSet):
+class GoalFeedsViewSet(viewsets.ModelViewSet):
+
     """
     A Goal ViewSet for listing or retrieving users.
     """
+    queryset = Goal.objects.filter(is_public=True)
+    serializer_class = GoalSerializer
+    pagination_class = LimitOffsetPagination
+
     def list(self, request):
-        queryset = Goal.objects.filter(is_public=True)
-        serializer = GoalSerializer(queryset, many=True)
+        queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class PublicGoalUpdateView(GenericAPIView, UpdateModelMixin):
+    '''
+    we update Goal visibility Public or Private
+    '''
+    queryset = Goal.objects.all()
+    serializer_class = GoalPublicStatusSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
