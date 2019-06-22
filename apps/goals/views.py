@@ -367,7 +367,7 @@ class CommentPublicGoal(mixins.CreateModelMixin,
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         else:
-            return Response({'status': 'error', 'message': 'Private Goal is not allow to comment'},
+            return Response({'status': 'error', 'message': "Sorry, you're not allowed to comment on private goals."},
                             status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
