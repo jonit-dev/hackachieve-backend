@@ -3,7 +3,7 @@ from rest_framework import routers
 
 # Views =========================== #
 from apps.countries.api import views as api_countries_view
-from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView
+from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
 from apps.users import views as user_views
 from apps.tests import views as test_view
 from apps.labels import views as labels_view
@@ -12,7 +12,13 @@ from apps.columns import views as column_views
 from apps.goals import views as goal_views
 from apps.area_of_knowledges import views as aok_views
 
-urlpatterns = [
+
+router = routers.SimpleRouter()
+router.register(r'goals/comment', CommentPublicGoal)
+router.register(r'goals/comment-vote', CommentVoteViewset)
+urlpatterns = router.urls
+
+urlpatterns += [
 
     # DRF SERIALIZED BASED ROUTES =========================== #
     url('', include('apps.checklists.api.urls')),
