@@ -39,6 +39,8 @@ def user_register(request):
 
         json_data = API.json_get_data(request)
 
+        print(json_data)
+
         # Empty fields valitation =========================== #
 
         check_user_fields = Validator.are_request_fields_valid(json_data)
@@ -80,6 +82,9 @@ def user_register(request):
         # After user creation...
 
         if create_user:
+
+            UserHandler.attach_area_of_knowledge(create_user, json_data['areas_of_knowledge'])
+
 
             UserHandler.generate_initial_boards_columns(create_user)
 
