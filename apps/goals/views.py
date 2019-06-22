@@ -94,7 +94,7 @@ def create(request):
         user=User.objects.get(pk=user.id),
         title=json_data['title'],
         description=json_data['description'],
-        duration_hrs=0,
+        duration_hrs=int(json_data['optional_duration_hrs']) if json_data['optional_duration_hrs'] else 0,
         deadline=datetime(int(date[0]), int(date[1]), int(date[2])),
         column=Column.objects.get(pk=json_data['column_id']),
         priority=json_data['priority'],
@@ -299,7 +299,6 @@ def long_short(request, long_term_goal_id):
 
 
 class GoalFeedsViewSet(viewsets.ModelViewSet):
-
     """
     A Goal ViewSet for listing or retrieving users.
     """
