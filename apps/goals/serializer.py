@@ -33,3 +33,8 @@ class CommentVoteSerializer(serializers.ModelSerializer):
         model = CommentVote
         fields = '__all__'
 
+
+class GoalCommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoalComment
+        fields = ['text']
