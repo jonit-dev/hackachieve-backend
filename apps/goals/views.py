@@ -3,7 +3,7 @@ import datetime
 from datetime import *
 
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets
+from rest_framework import viewsets, status, mixins
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.pagination import LimitOffsetPagination
@@ -11,8 +11,14 @@ from rest_framework.response import Response
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.goals.models import Goal
-from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer
+from apps.goals.models import Goal, GoalComment, CommentVote
+from apps.goals.serializer import (
+    GoalSerializer,
+    GoalPublicStatusSerializer,
+    GoalCommentSerializer,
+    GoalCommentDetailSerializer,
+    CommentVoteSerializer,
+    GoalCommentUpdateSerializer)
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -299,7 +305,6 @@ def long_short(request, long_term_goal_id):
 
 
 class GoalFeedsViewSet(viewsets.ModelViewSet):
-
     """
     A Goal ViewSet for listing or retrieving users.
     """
@@ -327,3 +332,113 @@ class PublicGoalUpdateView(GenericAPIView, UpdateModelMixin):
 
     def put(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+class CommentPublicGoal(mixins.CreateModelMixin,
+                        mixins.ListModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.DestroyModelMixin,
+                        mixins.RetrieveModelMixin,
+                        viewsets.GenericViewSet):
+    ''' Comment Public Goal   '''
+
+    queryset = GoalComment.objects.all()
+    serializer_class = GoalCommentSerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = GoalComment.objects.none()
+        if request.GET.get('goal', None):
+            queryset = GoalComment.objects.filter(goal=request.GET['goal'])
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        if len(serializer.data) > 0:
+            voting_response = self.get_vote_detail(serializer.data)
+            return Response(voting_response)
+        else:
+            return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        item = request.data
+        if self.check_public_goal(item['goal']):
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            return Response({'status': 'error', 'message': "Sorry, you're not allowed to comment on private goals."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = GoalCommentUpdateSerializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = GoalCommentDetailSerializer(instance)
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'status': 'success', 'message': 'Comment deleted successfully '},
+                        status=status.HTTP_204_NO_CONTENT)
+
+    def check_public_goal(self, id):
+        """ check the goal is public or not """
+        obj = Goal.objects.filter(is_public=True, id=id)
+        if len(obj) > 0:
+            return True
+        else:
+            return False
+
+    def get_vote_detail(self, data):
+        """ getting vote detail for each comment """
+        resutl = []
+        for item in data:
+            item_dict = dict(item)
+            obj = CommentVote.objects.filter(comment=item_dict['id'])
+            if len(obj) > 0:
+                upvote = obj.filter(upvote=1)
+                downvote = obj.filter(downvote=1)
+                vote = {'upvote': len(upvote), 'downvote': len(downvote)}
+                item_dict['voting'] = [vote]
+                resutl.append(item_dict)
+            else:
+                item_dict['voting'] = []
+                resutl.append(item_dict)
+
+        return resutl
+
+
+class CommentVoteViewset(mixins.CreateModelMixin,
+                         viewsets.GenericViewSet):
+    """ Vote the Comment """
+
+    queryset = CommentVote.objects.all()
+    serializer_class = CommentVoteSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        value = request.data
+        if value['upvote'] != value['downvote']:
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            return Response({'status': 'error', 'message': 'UP Vote and Down Vote must be different value'},
+                            status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)

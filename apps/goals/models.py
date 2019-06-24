@@ -39,3 +39,23 @@ class Goal(models.Model):
     @staticmethod
     def check_goal_by_title(user_id, goal_title):
         return Goal.objects.filter(user_id=user_id, title=goal_title).exists()
+
+
+class GoalComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
+    text = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    vote = models.IntegerField(default=0)
+
+
+class CommentVote(models.Model):
+
+    VOTE_CHOICES = [
+        (0, 0),
+        (1, 1),
+    ]
+    comment = models.ForeignKey(GoalComment, on_delete=models.CASCADE, related_name='commentvote')
+    upvote = models.IntegerField(default=0, choices=VOTE_CHOICES)
+    downvote = models.IntegerField(default=0, choices=VOTE_CHOICES)
+
