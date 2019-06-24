@@ -17,8 +17,8 @@ from apps.goals.serializer import (
     GoalPublicStatusSerializer,
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
-    CommentVoteSerializer
-)
+    CommentVoteSerializer,
+    GoalCommentUpdateSerializer)
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -336,6 +336,8 @@ class PublicGoalUpdateView(GenericAPIView, UpdateModelMixin):
 
 class CommentPublicGoal(mixins.CreateModelMixin,
                         mixins.ListModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.DestroyModelMixin,
                         mixins.RetrieveModelMixin,
                         viewsets.GenericViewSet):
     ''' Comment Public Goal   '''
@@ -370,10 +372,30 @@ class CommentPublicGoal(mixins.CreateModelMixin,
             return Response({'status': 'error', 'message': "Sorry, you're not allowed to comment on private goals."},
                             status=status.HTTP_400_BAD_REQUEST)
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = GoalCommentUpdateSerializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = GoalCommentDetailSerializer(instance)
         return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'status': 'success', 'message': 'Comment deleted successfully '},
+                        status=status.HTTP_204_NO_CONTENT)
 
     def check_public_goal(self, id):
         """ check the goal is public or not """
@@ -394,6 +416,9 @@ class CommentPublicGoal(mixins.CreateModelMixin,
                 downvote = obj.filter(downvote=1)
                 vote = {'upvote': len(upvote), 'downvote': len(downvote)}
                 item_dict['voting'] = [vote]
+                resutl.append(item_dict)
+            else:
+                item_dict['voting'] = []
                 resutl.append(item_dict)
 
         return resutl
