@@ -14,3 +14,8 @@ class GoalPublicStatusSerializer(serializers.ModelSerializer):
         model = Goal
         fields = ['is_public']
 
+
+class GoalOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        fields = ['order_position']

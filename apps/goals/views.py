@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from apps.boards.models import Board
 from apps.columns.models import Column
 from apps.goals.models import Goal
-from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer
+from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -303,7 +303,7 @@ class GoalFeedsViewSet(viewsets.ModelViewSet):
     """
     A Goal ViewSet for listing or retrieving users.
     """
-    queryset = Goal.objects.filter(is_public=True)
+    queryset = Goal.objects.filter(is_public=True).order_by('order_position')
     serializer_class = GoalSerializer
     pagination_class = LimitOffsetPagination
 
@@ -324,6 +324,15 @@ class PublicGoalUpdateView(GenericAPIView, UpdateModelMixin):
     '''
     queryset = Goal.objects.all()
     serializer_class = GoalPublicStatusSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+
+class OrderUpdateGoalView(GenericAPIView, UpdateModelMixin):
+    '''   we update Goal order position '''
+    queryset = Goal.objects.all()
+    serializer_class = GoalOrderSerializer
 
     def put(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
