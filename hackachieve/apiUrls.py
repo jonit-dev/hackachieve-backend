@@ -18,13 +18,14 @@ urlpatterns = [
     url('', include('apps.checklists.api.urls')),
     url('', include('apps.area_of_knowledges.api.urls')),
     url('', include('apps.labels.api.urls')),
-
+    url(r'^api/auth/oauth/', include('rest_framework_social_oauth2.urls')),
 
 
     # USER ROUTES =========================== #
 
     url('user/register', user_views.user_register),
     url('user/info/$', user_views.info),
+    url('user/oauth/facebook/', user_views.SocialLoginView.as_view()),
 
     # Boards
 
