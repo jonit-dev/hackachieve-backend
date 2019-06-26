@@ -155,6 +155,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_crontab',
     'oauth2_provider',
+    'social_django',
     'rest_framework_social_oauth2',
 ]
 
