@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, status, mixins
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import UpdateModelMixin
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.response import Response
 
 from apps.boards.models import Board
@@ -306,13 +306,19 @@ def long_short(request, long_term_goal_id):
     return JsonResponse(goal_dict, safe=False)
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+
 class GoalFeedsViewSet(viewsets.ModelViewSet):
     """
     A Goal ViewSet for listing or retrieving users.
     """
     queryset = Goal.objects.filter(is_public=True).order_by('order_position')
     serializer_class = GoalSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = StandardResultsSetPagination
 
     def list(self, request):
         queryset = self.get_queryset()
