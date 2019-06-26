@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
 
 from apps.boards.models import Board
 from apps.columns.models import Column
+from apps.columns.serializer import ColumnOrderSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -196,3 +199,12 @@ def delete(request, column_id):
             "message": "Your column was deleted!",
             "type": "success"
         })
+
+
+class UpdateColumnViewSets(GenericAPIView, UpdateModelMixin):
+    '''   we update Column order position '''
+    queryset = Column.objects.all()
+    serializer_class = ColumnOrderSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)

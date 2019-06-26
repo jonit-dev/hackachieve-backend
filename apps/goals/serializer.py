@@ -38,3 +38,8 @@ class GoalCommentUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoalComment
         fields = ['text']
+
+class GoalOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        fields = ['order_position']

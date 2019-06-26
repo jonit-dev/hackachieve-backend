@@ -19,6 +19,8 @@ from apps.goals.serializer import (
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
     GoalCommentUpdateSerializer)
+from apps.goals.models import Goal
+from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -308,7 +310,7 @@ class GoalFeedsViewSet(viewsets.ModelViewSet):
     """
     A Goal ViewSet for listing or retrieving users.
     """
-    queryset = Goal.objects.filter(is_public=True)
+    queryset = Goal.objects.filter(is_public=True).order_by('order_position')
     serializer_class = GoalSerializer
     pagination_class = LimitOffsetPagination
 
@@ -442,3 +444,12 @@ class CommentVoteViewset(mixins.CreateModelMixin,
         else:
             return Response({'status': 'error', 'message': 'UP Vote and Down Vote must be different value'},
                             status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+
+class OrderUpdateGoalView(GenericAPIView, UpdateModelMixin):
+    '''   we update Goal order position '''
+    queryset = Goal.objects.all()
+    serializer_class = GoalOrderSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)

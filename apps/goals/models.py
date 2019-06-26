@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 # Create your models here.
 from apps.columns.models import Column
 from apps.labels.models import Label
@@ -15,10 +16,9 @@ class Goal(models.Model):
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
     priority = models.IntegerField(default=0)
     status = models.IntegerField(default=1)  # 1 = standby, 2 = ongoing, 3=done
+    order_position = models.IntegerField(null=True, blank=True)
     labels = models.ManyToManyField(Label, default=None)
-    is_public = models.BooleanField(default=True)
-
-
+    is_public = models.BooleanField(default=False)
 
     def __str__(self):  # title on dashboard
         return self.title
@@ -58,3 +58,11 @@ class CommentVote(models.Model):
     upvote = models.IntegerField(default=0, choices=VOTE_CHOICES)
     downvote = models.IntegerField(default=0, choices=VOTE_CHOICES)
 
+
+
+# method for updating order_position with fo
+@receiver(post_save, sender=Goal)
+def update_order(sender, instance, **kwargs):
+    if instance.order_position is None:
+        instance.order_position = instance.id
+        instance.save()

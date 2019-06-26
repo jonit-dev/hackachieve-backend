@@ -2,7 +2,9 @@ from django.conf.urls import url, include
 from rest_framework import routers
 
 # Views =========================== #
+from apps.columns.views import UpdateColumnViewSets
 from apps.countries.api import views as api_countries_view
+from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
 from apps.users import views as user_views
 from apps.tests import views as test_view
@@ -41,6 +43,7 @@ urlpatterns += [
     # list of goals associated with a particular board
 
     # columns
+    url(r'^columns/update-order/(?P<pk>[0-9]+)/$', UpdateColumnViewSets.as_view()),
     url(r'^columns/create/$', column_views.create),
     url(r'^columns/update/(?P<column_id>[0-9]+)/$', column_views.update),
 
@@ -52,6 +55,7 @@ urlpatterns += [
     # goals
     url(r'^goals/feeds/$', GoalFeedsViewSet.as_view({'get': 'list'})),
     url(r'^goals/update-public/(?P<pk>[0-9]+)/$', PublicGoalUpdateView.as_view()),
+    url(r'^goals/update-order/(?P<pk>[0-9]+)/$', OrderUpdateGoalView.as_view()),
     url(r'^goals/update/(?P<goal_id>[0-9]+)/$', goal_views.update),
     url(r'^goals/create/$', goal_views.create),
     url(r'^goals/delete/(?P<goal_id>[0-9]+)/$', goal_views.delete),
