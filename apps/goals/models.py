@@ -46,7 +46,6 @@ class GoalComment(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    vote = models.IntegerField(default=0)
 
 
 class CommentVote(models.Model):
