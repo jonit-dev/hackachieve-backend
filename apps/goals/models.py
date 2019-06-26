@@ -16,7 +16,7 @@ class Goal(models.Model):
     priority = models.IntegerField(default=0)
     status = models.IntegerField(default=1)  # 1 = standby, 2 = ongoing, 3=done
     labels = models.ManyToManyField(Label, default=None)
-    is_public = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=True)
 
 
 
