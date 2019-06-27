@@ -13,7 +13,7 @@ class MailchimpHandler:
     # ENV = 'prod'
     # API_KEY = "eb8ffce2d2623bb9570702a7aac3afa3-us19"
 
-    API_URL = 'https://us19.api.mailchimp.com/3.0'
+    API_URL = 'https://us3.api.mailchimp.com/3.0'
     USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
 
     HEADERS = {
@@ -23,22 +23,22 @@ class MailchimpHandler:
     }
 
     @staticmethod
-    def add_subscriber(email, first_name, last_name, list_id="4d91e9cc64"):
+    def add_subscriber(email, first_name, last_name, list_id="d3e968d31a"):
 
         if MailchimpHandler.ENV == 'dev':
             print('Mailchimp: skipping new subscriber register')
 
         else:
 
-            print("Registering new subscriber: {}".format(email))
+            print("Registering new subscriber to Mailchimp: {}".format(email))
             url = '{}/lists/{}/members/'.format(MailchimpHandler.API_URL, list_id)
 
             values = {
                 "email_address": email,
                 "status": "subscribed",
                 "merge_fields": {
-                    "FIRSTNAME": first_name,
-                    "LASTNAME": last_name
+                    "FNAME": first_name,
+                    "LNAME": last_name
                 }
             }
             response = requests.request("POST", url, data=json.dumps(values), headers=MailchimpHandler.HEADERS)
