@@ -101,7 +101,7 @@ def user_register(request):
 
             # Register on maillist
 
-            if ENV != "dev":  # only register on production
+            if ENV == "prod":  # only register on production
                 # adjust firstname to first letter uppercase (eg. Joao)
                 adjusted_name = json_data['firstName'].lower()
                 adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
