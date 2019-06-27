@@ -133,7 +133,7 @@ def user_register(request):
         else:
             return API.json_response({
                 "status": "error",
-                "message": "An error occured while trying to create your new user. Please, contact our support.",
+                "message": "An error occurred while trying to create your new user. Please, contact our support.",
                 "type": "danger"
             })
 
