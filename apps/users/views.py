@@ -99,7 +99,7 @@ def user_register(request):
 
             ENV = Environment.getkey('env')
 
-            # Register on Mailchimp emaillist
+            # Register on Mailchimp email list
 
             if ENV == "prod":  # only register on production
                 # adjust firstname to first letter uppercase (eg. Joao)
