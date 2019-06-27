@@ -1,3 +1,5 @@
+from threading import Thread
+
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
@@ -5,6 +7,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from hackachieve.classes.EmailHandler import EmailHandler
+from hackachieve.classes.Environment import Environment
+from hackachieve.classes.MailchimpHandler import MailchimpHandler
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 from hackachieve.classes.UserHandler import *
@@ -73,8 +77,6 @@ def user_register(request):
                 last_name=json_data['lastName']
             )
 
-
-
             # setup boards and columns
 
             # by default, user will have long term board / short term board and a Sprint, on going and backlog column for each
@@ -84,7 +86,6 @@ def user_register(request):
         if create_user:
 
             UserHandler.attach_area_of_knowledge(create_user, json_data['areas_of_knowledge'])
-
 
             UserHandler.generate_initial_boards_columns(create_user)
 
@@ -96,34 +97,43 @@ def user_register(request):
                                                "password": json_data['password']
                                            })
 
+            ENV = Environment.getkey('env')
+
             # Register on maillist
 
-            # adjust firstname to first letter uppercase (eg. Joao)
-            # adjusted_name = json_data['firstName'].lower()
-            # adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
+            if ENV != "dev":  # only register on production
+                # adjust firstname to first letter uppercase (eg. Joao)
+                adjusted_name = json_data['firstName'].lower()
+                adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
 
-            # send = EmailHandler.send_email('Welcome to hackachieve', [json_data['email']],
-            #                                "welcome",
-            #                                {
-            #                                    "name": adjusted_name,
-            #                                    "login": json_data['email'],
-            #                                    "password": json_data['password']
-            #
-            #                                })
-            #
-            # t2 = Thread(target=MailchimpHandler.add_subscriber,
-            #             args=(json_data['email'], json_data['firstName'], json_data['lastName']))
-            # t2.start()
-            #
-            # if json_data['type'] == 1:
-            #     t3 = Thread(target=MailchimpHandler.attach_tags,
-            #                 args=(['Tenant'], json_data['email']))
-            #     t3.start()
-            #
-            # if json_data['type'] == 2:
-            #     t3 = Thread(target=MailchimpHandler.attach_tags,
-            #                 args=(['Landlord'], json_data['email']))
-            #     t3.start()
+                # send = EmailHandler.send_email('Welcome to hackachieve', [json_data['email']],
+                #                                "welcome",
+                #                                {
+                #                                    "name": adjusted_name,
+                #                                    "login": json_data['email'],
+                #                                    "password": json_data['password']
+                #
+                #                                })
+                #
+
+                # add subscriber to our list
+
+
+                t2 = Thread(target=MailchimpHandler.add_subscriber,
+                            args=(json_data['email'], adjusted_name, json_data['lastName'], 'd3e968d31a'))
+                t2.start()
+
+                # add tags
+
+                # if json_data['type'] == 1:
+                #     t3 = Thread(target=MailchimpHandler.attach_tags,
+                #                 args=(['Tenant'], json_data['email']))
+                #     t3.start()
+                #
+                # if json_data['type'] == 2:
+                #     t3 = Thread(target=MailchimpHandler.attach_tags,
+                #                 args=(['Landlord'], json_data['email']))
+                #     t3.start()
 
             return API.json_response({
                 "status": "success",
