@@ -18,7 +18,7 @@ from apps.goals.serializer import (
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
-    GoalCommentUpdateSerializer)
+    GoalCommentUpdateSerializer, GoalCommentCreateSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
@@ -369,7 +369,7 @@ class CommentPublicGoal(mixins.CreateModelMixin,
             return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = GoalCommentCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         item = request.data
         if self.check_public_goal(item['goal']):

@@ -32,6 +32,13 @@ class GoalCommentSerializer(serializers.ModelSerializer):
         exclude = ('timestamp',)
 
 
+class GoalCommentCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GoalComment
+        exclude = ('timestamp',)
+
+
 class GoalCommentDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoalComment
