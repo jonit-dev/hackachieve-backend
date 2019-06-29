@@ -369,7 +369,7 @@ class CommentPublicGoal(mixins.CreateModelMixin,
             return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        serializer = GoalCommentCreateSerializer(data=request.data)
+        serializer = GoalCommentCreateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         item = request.data
         if self.check_public_goal(item['goal']):
@@ -383,7 +383,7 @@ class CommentPublicGoal(mixins.CreateModelMixin,
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = GoalCommentUpdateSerializer(instance, data=request.data, partial=partial)
+        serializer = GoalCommentUpdateSerializer(instance, data=request.data, context={'request': request}, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
