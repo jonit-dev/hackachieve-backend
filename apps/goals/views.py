@@ -394,7 +394,7 @@ class CommentPublicGoal(mixins.CreateModelMixin,
                             status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer = GoalCommentUpdateSerializer(instance, data=request.data, context={
-                                                    'request': request}, partial=partial)
+                'request': request}, partial=partial)
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)
 
@@ -418,8 +418,8 @@ class CommentPublicGoal(mixins.CreateModelMixin,
                             status=status.HTTP_400_BAD_REQUEST)
         else:
             self.perform_destroy(instance)
-        return Response({'status': 'success', 'message': 'Comment deleted successfully '},
-                        status=status.HTTP_204_NO_CONTENT)
+            return Response({'status': 'success', 'message': 'Comment deleted successfully '},
+                            status=status.HTTP_204_NO_CONTENT)
 
     def check_public_goal(self, id):
         """ check the goal is public or not """
