@@ -18,7 +18,7 @@ from apps.goals.serializer import (
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
-    GoalCommentUpdateSerializer)
+    GoalCommentUpdateSerializer, GoalCommentCreateSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
@@ -85,7 +85,8 @@ def create(request):
         })
 
     # check if user is trying to schedule a goal to the past
-    today = datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+    today = datetime.strptime(
+        datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
 
     if today > short_term_deadline:
         return API.json_response({
@@ -102,7 +103,8 @@ def create(request):
         user=User.objects.get(pk=user.id),
         title=json_data['title'],
         description=json_data['description'],
-        duration_hrs=int(json_data['optional_duration_hrs']) if json_data['optional_duration_hrs'] else 0,
+        duration_hrs=int(json_data['optional_duration_hrs']
+                         ) if json_data['optional_duration_hrs'] else 0,
         deadline=datetime(int(date[0]), int(date[1]), int(date[2])),
         column=Column.objects.get(pk=json_data['column_id']),
         priority=json_data['priority'],
@@ -139,7 +141,8 @@ def update(request, goal_id):
         })
 
     # check if user is trying to schedule a goal to the past
-    today = datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+    today = datetime.strptime(
+        datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
 
     if today > short_term_deadline:
         return API.json_response({
@@ -160,13 +163,13 @@ def update(request, goal_id):
     # updating =========================== #
 
     try:
-        goal = Goal.objects.filter(id=goal_id, user_id=user.id).update(**json_data)
+        goal = Goal.objects.filter(
+            id=goal_id, user_id=user.id).update(**json_data)
         return API.json_response({
             "status": "success",
             "message": "Your goal was updated successfully!",
             "type": "success"
         })
-
 
     except Exception as e:  # and more generic exception handling on bottom
         return API.json_response({
@@ -369,7 +372,8 @@ class CommentPublicGoal(mixins.CreateModelMixin,
             return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = GoalCommentCreateSerializer(
+            data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         item = request.data
         if self.check_public_goal(item['goal']):
@@ -383,16 +387,23 @@ class CommentPublicGoal(mixins.CreateModelMixin,
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = GoalCommentUpdateSerializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
 
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
+        # check if the instance user is the same that's originating the request
+        if instance.user.id != request.user.id:
+            return Response({'status': 'error', 'message': "Sorry, you're not allowed to update a comment that is not yours."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = GoalCommentUpdateSerializer(instance, data=request.data, context={
+                                                    'request': request}, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
 
-        return Response(serializer.data)
+            if getattr(instance, '_prefetched_objects_cache', None):
+                # If 'prefetch_related' has been applied to a queryset, we need to
+                # forcibly invalidate the prefetch cache on the instance.
+                instance._prefetched_objects_cache = {}
+
+            return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -401,7 +412,12 @@ class CommentPublicGoal(mixins.CreateModelMixin,
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.perform_destroy(instance)
+
+        if instance.user.id != request.user.id:
+            return Response({'status': 'error', 'message': "Sorry, you're not allowed to delete a comment that is not yours."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            self.perform_destroy(instance)
         return Response({'status': 'success', 'message': 'Comment deleted successfully '},
                         status=status.HTTP_204_NO_CONTENT)
 

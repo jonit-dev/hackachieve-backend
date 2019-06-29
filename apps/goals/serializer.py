@@ -1,9 +1,18 @@
 from rest_framework import serializers
 
 from apps.goals.models import Goal, GoalComment, CommentVote
+from apps.users.models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
 
 
 class GoalSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Goal
         fields = '__all__'
@@ -16,30 +25,46 @@ class GoalPublicStatusSerializer(serializers.ModelSerializer):
 
 
 class GoalCommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = GoalComment
-        exclude = ('timestamp',)
+        fields = ['id', 'text', 'user']
+
+
+class GoalCommentCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = GoalComment
+        fields = ['id', 'goal', 'text', 'user']
 
 
 class GoalCommentDetailSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = GoalComment
-        fields = '__all__'
+        fields = ['text', 'user']
 
 
 class CommentVoteSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CommentVote
         fields = '__all__'
 
 
 class GoalCommentUpdateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = GoalComment
-        fields = ['text']
+        fields = ['text', 'user']
+
 
 class GoalOrderSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Goal
-        fields = ['order_position']
+        fields = ['order_position', 'user']
