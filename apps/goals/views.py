@@ -419,7 +419,7 @@ class CommentPublicGoal(mixins.CreateModelMixin,
         else:
             self.perform_destroy(instance)
             return Response({'status': 'success', 'message': 'Comment deleted successfully '},
-                            status=status.HTTP_204_NO_CONTENT)
+                            status=status.HTTP_200_OK)
 
     def check_public_goal(self, id):
         """ check the goal is public or not """
