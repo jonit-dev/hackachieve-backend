@@ -6,8 +6,8 @@ from apps.columns.views import UpdateColumnViewSets
 from apps.countries.api import views as api_countries_view
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
+from apps.projects.views import ProjectViewSet
 from apps.users import views as user_views
-from apps.tests import views as test_view
 from apps.labels import views as labels_view
 from apps.boards import views as board_views
 from apps.columns import views as column_views
@@ -18,6 +18,7 @@ from apps.area_of_knowledges import views as aok_views
 router = routers.SimpleRouter()
 router.register(r'goals/comment', CommentPublicGoal)
 router.register(r'goals/comment-vote', CommentVoteViewset)
+router.register(r'project', ProjectViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [
