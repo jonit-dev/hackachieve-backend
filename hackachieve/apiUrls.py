@@ -2,9 +2,9 @@ from django.conf.urls import url, include
 from rest_framework import routers
 
 # Views =========================== #
-from apps.columns.views import UpdateColumnViewSets
+from apps.columns.views import UpdateColumnViewSets, GoalMemberViewSet
 from apps.countries.api import views as api_countries_view
-from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView
+from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView, GoalViewSet
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
 from apps.projects.views import ProjectViewSet
 from apps.users import views as user_views
@@ -19,6 +19,8 @@ router = routers.SimpleRouter()
 router.register(r'goals/comment', CommentPublicGoal)
 router.register(r'goals/comment-vote', CommentVoteViewset)
 router.register(r'project', ProjectViewSet)
+router.register(r'goals/member', GoalViewSet)
+router.register(r'columns/member', GoalMemberViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [

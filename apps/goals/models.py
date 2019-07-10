@@ -19,6 +19,7 @@ class Goal(models.Model):
     order_position = models.IntegerField(null=True, blank=True)
     labels = models.ManyToManyField(Label, default=None)
     is_public = models.BooleanField(default=False)
+    member = models.ManyToManyField(User, related_name="goal_member")
 
     def __str__(self):  # title on dashboard
         return self.title

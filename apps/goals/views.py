@@ -18,11 +18,13 @@ from apps.goals.serializer import (
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
-    GoalCommentUpdateSerializer, GoalCommentCreateSerializer)
+    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
+from rest_framework import serializers
+
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -376,7 +378,7 @@ class CommentPublicGoal(mixins.CreateModelMixin,
             data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         item = request.data
-        if self.check_public_goal(item['goal']):
+        if self.check_public_goal(item['goal'], request):
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -421,11 +423,17 @@ class CommentPublicGoal(mixins.CreateModelMixin,
             return Response({'status': 'success', 'message': 'Comment deleted successfully '},
                             status=status.HTTP_200_OK)
 
-    def check_public_goal(self, id):
-        """ check the goal is public or not """
-        obj = Goal.objects.filter(is_public=True, id=id)
+    def check_public_goal(self, id, request):
+        obj = Goal.objects.filter(is_public=False, id=id)
         if len(obj) > 0:
-            return True
+            if obj[0].user.id == request.user.id:
+                return True
+            else:
+                member = obj.filter(member=request.user.id)
+                if len(member):
+                    return True
+                else:
+                    return False
         else:
             return False
 
@@ -475,3 +483,44 @@ class OrderUpdateGoalView(GenericAPIView, UpdateModelMixin):
 
     def put(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+class GoalViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+
+    """  Goal ViewSet  """
+
+    queryset = Goal.objects.all()
+    serializer_class = GoalcreateSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        userlist = request.data.get('member')
+        for user in userlist:
+            valid_user = User.objects.filter(id=user['id'])
+            if len(valid_user) != 1:
+                return Response({
+                    "status": "error",
+                    "message": "Member user must have valid ID",
+                    "type": "error"
+                },
+                    status=status.HTTP_200_OK)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        if instance.user == request.user:
+            self.perform_update(serializer)
+            if getattr(instance, '_prefetched_objects_cache', None):
+                instance._prefetched_objects_cache = {}
+
+            return Response(serializer.data)
+        else:
+            return Response(
+                {"status": "error",
+                 "message": "You have not permission to update this record ",
+                 "type": "danger"
+                 },
+                status=status.HTTP_200_OK)
+
+
+

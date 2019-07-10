@@ -1,3 +1,4 @@
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from apps.goals.models import Goal, GoalComment, CommentVote
@@ -68,3 +69,19 @@ class GoalOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
         fields = ['order_position', 'user']
+
+
+class GoalMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
+
+
+class GoalcreateSerializer(WritableNestedModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    member = GoalMemberSerializer(many=True, required=False)
+
+    class Meta:
+        model = Goal
+        fields = ['id', 'member', 'user']
+
