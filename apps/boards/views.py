@@ -1,10 +1,12 @@
 from django.views.decorators.csrf import csrf_exempt
 from apps.boards.models import Board
+from apps.projects.models import Project
 from hackachieve.classes.BoardHandler import BoardHandler
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
 # for protected views
+from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.http import JsonResponse
@@ -37,10 +39,19 @@ def create_board(request):
     if Board.check_user_has_board(user.id, json_data['name']) is True:
         return API.error_user_already_has_this_board()
 
+    obj = Project.objects.filter(id=json_data['project'])
+    if len(obj) == 0:
+        raise serializers.ValidationError("Project ID " + str(json_data['project']) + " does not exist in database")
+
+    if obj[0].user.id != request.user.id:
+        raise serializers.ValidationError(
+            "Current User does not have permission to create board with project ID " + str(json_data['project']))
+
     board = Board(
         name=json_data['name'],
         user=user,
-        description=json_data['description']
+        description=json_data['description'],
+        project_id=json_data['project']
     )
     board.save()
 
@@ -69,10 +80,7 @@ def show_all_boards(request):
 def show_board(request, board_id, goal_type):
     user = User.objects.get(pk=API.getUserByToken(request))
 
-
-
     if int(board_id) == 0:  # get all boards information
-
 
         boards = Board.objects.filter(user_id=user.id)  # get all boards that I own
 
