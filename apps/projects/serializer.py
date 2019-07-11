@@ -44,9 +44,9 @@ class ProjectUpdateSerializer(WritableNestedModelSerializer):
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
-    member = MemberSerializer(many=True)
+    member = UserSerializer(many=True)
     user = UserSerializer()
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'description', 'member', 'user']
+        fields = ['id', 'name', 'description', 'member', 'user', 'member']

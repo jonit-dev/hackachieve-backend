@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.goals.models import Goal
+from apps.goals.models import Goal, GoalComment
 from apps.users.models import User
 
 
@@ -20,13 +20,25 @@ class BoardListSerializer(serializers.ModelSerializer):
 
 
 class LongTermSerializer(serializers.ModelSerializer):
+    member = UserSerializer(many=True)
+
     class Meta:
         model = Column
-        fields = ['id', 'name', 'description', 'deadline', 'order_position']
+        fields = ['id', 'name', 'description', 'deadline', 'order_position', 'member']
+
+
+class GoalCommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = GoalComment
+        fields = ['text', 'user', 'timestamp']
 
 
 class ShortTermSerializer(serializers.ModelSerializer):
+    member = UserSerializer(many=True)
+
     class Meta:
         model = Goal
         fields = ['id', 'title', 'description', 'order_position', 'deadline', 'priority', 'status',
-                  'duration_hrs', 'is_public']
+                  'duration_hrs', 'is_public', 'member']

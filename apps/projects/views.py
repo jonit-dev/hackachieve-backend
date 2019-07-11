@@ -3,15 +3,14 @@ from rest_framework import mixins, viewsets, status, serializers
 from rest_framework.response import Response
 
 from apps.boards.models import Board
-from apps.boards.serializer import LongTermSerializer, ShortTermSerializer, BoardListSerializer
+from apps.boards.serializer import LongTermSerializer, ShortTermSerializer, BoardListSerializer, GoalCommentSerializer
 from apps.columns.models import Column
-from apps.goals.models import Goal
+from apps.goals.models import Goal, GoalComment
 from apps.projects.models import Project
 from apps.projects.serializer import ProjectCreateSerializer, ProjectDetailSerializer, ProjectUpdateSerializer, \
     MemberSerializer, ProjectListSerializer
 from apps.users.models import User
 from django.db.models import Q
-
 
 
 class ProjectViewSet(
@@ -49,12 +48,6 @@ class ProjectViewSet(
             else:
                 return Response({'status': 'fail', 'message': 'You have not permission to delete this record '},
                                 status=status.HTTP_200_OK)
-
-    # def list(self, request, *args, **kwargs):
-    #     queryset = Project.objects.filter(Q(member=request.user.id) | Q(user=request.user.id))
-    #
-    #     serializer = ProjectListSerializer(queryset, many=True)
-    #     return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -95,7 +88,12 @@ class ProjectViewSet(
                 board_result[index]['long_term_goal'] = columns
                 for index2, column in enumerate(columns):
                     goal = Goal.objects.filter(column=column['id']).order_by('order_position')
-                    board_result[index]['long_term_goal'][index2]['short_term_goal'] = self.get_short_term_goal(goal)
+                    goals = self.get_short_term_goal(goal)
+                    board_result[index]['long_term_goal'][index2]['short_term_goal'] = goals
+                    for index3, item in enumerate(goals):
+                        comment = GoalComment.objects.filter(goal=item['id']).order_by('id')
+                        comments = self.get_goal_comment(comment)
+                        board_result[index]['long_term_goal'][index2]['short_term_goal'][index3]['comments'] = comments
 
             project['board'] = board_result
             result.append(project)
@@ -126,5 +124,11 @@ class ProjectViewSet(
             goals.append(board_serializer.data)
         return goals
 
-
+    @staticmethod
+    def get_goal_comment(queryset):
+        comments = []
+        for comment in queryset:
+            comment_serializer = GoalCommentSerializer(comment)
+            comments.append(comment_serializer.data)
+        return comments
 
