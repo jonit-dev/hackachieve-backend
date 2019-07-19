@@ -2,6 +2,9 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 from django.forms.models import model_to_dict
 
+from apps.boards.models import Board
+from apps.columns.models import Column
+from apps.goals.models import Goal
 from apps.projects.models import Project
 from apps.users.models import User
 
@@ -25,6 +28,35 @@ class ProjectCreateSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'name', 'description', 'user', 'member']
+
+
+class ProjectContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'name', 'description']
+
+
+class BoardContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = ['id', 'name', 'description']
+
+
+class ColumnContentSerializer(serializers.ModelSerializer):
+    deadline = serializers.DateTimeField()
+
+    class Meta:
+        model = Column
+        fields = ['id', 'name', 'description', 'deadline', 'order_position']
+
+
+class GoalContentSerializer(serializers.ModelSerializer):
+    deadline = serializers.DateTimeField()
+
+    class Meta:
+        model = Goal
+        fields = ['id', 'title', 'description', 'deadline', 'order_position', 'duration_hrs', 'priority', 'status',
+                  'is_public']
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):

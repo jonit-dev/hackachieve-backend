@@ -1,14 +1,16 @@
 # Create your views here.
 from rest_framework import mixins, viewsets, status, serializers
 from rest_framework.response import Response
-
+from datetime import datetime, timezone
 from apps.boards.models import Board
 from apps.boards.serializer import LongTermSerializer, ShortTermSerializer, BoardListSerializer, GoalCommentSerializer
 from apps.columns.models import Column
 from apps.goals.models import Goal, GoalComment
 from apps.projects.models import Project
 from apps.projects.serializer import ProjectCreateSerializer, ProjectDetailSerializer, ProjectUpdateSerializer, \
-    MemberSerializer, ProjectListSerializer
+    MemberSerializer, ProjectListSerializer, ProjectContentSerializer, BoardContentSerializer, ColumnContentSerializer, \
+    GoalContentSerializer
+from apps.projects.utils import GOAL_STATUS
 from apps.users.models import User
 from django.db.models import Q
 
@@ -132,3 +134,68 @@ class ProjectViewSet(
             comments.append(comment_serializer.data)
         return comments
 
+
+class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """  Project Content ViewSet """
+
+    queryset = Project.objects.all()
+    serializer_class = ProjectContentSerializer
+    goal_status = ''
+
+    def retrieve(self, request, *args, **kwargs):
+        result = []
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        self.goal_status = request.GET.get('goal_status', None)
+        project = serializer.data
+        boards = Board.objects.filter(project=project['id'])
+        board_result = self.get_board_list(boards)
+        project['board'] = board_result
+        for index, board in enumerate(board_result):
+            long_term = Column.objects.filter(board=board['id']).order_by('order_position')
+            columns = self.get_long_and_short_term_goal(long_term, board, request.user.id)
+            project['board'][index]['long_term_goals'] = columns
+        return Response(project)
+
+    def get_board_list(self, queryset):
+        boards = []
+        for board in queryset:
+            board_serializer = BoardContentSerializer(board)
+            boards.append(board_serializer.data)
+
+        return boards
+
+    def get_long_and_short_term_goal(self, queryset, board_obj,user_id):
+        results = []
+        for columns in queryset:
+            column = ColumnContentSerializer(columns)
+            column = column.data
+
+            if self.goal_status and not self.goal_status == 'all':
+                goals = Goal.objects.filter(column=column['id'], status=GOAL_STATUS[self.goal_status])
+            else:
+                goals = Goal.objects.filter(column=column['id'])
+
+            column['board_id'] = board_obj['id']
+            column['user_id'] = user_id
+            column['long_term_goal_name'] = board_obj['name']
+            column['long_term_goal_description'] = board_obj['description']
+            if len(goals)>0:
+                for goal in goals:
+                    goal_serializer = GoalContentSerializer(goal)
+                    goal_data = goal_serializer.data
+                    goal_data['user_id'] = user_id
+                    goal_data['column_id'] = column['id']
+                    column['short_term_goals'] = goal_data
+            else:
+                column['short_term_goals'] = []
+
+            column['total_completed_goals'] = len(goals.filter(status=3))
+            column['total_goals'] = len(goals)
+            column['days_to_complete'] = self.diff_dates(datetime.now(timezone.utc), columns.deadline)
+
+            results.append(column)
+        return results
+
+    def diff_dates(self, date1, date2):
+        return abs(date2 - date1).days
