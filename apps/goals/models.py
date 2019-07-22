@@ -16,7 +16,7 @@ class Goal(models.Model):
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
     priority = models.IntegerField(default=0)
     status = models.IntegerField(default=1)  # 1 = standby, 2 = ongoing, 3=done
-    order_position = models.IntegerField(null=True, blank=True)
+    order_position = models.IntegerField(default=0, blank=True)
     labels = models.ManyToManyField(Label, default=None)
     is_public = models.BooleanField(default=False)
     member = models.ManyToManyField(User, related_name="goal_member")
@@ -55,10 +55,10 @@ class CommentVote(models.Model):
         (0, 0),
         (1, 1),
     ]
-    comment = models.ForeignKey(GoalComment, on_delete=models.CASCADE, related_name='commentvote')
+    comment = models.ForeignKey(
+        GoalComment, on_delete=models.CASCADE, related_name='commentvote')
     upvote = models.IntegerField(default=0, choices=VOTE_CHOICES)
     downvote = models.IntegerField(default=0, choices=VOTE_CHOICES)
-
 
 
 # method for updating order_position with fo

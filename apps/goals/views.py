@@ -100,6 +100,9 @@ def create(request):
     # create new datetime
     date = json_data['deadline'].split('-')
 
+    # get how many goals are already associated with this column
+    total_goals = len(Goal.objects.filter(column=json_data['column_id']))
+
     # # if not, create it
     new_goal = Goal(
         user=User.objects.get(pk=user.id),
@@ -110,7 +113,8 @@ def create(request):
         deadline=datetime(int(date[0]), int(date[1]), int(date[2])),
         column=Column.objects.get(pk=json_data['column_id']),
         priority=json_data['priority'],
-        status=1  # always active on creation
+        status=1,  # always active on creation
+        order_position=total_goals + 1
     )
     new_goal.save()
 
@@ -506,7 +510,8 @@ class GoalViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.G
                 },
                     status=status.HTTP_200_OK)
 
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         if instance.user == request.user:
             self.perform_update(serializer)
@@ -521,6 +526,3 @@ class GoalViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.G
                  "type": "danger"
                  },
                 status=status.HTTP_200_OK)
-
-
-
