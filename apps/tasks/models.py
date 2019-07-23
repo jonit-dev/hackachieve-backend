@@ -9,7 +9,7 @@ class Task(models.Model):
     title = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    checklist = models.ForeignKey(Checklist, on_delete=models.CASCADE)
+    checklist = models.ManyToManyField(Checklist)
     description = models.TextField()
     deadline = models.DateTimeField()
     priority = models.IntegerField(default=0)
