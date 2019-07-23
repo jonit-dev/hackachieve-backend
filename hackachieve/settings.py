@@ -146,6 +146,8 @@ INSTALLED_APPS = [
     'apps.goals',
     'apps.tests',
     'apps.logs',
+    'apps.projects',
+    'apps.tasks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

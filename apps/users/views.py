@@ -95,7 +95,8 @@ def user_register(request):
 
         if create_user:
 
-            UserHandler.attach_area_of_knowledge(create_user, json_data['areas_of_knowledge'])
+            UserHandler.attach_area_of_knowledge(
+                create_user, json_data['areas_of_knowledge'])
 
             UserHandler.generate_initial_boards_columns(create_user)
 
@@ -105,7 +106,7 @@ def user_register(request):
                                                "name": json_data['firstName'],
                                                "login": json_data['email'],
                                                "password": json_data['password']
-                                           })
+            })
 
             ENV = Environment.getkey('env')
 
@@ -116,18 +117,7 @@ def user_register(request):
                 adjusted_name = json_data['firstName'].lower()
                 adjusted_name = adjusted_name[:1].upper() + adjusted_name[1:]
 
-                # send = EmailHandler.send_email('Welcome to hackachieve', [json_data['email']],
-                #                                "welcome",
-                #                                {
-                #                                    "name": adjusted_name,
-                #                                    "login": json_data['email'],
-                #                                    "password": json_data['password']
-                #
-                #                                })
-                #
-
                 # add subscriber to our list
-
 
                 t2 = Thread(target=MailchimpHandler.add_subscriber,
                             args=(json_data['email'], adjusted_name, json_data['lastName'], 'd3e968d31a'))
@@ -163,7 +153,7 @@ def user_register(request):
         }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
- 
+
 class SocialLoginView(generics.GenericAPIView):
     """Log in using facebook"""
     serializer_class = SocialSerializer
@@ -175,21 +165,21 @@ class SocialLoginView(generics.GenericAPIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
- 
+
     def post(self, request):
         """Authenticate user through the provider and access_token"""
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         provider = serializer.data.get('provider', None)
         strategy = load_strategy(request)
- 
+
         try:
             backend = load_backend(strategy=strategy, name=provider,
-            redirect_uri=None)
- 
+                                   redirect_uri=None)
+
         except MissingBackend:
             return Response({'error': 'Please provide a valid provider'},
-            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST)
         try:
             if isinstance(backend, BaseOAuth2):
                 access_token = serializer.data.get('access_token')
@@ -206,27 +196,27 @@ class SocialLoginView(generics.GenericAPIView):
                 "error": "Invalid credentials",
                 "details": str(error)
             }, status=status.HTTP_400_BAD_REQUEST)
- 
+
         try:
             authenticated_user = backend.do_auth(access_token, user=user)
-       
+
         except HTTPError as error:
             return Response({
-                "error":"invalid token",
+                "error": "invalid token",
                 "details": str(error)
             }, status=status.HTTP_400_BAD_REQUEST)
-       
+
         except AuthForbidden as error:
             return Response({
-                "error":"invalid token",
+                "error": "invalid token",
                 "details": str(error)
             }, status=status.HTTP_400_BAD_REQUEST)
- 
+
         if authenticated_user and authenticated_user.is_active:
-            #generate JWT token
+            # generate JWT token
             login(request, authenticated_user)
             data = self.get_tokens_for_user(user)
-            #customize the response to your needs
+            # customize the response to your needs
             response = {
                 "email": authenticated_user.email,
                 "username": authenticated_user.username,

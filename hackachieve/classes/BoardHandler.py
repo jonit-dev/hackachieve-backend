@@ -29,15 +29,20 @@ class BoardHandler:
         for column in columns:
 
             if goal_type == 'standby':
-                goals = Goal.objects.filter(column_id=column['id'], status=1).order_by('-priority')
+                goals = Goal.objects.filter(column_id=column['id'], status=1).order_by(
+                    '-priority', 'order_position')
             elif goal_type == 'ongoing':
-                goals = Goal.objects.filter(column_id=column['id'], status=2).order_by('-priority')
+                goals = Goal.objects.filter(column_id=column['id'], status=2).order_by(
+                    '-priority', 'order_position')
             elif goal_type == 'completed' or goal_type == 'done':
-                goals = Goal.objects.filter(column_id=column['id'], status=3).order_by('-priority')  # done
+                goals = Goal.objects.filter(column_id=column['id'], status=3).order_by(
+                    '-priority', 'order_position')  # done
             elif goal_type == 'all':
-                goals = Goal.objects.filter(column_id=column['id']).order_by('-priority')
+                goals = Goal.objects.filter(column_id=column['id']).order_by(
+                    '-priority', 'order_position')
             else:
-                goals = Goal.objects.filter(column_id=column['id']).order_by('-priority')
+                goals = Goal.objects.filter(column_id=column['id']).order_by(
+                    '-priority', 'order_position')
 
             total_completed_goals = len(goals.filter(status=3))
 
@@ -53,8 +58,10 @@ class BoardHandler:
             column['short_term_goals'] = goals
             column['total_completed_goals'] = total_completed_goals
             column['total_goals'] = len(goals)
+
             # column['categories'] = categories_data
-            column['days_to_complete'] = BoardHandler.diff_dates(datetime.now(timezone.utc), column['deadline'])
+            column['days_to_complete'] = BoardHandler.diff_dates(
+                datetime.now(timezone.utc), column['deadline'])
 
         board = model_to_dict(board)
         response = {
@@ -62,7 +69,5 @@ class BoardHandler:
             'description': board['description'],
             'long_term_goals': columns
         }
-
-
 
         return response

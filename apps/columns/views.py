@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import mixins, viewsets, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import UpdateModelMixin
+from rest_framework.response import Response
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.columns.serializer import ColumnOrderSerializer
+from apps.columns.serializer import ColumnOrderSerializer, ColumnMemberCreateSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -121,7 +123,6 @@ def update(request, column_id):
             "type": "danger"
         })
 
-
     # check if column exists
     if Column.check_exists(column_id) is False:
         return API.error_goal_inexistent_column()
@@ -208,3 +209,39 @@ class UpdateColumnViewSets(GenericAPIView, UpdateModelMixin):
 
     def put(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+class GoalMemberViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    """  Goal Member ViewSet  """
+
+    queryset = Column.objects.all()
+    serializer_class = ColumnMemberCreateSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        userlist = request.data.get('member')
+        for user in userlist:
+            valid_user = User.objects.filter(id=user['id'])
+            if len(valid_user) != 1:
+                return Response({
+                            "status": "error",
+                            "message": "Member user must have valid ID",
+                            "type": "error"
+                            },
+                        status=status.HTTP_200_OK)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        if instance.user == request.user:
+            self.perform_update(serializer)
+            if getattr(instance, '_prefetched_objects_cache', None):
+                instance._prefetched_objects_cache = {}
+            return Response(serializer.data)
+        else:
+            return Response(
+                {"status": "error",
+                 "message": "You have not permission to update this record ",
+                 "type": "danger"
+                 },
+                status=status.HTTP_200_OK)
