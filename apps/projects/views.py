@@ -55,15 +55,18 @@ class ProjectViewSet(
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         if instance.user.id != request.user.id:
-            raise serializers.ValidationError("You do not have permission to update Project")
+            raise serializers.ValidationError(
+                "You do not have permission to update Project")
 
         userlist = request.data.get('member')
         for user in userlist:
             valid_user = User.objects.filter(id=user['id'])
             if len(valid_user) != 1:
-                raise serializers.ValidationError("Member user must have valid ID")
+                raise serializers.ValidationError(
+                    "Member user must have valid ID")
 
-        serializer = ProjectUpdateSerializer(instance, data=request.data, partial=partial)
+        serializer = ProjectUpdateSerializer(
+            instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         if instance.user == request.user:
             self.perform_update(serializer)
@@ -77,7 +80,8 @@ class ProjectViewSet(
 
     def list(self, request, *args, **kwargs):
         result = []
-        queryset = Project.objects.filter(Q(member=request.user.id) | Q(user=request.user.id))
+        queryset = Project.objects.filter(
+            Q(member=request.user.id) | Q(user=request.user.id))
         serializer = ProjectListSerializer(queryset, many=True)
         projects = serializer.data
         for project in projects:
@@ -85,15 +89,18 @@ class ProjectViewSet(
             boards = Board.objects.filter(project=project['id'])
             board_result = self.get_board_list(boards)
             for index, board in enumerate(board_result):
-                long_term = Column.objects.filter(board=board['id']).order_by('order_position')
+                long_term = Column.objects.filter(
+                    board=board['id']).order_by('order_position')
                 columns = self.get_long_term_goal(long_term)
                 board_result[index]['long_term_goal'] = columns
                 for index2, column in enumerate(columns):
-                    goal = Goal.objects.filter(column=column['id']).order_by('order_position')
+                    goal = Goal.objects.filter(
+                        column=column['id']).order_by('order_position')
                     goals = self.get_short_term_goal(goal)
                     board_result[index]['long_term_goal'][index2]['short_term_goal'] = goals
                     for index3, item in enumerate(goals):
-                        comment = GoalComment.objects.filter(goal=item['id']).order_by('id')
+                        comment = GoalComment.objects.filter(
+                            goal=item['id']).order_by('id')
                         comments = self.get_goal_comment(comment)
                         board_result[index]['long_term_goal'][index2]['short_term_goal'][index3]['comments'] = comments
 
@@ -152,8 +159,10 @@ class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         board_result = self.get_board_list(boards)
         project['board'] = board_result
         for index, board in enumerate(board_result):
-            long_term = Column.objects.filter(board=board['id']).order_by('order_position')
-            columns = self.get_long_and_short_term_goal(long_term, board, request.user.id)
+            long_term = Column.objects.filter(
+                board=board['id']).order_by('order_position')
+            columns = self.get_long_and_short_term_goal(
+                long_term, board, request.user.id)
             project['board'][index]['long_term_goals'] = columns
         return Response(project)
 
@@ -165,14 +174,15 @@ class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
         return boards
 
-    def get_long_and_short_term_goal(self, queryset, board_obj,user_id):
+    def get_long_and_short_term_goal(self, queryset, board_obj, user_id):
         results = []
         for columns in queryset:
             column = ColumnContentSerializer(columns)
             column = column.data
 
             if self.goal_status and not self.goal_status == 'all':
-                goals = Goal.objects.filter(column=column['id'], status=GOAL_STATUS[self.goal_status])
+                goals = Goal.objects.filter(
+                    column=column['id'], status=GOAL_STATUS[self.goal_status])
             else:
                 goals = Goal.objects.filter(column=column['id'])
 
@@ -180,19 +190,21 @@ class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             column['user_id'] = user_id
             column['long_term_goal_name'] = board_obj['name']
             column['long_term_goal_description'] = board_obj['description']
-            if len(goals)>0:
+            column['short_term_goals'] = []
+            if len(goals) > 0:
                 for goal in goals:
                     goal_serializer = GoalContentSerializer(goal)
                     goal_data = goal_serializer.data
                     goal_data['user_id'] = user_id
                     goal_data['column_id'] = column['id']
-                    column['short_term_goals'] = goal_data
+                    column['short_term_goals'].append(goal_data)
             else:
                 column['short_term_goals'] = []
 
             column['total_completed_goals'] = len(goals.filter(status=3))
             column['total_goals'] = len(goals)
-            column['days_to_complete'] = self.diff_dates(datetime.now(timezone.utc), columns.deadline)
+            column['days_to_complete'] = self.diff_dates(
+                datetime.now(timezone.utc), columns.deadline)
 
             results.append(column)
         return results
