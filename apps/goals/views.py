@@ -178,6 +178,7 @@ def update(request, goal_id):
         })
 
     except Exception as e:  # and more generic exception handling on bottom
+        print(e)
         return API.json_response({
             "status": "error",
             "message": "Error while trying to update your goal",
