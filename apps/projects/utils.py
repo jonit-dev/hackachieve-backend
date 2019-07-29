@@ -32,7 +32,8 @@ def create_boards(sender, instance, **kwargs):
                             name=column['name'],
                             board_id=board.id,
                             user_id=instance.user.id,
-                            description=column['description']
+                            description=column['description'],
+                            deadline=column['deadline']
                         )
                         if column['short_term_goal'] and len(column['short_term_goal']) > 0:
                             for goal in column['short_term_goal']:
@@ -40,7 +41,8 @@ def create_boards(sender, instance, **kwargs):
                                     title=goal['title'],
                                     column_id=column_obj.id,
                                     user_id=instance.user.id,
-                                    description=goal['description']
+                                    description=goal['description'],
+                                    deadline=goal['deadline']
                                 )
             except KeyError:
                 pass
