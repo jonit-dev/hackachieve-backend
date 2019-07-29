@@ -6,7 +6,7 @@ from apps.columns.views import UpdateColumnViewSets, GoalMemberViewSet
 from apps.countries.api import views as api_countries_view
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView, GoalViewSet
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
-from apps.tasks.views import TaskModelViewSet
+from apps.tasks.views import TaskModelViewSet, ProjectTaskDetailViewSet
 from apps.projects.views import ProjectViewSet, ProjectContentViewSet
 from apps.users import views as user_views
 from apps.labels import views as labels_view
@@ -22,6 +22,7 @@ router.register(r'goals/comment-vote', CommentVoteViewset)
 router.register(r'project', ProjectViewSet)
 router.register(r'tasks', TaskModelViewSet)
 router.register(r'project/content', ProjectContentViewSet)
+router.register(r'project/task', ProjectTaskDetailViewSet)
 router.register(r'goals/member', GoalViewSet)
 router.register(r'columns/member', GoalMemberViewSet)
 urlpatterns = router.urls
