@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.urls import path
 from rest_framework import routers
 
 # Views =========================== #
@@ -40,38 +41,47 @@ urlpatterns += [
 
     url('user/register', user_views.user_register),
     url('user/info/$', user_views.info),
+    path('user/search/<str:keyword>', user_views.search),
     url('user/oauth/facebook/', user_views.SocialLoginView.as_view()),
 
     # Boards
 
     url(r'^boards/create/$', board_views.create_board),
     url(r'^boards/$', board_views.show_all_boards),
-    url(r'^boards/show/(?P<board_id>[0-9]+)/(?P<goal_type>[a-zA-z]+)$', board_views.show_board),
+    url(r'^boards/show/(?P<board_id>[0-9]+)/(?P<goal_type>[a-zA-z]+)$',
+        board_views.show_board),
     url(r'^boards/delete/(?P<board_id>[0-9]+)/$', board_views.delete_board),
     # list of goals associated with a particular board
 
     # columns
-    url(r'^columns/update-order/(?P<pk>[0-9]+)/$', UpdateColumnViewSets.as_view()),
+    url(r'^columns/update-order/(?P<pk>[0-9]+)/$',
+        UpdateColumnViewSets.as_view()),
     url(r'^columns/create/$', column_views.create),
     url(r'^columns/update/(?P<column_id>[0-9]+)/$', column_views.update),
 
-    url(r'^columns/board/(?P<board_id>[0-9]+)/$', column_views.show_columns_from_board),
+    url(r'^columns/board/(?P<board_id>[0-9]+)/$',
+        column_views.show_columns_from_board),
     # show all columns from a particular board
     url(r'^columns/delete/(?P<column_id>[0-9]+)/$', column_views.delete),
-    url(r'^columns/attach-category/(?P<column_id>[0-9]+)/$', column_views.attach_category),
+    url(r'^columns/attach-category/(?P<column_id>[0-9]+)/$',
+        column_views.attach_category),
 
     # goals
     url(r'^goals/feeds/$', GoalFeedsViewSet.as_view({'get': 'list'})),
-    url(r'^goals/update-public/(?P<pk>[0-9]+)/$', PublicGoalUpdateView.as_view()),
-    url(r'^goals/update-order/(?P<pk>[0-9]+)/$', OrderUpdateGoalView.as_view()),
+    url(r'^goals/update-public/(?P<pk>[0-9]+)/$',
+        PublicGoalUpdateView.as_view()),
+    url(r'^goals/update-order/(?P<pk>[0-9]+)/$',
+        OrderUpdateGoalView.as_view()),
     url(r'^goals/update/(?P<goal_id>[0-9]+)/$', goal_views.update),
     url(r'^goals/create/$', goal_views.create),
     url(r'^goals/delete/(?P<goal_id>[0-9]+)/$', goal_views.delete),
     url(r'^goals/attach/columns/$', goal_views.attach_to_column),
     url(r'^goals/show/(?P<goal_id>[0-9]+)/$', goal_views.show),
     url(r'^goals/long-short/(?P<goal_id>[0-9]+)/$', goal_views.long_short),
-    url(r'^goals/update-status/(?P<goal_id>[0-9]+)/(?P<status_id>[0-9]+)$', goal_views.update_status),
-    url(r'^goals/update-priority/(?P<goal_id>[0-9]+)/(?P<priority>[0-1]+)$', goal_views.update_priority),
+    url(r'^goals/update-status/(?P<goal_id>[0-9]+)/(?P<status_id>[0-9]+)$',
+        goal_views.update_status),
+    url(r'^goals/update-priority/(?P<goal_id>[0-9]+)/(?P<priority>[0-1]+)$',
+        goal_views.update_priority),
     # fetch list of short term goals associated with a long term one
 
     # categories
@@ -90,7 +100,8 @@ urlpatterns += [
 
 
 
-    url(r'^areas-of-knowledge/search/(?P<keyword>[-\w]+)/$', aok_views.keyword),
+    url(r'^areas-of-knowledge/search/(?P<keyword>[-\w]+)/$',
+        aok_views.keyword),
 
     # TESTING ROUTS =========================== #
 

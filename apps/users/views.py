@@ -1,34 +1,34 @@
+import json
 from threading import Thread
 
+from django.contrib.auth import login
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from requests.exceptions import HTTPError
+from rest_framework import generics, status, views
+# for protected views
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from social_core.backends.oauth import BaseOAuth2
+from social_core.exceptions import (AuthForbidden, AuthTokenError,
+                                    MissingBackend)
+from social_django.utils import load_backend, load_strategy
 
+from hackachieve.classes.API import *
 from hackachieve.classes.EmailHandler import EmailHandler
 from hackachieve.classes.Environment import Environment
 from hackachieve.classes.MailchimpHandler import MailchimpHandler
-from hackachieve.classes.Validator import *
-from hackachieve.classes.API import *
 from hackachieve.classes.UserHandler import *
+from hackachieve.classes.Validator import *
+from django.db.models import Q
 
-# for protected views
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
-
-import json
-from django.core import serializers
-
-from rest_framework import generics, status, views
-from requests.exceptions import HTTPError
-from rest_framework.response import Response
-from social_django.utils import load_strategy, load_backend
-from social_core.backends.oauth import BaseOAuth2
-from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
 from .serializers import *
-from django.contrib.auth import login
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 @csrf_exempt
@@ -43,6 +43,27 @@ def info(request):
         'last_name': user.last_name,
         'email': user.email
     })
+
+
+@csrf_exempt
+@api_view(['get'])
+@permission_classes((IsAuthenticated,))
+def search(request, keyword):
+    user_id = API.getUserByToken(request)
+
+    users = User.objects.filter(Q(email__icontains=keyword) | Q(first_name__icontains=keyword) | Q(last_name__icontains=keyword)).values()
+
+    output = []
+    for user in users:
+        u = {
+            'id': user['id'],
+            'first_name': user['first_name'],
+            'last_name': user['last_name'],
+            'email': user['email']
+        }
+        output.append(u)
+
+    return JsonResponse({"users": output})
 
 
 @csrf_exempt
@@ -106,7 +127,7 @@ def user_register(request):
                                                "name": json_data['firstName'],
                                                "login": json_data['email'],
                                                "password": json_data['password']
-            })
+                                           })
 
             ENV = Environment.getkey('env')
 
