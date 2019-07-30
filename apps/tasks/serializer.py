@@ -1,3 +1,4 @@
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from apps.checklists.models import Checklist
@@ -7,20 +8,26 @@ from apps.projects.serializer import GoalContentSerializer
 from apps.tasks.models import Task
 
 
-class TaskCreateSerializer(serializers.ModelSerializer):
+class ChecklistTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Checklist
+        fields = ['id']
+
+
+class TaskCreateSerializer(WritableNestedModelSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     deadline = serializers.DateTimeField(input_formats=['%Y-%M-%d'])
-    checklist = serializers.PrimaryKeyRelatedField(queryset=Checklist.objects.all())
+    checklist = ChecklistTaskSerializer(many=True, required=False)
 
     class Meta:
         model = Task
         fields = ['id', 'title', 'description', 'project', 'deadline', 'checklist']
 
 
-class TaskUpdateSerializer(serializers.ModelSerializer):
+class TaskUpdateSerializer(WritableNestedModelSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     deadline = serializers.DateTimeField(input_formats=['%Y-%M-%d'])
-    checklist = serializers.PrimaryKeyRelatedField(queryset=Checklist.objects.all())
+    checklist = ChecklistTaskSerializer(many=True, required=False)
 
     class Meta:
         model = Task
