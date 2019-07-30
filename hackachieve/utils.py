@@ -10,36 +10,46 @@ START_UP_BOARD_LIST = [
         'description': '',
         'long_term_goal': [
             {
-                'name': 'Long term goal title for Family',
-                'description': '',
+                'name': 'Travel to Vancouver (example)',
+                'description': 'This is a long term goal sample',
                 'deadline': column_deadline,
                 'short_term_goal': [
                     {
-                        'title': 'Short term goal title for Family board',
-                        'description': '',
-                        'deadline': goal_deadline
+                        'title': 'Buy air tickets',
+                        'description': 'This is a sample short term goal',
+                        'deadline': timezone.now() - timedelta(days=7)
+                    },
+                    {
+                        'title': 'Hotel reservation',
+                        'description': 'This is a sample short term goal',
+                        'deadline': timezone.now() - timedelta(days=10)
+                    },
+                    {
+                        'title': 'Health insurance',
+                        'description': 'This is a sample short term goal',
+                        'deadline': timezone.now() - timedelta(days=14)
                     }
                 ]
             }
         ],
 
     },
-    {
-        'name': 'Health',
-        'description': '',
-        'long_term_goal': [
-            {
-                'name': 'Long term goal title for Health board',
-                'description': '',
-                'short_term_goal': [
-                    {
-                        'title': 'Short term goal title for Health board',
-                        'description': ''
-                    }
-                ]
-            }
-        ]
-    },
+    # {
+    #     'name': 'Health',
+    #     'description': '',
+    #     'long_term_goal': [
+    #         {
+    #             'name': 'Long term goal title for Health board',
+    #             'description': '',
+    #             'short_term_goal': [
+    #                 {
+    #                     'title': 'Short term goal title for Health board',
+    #                     'description': ''
+    #                 }
+    #             ]
+    #         }
+    #     ]
+    # },
     {'name': 'Career', 'description': ''},
     {'name': 'Finances', 'description': ''},
     {'name': 'Personal Development', 'description': ''},
