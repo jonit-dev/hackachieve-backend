@@ -8,7 +8,7 @@ from apps.countries.api import views as api_countries_view
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView, GoalViewSet
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
 from apps.tasks.views import TaskModelViewSet, ProjectTaskDetailViewSet
-from apps.projects.views import ProjectViewSet, ProjectContentViewSet
+from apps.projects.views import ProjectViewSet, ProjectContentViewSet, ProjectBoardsViewSet
 from apps.users import views as user_views
 from apps.labels import views as labels_view
 from apps.boards import views as board_views
@@ -24,6 +24,7 @@ router.register(r'project', ProjectViewSet)
 router.register(r'tasks', TaskModelViewSet)
 router.register(r'project/content', ProjectContentViewSet)
 router.register(r'project/task', ProjectTaskDetailViewSet)
+router.register(r'project/boards', ProjectBoardsViewSet)
 router.register(r'goals/member', GoalViewSet)
 router.register(r'columns/member', GoalMemberViewSet)
 urlpatterns = router.urls
