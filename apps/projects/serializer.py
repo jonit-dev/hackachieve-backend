@@ -17,7 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LabelContentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Label
         fields = ['id', 'name']
@@ -61,11 +60,12 @@ class ColumnContentSerializer(serializers.ModelSerializer):
 class GoalContentSerializer(serializers.ModelSerializer):
     deadline = serializers.DateTimeField()
     labels = LabelContentSerializer(many=True)
+    member = MemberSerializer(many=True)
 
     class Meta:
         model = Goal
         fields = ['id', 'title', 'description', 'deadline', 'order_position', 'duration_hrs', 'priority', 'status',
-                  'is_public', 'labels']
+                  'is_public', 'labels', 'member']
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):

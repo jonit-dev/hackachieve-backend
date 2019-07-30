@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.checklists.models import Checklist
 from apps.goals.models import Goal
 from apps.projects.models import Project
+from apps.projects.serializer import GoalContentSerializer
 from apps.tasks.models import Task
 
 
@@ -33,7 +34,7 @@ class GoalDetailSerializer(serializers.ModelSerializer):
 
 
 class CheckListSerializer(serializers.ModelSerializer):
-    goal = GoalDetailSerializer()
+    goal = GoalContentSerializer()
 
     class Meta:
         model = Checklist
@@ -53,3 +54,17 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'title', 'description', 'project', 'deadline', 'checklist', 'completed', 'priority']
+
+
+class TaskDetailForProjectSerializer(serializers.ModelSerializer):
+    checklist = CheckListSerializer()
+
+    class Meta:
+        model = Task
+        fields = ['id', 'title', 'description', 'deadline', 'checklist', 'completed', 'priority']
+
+
+class ProjectTaskDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'name', 'description']

@@ -1,8 +1,11 @@
 
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
+
+from apps.projects.models import Project
 from apps.tasks.models import Task
-from apps.tasks.serializer import TaskCreateSerializer, TaskDetailSerializer, TaskUpdateSerializer
+from apps.tasks.serializer import TaskCreateSerializer, TaskDetailSerializer, TaskUpdateSerializer, \
+    ProjectTaskDetailSerializer, TaskDetailForProjectSerializer
 
 
 class TaskModelViewSet(
@@ -61,3 +64,19 @@ class TaskModelViewSet(
                 "type": "error"
             },
                 status=status.HTTP_200_OK)
+
+
+class ProjectTaskDetailViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """  Project Task DetailViewSet """
+
+    queryset = Project.objects.all()
+    serializer_class = ProjectTaskDetailSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        project = serializer.data
+        task = Task.objects.filter(project_id=project['id'])
+        task = TaskDetailForProjectSerializer(task, context={'request': request} , many=Task)
+        project['task'] = task.data
+        return Response(project)
