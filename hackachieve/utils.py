@@ -34,22 +34,22 @@ START_UP_BOARD_LIST = [
         ],
 
     },
-    # {
-    #     'name': 'Health',
-    #     'description': '',
-    #     'long_term_goal': [
-    #         {
-    #             'name': 'Long term goal title for Health board',
-    #             'description': '',
-    #             'short_term_goal': [
-    #                 {
-    #                     'title': 'Short term goal title for Health board',
-    #                     'description': ''
-    #                 }
-    #             ]
-    #         }
-    #     ]
-    # },
+    {
+        'name': 'Health',
+        'description': '',
+        # 'long_term_goal': [
+        #     {
+        #         'name': 'Long term goal title for Health board',
+        #         'description': '',
+        #         'short_term_goal': [
+        #             {
+        #                 'title': 'Short term goal title for Health board',
+        #                 'description': ''
+        #             }
+        #         ]
+        #     }
+        # ]
+    },
     {'name': 'Career', 'description': ''},
     {'name': 'Finances', 'description': ''},
     {'name': 'Personal Development', 'description': ''},
