@@ -28,6 +28,12 @@ class MemberSerializer(serializers.ModelSerializer):
         fields = ['id']
 
 
+class MemberDetialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'username']
+
+
 class ProjectCreateSerializer(WritableNestedModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     member = MemberSerializer(many=True, required=False)
@@ -69,7 +75,7 @@ class GoalContentSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
-    member = MemberSerializer(many=True)
+    member = MemberDetialSerializer(many=True)
 
     class Meta:
         model = Project
