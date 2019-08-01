@@ -10,10 +10,10 @@ class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     checklist = models.ForeignKey(
-        Checklist, on_delete=models.CASCADE, default=None)
-    description = models.TextField()
-    deadline = models.DateTimeField()
-    priority = models.IntegerField(default=0)
+        Checklist, on_delete=models.CASCADE, default=None, null=True)
+    description = models.TextField(null=True)
+    deadline = models.DateTimeField(null=True)
+    priority = models.IntegerField(default=0, null=True)
     completed = models.BooleanField(default=False)
 
     def __str__(self):  # title on dashboard
