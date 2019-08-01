@@ -60,12 +60,11 @@ def goal_reminder(goal_type):
             random_titles = [
 
                 'Your deadline to "{}" is in {} day(s)'.format(getattr(goal, goal_name).capitalize(), diff),
-                '{}, remember that your goal deadline ({}) is in {} day(s)'.format(user.first_name.capitalize(),
-                                                                                   getattr(goal,
-                                                                                           goal_name).capitalize(),
-                                                                                   diff),
-                'Hey {}, remember to accomplish "{}" in {} day(s)'.format(user.first_name.capitalize(),
-                                                                          getattr(goal, goal_name).capitalize(), diff),
+                '{} deadline is in {} day(s)'.format(getattr(goal,
+                                                             goal_name).capitalize(),
+                                                     diff),
+                '{} your goal "{}" is due in {} day(s)'.format(user.first_name.capitalize(),
+                                                               getattr(goal, goal_name).capitalize(), diff),
             ]
 
             periods = [2, 14, 7, 1, 0]
@@ -73,7 +72,8 @@ def goal_reminder(goal_type):
             if diff in periods:
                 print(
                     '*** Sending {} day(s) email for goal {} to {}'.format(diff, getattr(goal, goal_name), user.email))
-                send_goal_reminder_email(user, goal, goal_name, goal_type, diff, random_titles)
+                send_goal_reminder_email(user, goal, getattr(goal, goal_name).capitalize(), goal_type, diff,
+                                         random_titles)
             else:
                 pass
 
