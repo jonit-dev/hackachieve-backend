@@ -57,16 +57,17 @@ class BoardContentSerializer(serializers.ModelSerializer):
 
 class ColumnContentSerializer(serializers.ModelSerializer):
     deadline = serializers.DateTimeField()
+    member = MemberDetialSerializer(many=True)
 
     class Meta:
         model = Column
-        fields = ['id', 'name', 'description', 'deadline', 'order_position']
+        fields = ['id', 'name', 'description', 'deadline', 'order_position', 'member']
 
 
 class GoalContentSerializer(serializers.ModelSerializer):
     deadline = serializers.DateTimeField()
     labels = LabelContentSerializer(many=True)
-    member = MemberSerializer(many=True)
+    member = MemberDetialSerializer(many=True)
 
     class Meta:
         model = Goal
