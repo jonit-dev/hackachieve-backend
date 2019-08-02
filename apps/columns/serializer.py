@@ -2,6 +2,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from apps.columns.models import Column
+from apps.projects.serializer import MemberDetialSerializer
 from apps.users.models import User
 
 
@@ -17,6 +18,14 @@ class ColumnMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id']
+
+
+class ColumnMemberDetailSerializer(WritableNestedModelSerializer):
+    member = MemberDetialSerializer(many=True)
+
+    class Meta:
+        model = Column
+        fields = ['id', 'member']
 
 
 class ColumnMemberCreateSerializer(WritableNestedModelSerializer):

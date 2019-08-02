@@ -18,7 +18,7 @@ from apps.goals.serializer import (
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
-    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer)
+    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer, GoalMemberDetailSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
@@ -496,6 +496,11 @@ class GoalViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.G
 
     queryset = Goal.objects.all()
     serializer_class = GoalcreateSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = GoalMemberDetailSerializer(instance)
+        return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)

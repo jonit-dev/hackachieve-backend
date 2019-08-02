@@ -2,6 +2,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from apps.goals.models import Goal, GoalComment, CommentVote
+from apps.projects.serializer import MemberDetialSerializer
 from apps.users.models import User
 
 
@@ -85,3 +86,10 @@ class GoalcreateSerializer(WritableNestedModelSerializer):
         model = Goal
         fields = ['id', 'member', 'user']
 
+
+class GoalMemberDetailSerializer(serializers.ModelSerializer):
+    member = MemberDetialSerializer(many=True)
+
+    class Meta:
+        model = Goal
+        fields = ['id', 'member']
