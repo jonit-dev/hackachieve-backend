@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.columns.serializer import ColumnOrderSerializer, ColumnMemberCreateSerializer
+from apps.columns.serializer import ColumnOrderSerializer, ColumnMemberCreateSerializer, ColumnSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -84,11 +84,12 @@ def create(request):
         deadline=json_data['deadline']
     )
     new_column.save()
-
+    serializer = ColumnSerializer(new_column)
     return API.json_response({
         "status": "success",
         "message": "Your new main goal was created successfully!",
-        "type": "success"
+        "type": "success",
+        "response": serializer.data
     })
 
 

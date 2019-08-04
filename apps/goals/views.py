@@ -18,7 +18,7 @@ from apps.goals.serializer import (
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
-    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer)
+    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer, FileSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
@@ -117,11 +117,13 @@ def create(request):
         order_position=total_goals + 1
     )
     new_goal.save()
-
+    serializer = GoalSerializer(new_goal)
     return API.json_response({
         "status": "success",
         "message": "Your new goal was created successfully!",
-        "type": "success"
+        "type": "success",
+        "response": serializer.data
+
     })
 
 

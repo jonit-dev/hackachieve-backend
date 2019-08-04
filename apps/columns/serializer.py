@@ -5,6 +5,12 @@ from apps.columns.models import Column
 from apps.users.models import User
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+
 class ColumnOrderSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -26,3 +32,12 @@ class ColumnMemberCreateSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Column
         fields = ['id', 'member', 'user']
+
+
+class ColumnSerializer(serializers.ModelSerializer):
+    user = UserSerializer
+
+    class Meta:
+        model = Column
+        fields = "__all__"
+
