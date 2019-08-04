@@ -1,8 +1,8 @@
 from datetime import timedelta
 from django.utils import timezone
 
-column_deadline = timezone.now() - timedelta(days=5)
-goal_deadline = timezone.now() - timedelta(days=2)
+column_deadline = timezone.now() + timedelta(days=20)
+goal_deadline = timezone.now() + timedelta(days=2)
 
 START_UP_BOARD_LIST = [
     {
@@ -17,17 +17,17 @@ START_UP_BOARD_LIST = [
                     {
                         'title': 'Buy air tickets',
                         'description': 'This is a sample short term goal',
-                        'deadline': timezone.now() - timedelta(days=7)
+                        'deadline': timezone.now() + timedelta(days=7)
                     },
                     {
                         'title': 'Hotel reservation',
                         'description': 'This is a sample short term goal',
-                        'deadline': timezone.now() - timedelta(days=10)
+                        'deadline': timezone.now() + timedelta(days=10)
                     },
                     {
                         'title': 'Health insurance',
                         'description': 'This is a sample short term goal',
-                        'deadline': timezone.now() - timedelta(days=14)
+                        'deadline': timezone.now() + timedelta(days=14)
                     }
                 ]
             }

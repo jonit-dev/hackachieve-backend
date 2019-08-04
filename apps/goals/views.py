@@ -18,7 +18,7 @@ from apps.goals.serializer import (
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
-    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer, FileSerializer)
+    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
