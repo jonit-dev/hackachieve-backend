@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.columns.serializer import ColumnOrderSerializer, ColumnMemberCreateSerializer, ColumnSerializer
+from apps.columns.serializer import ColumnOrderSerializer, ColumnMemberCreateSerializer, ColumnMemberDetailSerializer, ColumnSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -217,6 +217,11 @@ class GoalMemberViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, view
 
     queryset = Column.objects.all()
     serializer_class = ColumnMemberCreateSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = ColumnMemberDetailSerializer(instance)
+        return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
