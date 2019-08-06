@@ -7,6 +7,7 @@ django-braces==1.13.0
 django-cors-headers==2.4.0
 django-crontab==0.7.1
 django-dotenv==1.4.2
+django-extra-fields==1.2.3
 django-oauth-toolkit==1.2.0
 django-rest-framework-social-oauth2==1.1.0
 djangorestframework==3.8.2
