@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 # Create your models here.
 from apps.columns.models import Column
+from apps.documents.models import MediaFile
 from apps.labels.models import Label
 from apps.users.models import User
 
@@ -20,6 +21,7 @@ class Goal(models.Model):
     labels = models.ManyToManyField(Label, default=None)
     is_public = models.BooleanField(default=False)
     member = models.ManyToManyField(User, related_name="goal_member")
+    file = models.ForeignKey(MediaFile, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):  # title on dashboard
         return self.title

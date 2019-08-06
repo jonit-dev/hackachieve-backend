@@ -5,7 +5,9 @@ from rest_framework import routers
 # Views =========================== #
 from apps.columns.views import UpdateColumnViewSets, GoalMemberViewSet
 from apps.countries.api import views as api_countries_view
-from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView, GoalViewSet
+from apps.documents.views import FileView
+from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView, GoalViewSet, \
+    UpdateGoalFileViewSet
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
 from apps.tasks.views import TaskModelViewSet, ProjectTaskDetailViewSet
 from apps.projects.views import ProjectViewSet, ProjectContentViewSet, ProjectBoardsViewSet
@@ -27,6 +29,9 @@ router.register(r'project/task', ProjectTaskDetailViewSet)
 router.register(r'project/boards', ProjectBoardsViewSet)
 router.register(r'goals/member', GoalViewSet)
 router.register(r'columns/member', GoalMemberViewSet)
+router.register(r'upload', FileView)
+router.register(r'goals/update-file', UpdateGoalFileViewSet)
+
 urlpatterns = router.urls
 
 urlpatterns += [

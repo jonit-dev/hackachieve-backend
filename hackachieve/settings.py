@@ -135,6 +135,7 @@ CSRF_TRUSTED_ORIGINS = (
 )
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'corsheaders',
     'apps.users',
     'apps.countries',
@@ -148,6 +149,7 @@ INSTALLED_APPS = [
     'apps.logs',
     'apps.projects',
     'apps.tasks',
+    'apps.documents',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -160,7 +162,7 @@ INSTALLED_APPS = [
     'social_django',
     'rest_framework_social_oauth2',
 ]
-
+SITE_ID = 1
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # CorsMiddleware should be as high as possible
     'django.middleware.common.CommonMiddleware',
@@ -310,7 +312,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
+SITE_ID = 1
 MEDIA_URL = '/images/'
 MEDIA_ROOT = BASE_DIR
 STATICFILES_DIRS = [
