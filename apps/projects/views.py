@@ -152,19 +152,22 @@ class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         result = []
         instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        self.goal_status = request.GET.get('goal_status', None)
-        project = serializer.data
-        boards = Board.objects.filter(project=project['id'])
-        board_result = self.get_board_list(boards)
-        project['board'] = board_result
-        for index, board in enumerate(board_result):
-            long_term = Column.objects.filter(
-                board=board['id']).order_by('order_position')
-            columns = self.get_long_and_short_term_goal(
-                long_term, board, request.user.id)
-            project['board'][index]['long_term_goals'] = columns
-        return Response(project)
+        if instance.user.id == request.user.id or request.user in instance.member.all():
+            serializer = self.get_serializer(instance)
+            self.goal_status = request.GET.get('goal_status', None)
+            project = serializer.data
+            boards = Board.objects.filter(project=project['id'])
+            board_result = self.get_board_list(boards)
+            project['board'] = board_result
+            for index, board in enumerate(board_result):
+                long_term = Column.objects.filter(
+                    board=board['id']).order_by('order_position')
+                columns = self.get_long_and_short_term_goal(
+                    long_term, board, request.user.id)
+                project['board'][index]['long_term_goals'] = columns
+            return Response(project)
+        else:
+            return Response({'detail': 'You do not have permission to get this record'})
 
     def get_board_list(self, queryset):
         boards = []
@@ -223,19 +226,22 @@ class ProjectBoardsViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         result = []
         instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        self.goal_status = request.GET.get('goal_status', None)
-        project = serializer.data
-        boards = Board.objects.filter(project=project['id'])
-        board_result = self.get_board_list(boards)
-        project['board'] = board_result
-        for index, board in enumerate(board_result):
-            long_term = Column.objects.filter(
-                board=board['id']).order_by('order_position')
-            columns = self.get_long_and_short_term_goal(
-                long_term, board, request.user.id)
-            project['board'][index]['long_term_goals'] = columns
-        return Response(project)
+        if instance.user.id == request.user.id or request.user in instance.member.all():
+            serializer = self.get_serializer(instance)
+            self.goal_status = request.GET.get('goal_status', None)
+            project = serializer.data
+            boards = Board.objects.filter(project=project['id'])
+            board_result = self.get_board_list(boards)
+            project['board'] = board_result
+            for index, board in enumerate(board_result):
+                long_term = Column.objects.filter(
+                    board=board['id']).order_by('order_position')
+                columns = self.get_long_and_short_term_goal(
+                    long_term, board, request.user.id)
+                project['board'][index]['long_term_goals'] = columns
+            return Response(project)
+        else:
+            return Response({'detail': 'You do not have permission to get this record '})
 
     def get_board_list(self, queryset):
         boards = []
