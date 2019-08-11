@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io
 
-static/images/properties
+/media
+/static/file
 
 .vscode
 
