@@ -54,7 +54,7 @@ class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MediaFile
-        fields = ['file', 'title', 'timestamp','user']
+        fields = ['id', 'file', 'title', 'timestamp']
 
     def get_file_path(self, obj):
         url = self.context.get('request').scheme + '://' + self.context.get('request').get_host() + obj.file.url

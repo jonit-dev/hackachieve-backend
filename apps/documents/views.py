@@ -5,7 +5,7 @@ from django.shortcuts import render
 # Create your views here.
 from drf_extra_fields.fields import Base64FileField
 from requests.compat import basestring
-from rest_framework import serializers, viewsets, parsers
+from rest_framework import serializers, viewsets, parsers, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.core.files.base import ContentFile
 from rest_framework.response import Response
@@ -30,10 +30,15 @@ class FileSerializer(serializers.ModelSerializer):
 
 class FileDetailSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    file = serializers.SerializerMethodField('get_file_path')
 
     class Meta:
         model = MediaFile
         fields = ['id', 'file', 'title', 'user', 'timestamp']
+
+    def get_file_path(self, obj):
+        url = self.context.get('request').scheme + '://' + self.context.get('request').get_host() + obj.file.url
+        return url
 
 
 class FileView(viewsets.ModelViewSet):
