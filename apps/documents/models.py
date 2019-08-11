@@ -17,7 +17,7 @@ def validate_file_extension(value):
 
 
 class MediaFile(models.Model):
-    file = models.FileField(upload_to='static/file', blank=False, max_length=255, validators=[validate_file_extension])
+    file = models.FileField(upload_to='file', blank=False, max_length=255, validators=[validate_file_extension])
     title = models.CharField(blank=True, null=True, max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True,)
     timestamp = models.DateTimeField(auto_now_add=True)

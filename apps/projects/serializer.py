@@ -4,7 +4,6 @@ from rest_framework import serializers
 from apps.boards.models import Board
 from apps.columns.models import Column
 from apps.documents.models import MediaFile
-from django.contrib.sites.models import Site
 from apps.goals.models import Goal
 from apps.labels.models import Label
 from apps.projects.models import Project
@@ -56,10 +55,10 @@ class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = MediaFile
         fields = ['file', 'title', 'timestamp','user']
-    @staticmethod
-    def get_file_path(obj):
-        domain = Site.objects.get_current().domain
-        return domain + obj.file.name
+
+    def get_file_path(self, obj):
+        url = self.context.get('request').scheme + '://' + self.context.get('request').get_host() + obj.file.url
+        return url
 
 
 class BoardContentSerializer(serializers.ModelSerializer):

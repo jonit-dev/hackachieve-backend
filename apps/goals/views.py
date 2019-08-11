@@ -299,7 +299,7 @@ def show(request, goal_id):
 
     goal = Goal.objects.get(pk=goal_id)
 
-    serializer = GoalSerializer(goal)
+    serializer = GoalSerializer(goal, context={'request': request})
     return Response(serializer.data)
 
 

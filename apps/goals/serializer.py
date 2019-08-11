@@ -2,7 +2,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from apps.goals.models import Goal, GoalComment, CommentVote
-from apps.projects.serializer import MemberDetialSerializer
+from apps.projects.serializer import MemberDetialSerializer, FileSerializer
 from apps.users.models import User
 
 
@@ -14,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class GoalSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    file = FileSerializer()
 
     class Meta:
         model = Goal
