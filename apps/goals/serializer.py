@@ -72,6 +72,12 @@ class GoalOrderSerializer(serializers.ModelSerializer):
         fields = ['order_position', 'user']
 
 
+class UpdateGoalFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        fields = ['file']
+
+
 class GoalMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

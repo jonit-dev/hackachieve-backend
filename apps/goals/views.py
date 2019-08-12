@@ -18,7 +18,8 @@ from apps.goals.serializer import (
     GoalCommentSerializer,
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
-    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer, GoalMemberDetailSerializer)
+    GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer, GoalMemberDetailSerializer,
+    UpdateGoalFileSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
@@ -534,3 +535,9 @@ class GoalViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.G
                  "type": "danger"
                  },
                 status=status.HTTP_200_OK)
+
+
+class UpdateGoalFileViewSet(viewsets.GenericViewSet, UpdateModelMixin):
+    queryset = Goal.objects.all()
+    serializer_class = UpdateGoalFileSerializer
+

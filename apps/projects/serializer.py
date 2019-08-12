@@ -1,9 +1,10 @@
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
-from django.forms.models import model_to_dict
-
+# from django.forms.models import model_to_dict
 from apps.boards.models import Board
 from apps.columns.models import Column
+from apps.documents.models import MediaFile
+from django.contrib.sites.models import Site
 from apps.goals.models import Goal
 from apps.labels.models import Label
 from apps.projects.models import Project
@@ -49,6 +50,18 @@ class ProjectContentSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description']
 
 
+class FileSerializer(serializers.ModelSerializer):
+    file = serializers.SerializerMethodField('get_file_path')
+
+    class Meta:
+        model = MediaFile
+        fields = ['file', 'title', 'timestamp','user']
+    @staticmethod
+    def get_file_path(obj):
+        domain = Site.objects.get_current().domain
+        return domain + obj.file.name
+
+
 class BoardContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
@@ -68,11 +81,12 @@ class GoalContentSerializer(serializers.ModelSerializer):
     deadline = serializers.DateTimeField()
     labels = LabelContentSerializer(many=True)
     member = MemberDetialSerializer(many=True)
+    file = FileSerializer()
 
     class Meta:
         model = Goal
         fields = ['id', 'title', 'description', 'deadline', 'order_position', 'duration_hrs', 'priority', 'status',
-                  'is_public', 'labels', 'member']
+                  'is_public', 'labels', 'member', 'file']
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
