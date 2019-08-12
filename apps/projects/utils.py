@@ -17,7 +17,7 @@ GOAL_STATUS = {
 # method for updating order_position with fo
 @receiver(post_save, sender=Project)
 def create_boards(sender, instance, **kwargs):
-    if instance.id and instance.user:
+    if instance.id and instance.user and len(Board.objects.filter(project=instance)) == 0:
         for item in START_UP_BOARD_LIST:
             board = Board.objects.create(
                 name=item['name'],
