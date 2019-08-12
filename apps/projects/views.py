@@ -163,7 +163,7 @@ class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 long_term = Column.objects.filter(
                     board=board['id']).order_by('order_position')
                 columns = self.get_long_and_short_term_goal(
-                    long_term, board, request.user.id)
+                    long_term, board, request.user.id, request)
                 project['board'][index]['long_term_goals'] = columns
             return Response(project)
         else:
@@ -177,7 +177,7 @@ class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
         return boards
 
-    def get_long_and_short_term_goal(self, queryset, board_obj, user_id):
+    def get_long_and_short_term_goal(self, queryset, board_obj, user_id, request):
         results = []
         for columns in queryset:
             column = ColumnContentSerializer(columns)
@@ -196,7 +196,7 @@ class ProjectContentViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             column['short_term_goals'] = []
             if len(goals) > 0:
                 for goal in goals:
-                    goal_serializer = GoalContentSerializer(goal)
+                    goal_serializer = GoalContentSerializer(goal, context={'request': request})
                     goal_data = goal_serializer.data
                     goal_data['user_id'] = user_id
                     goal_data['column_id'] = column['id']
@@ -237,7 +237,7 @@ class ProjectBoardsViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
                 long_term = Column.objects.filter(
                     board=board['id']).order_by('order_position')
                 columns = self.get_long_and_short_term_goal(
-                    long_term, board, request.user.id)
+                    long_term, board, request.user.id, request)
                 project['board'][index]['long_term_goals'] = columns
             return Response(project)
         else:
@@ -251,7 +251,7 @@ class ProjectBoardsViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
         return boards
 
-    def get_long_and_short_term_goal(self, queryset, board_obj, user_id):
+    def get_long_and_short_term_goal(self, queryset, board_obj, user_id, request):
         results = []
         for columns in queryset:
             column = ColumnContentSerializer(columns)
@@ -270,7 +270,7 @@ class ProjectBoardsViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             column['short_term_goals'] = []
             if len(goals) > 0:
                 for goal in goals:
-                    goal_serializer = GoalContentSerializer(goal)
+                    goal_serializer = GoalContentSerializer(goal, context={'request': request})
                     goal_data = goal_serializer.data
                     goal_data['user_id'] = user_id
                     goal_data['column_id'] = column['id']
