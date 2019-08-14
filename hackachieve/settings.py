@@ -416,9 +416,10 @@ CRONJOBS = [
 
     # PRODUCTIOn =========================== #
 
-    ('0 9 * * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #production - everyday at 9am
-    ('0 9 */2 * *', 'cronjobs.cron.check_resume_matches','>> {}/cron.log'.format(LOGS_PATH)) #production - every two days at 9am
-
+    ('0 9 * * *', 'cronjobs.cron.check_resume_matches', '>> {}/cron.log'.format(LOGS_PATH)),
+    # production - everyday at 9am
+    ('0 9 */2 * *', 'cronjobs.cron.check_resume_matches', '>> {}/cron.log'.format(LOGS_PATH))
+    # production - every two days at 9am
 
     # DEV! DO NOT ACTIVATE PRODUCTION!!!! =========================== #
 
