@@ -19,13 +19,12 @@ from apps.goals.serializer import (
     GoalCommentDetailSerializer,
     CommentVoteSerializer,
     GoalCommentUpdateSerializer, GoalCommentCreateSerializer, GoalcreateSerializer, GoalMemberDetailSerializer,
-    UpdateGoalFileSerializer)
+    UpdateGoalFileSerializer, CreateNewGoalSerializer)
 from apps.goals.models import Goal
 from apps.goals.serializer import GoalSerializer, GoalPublicStatusSerializer, GoalOrderSerializer
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 from rest_framework import serializers
-
 
 # for protected views
 from rest_framework.decorators import api_view, permission_classes
@@ -38,155 +37,155 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 
 
-# Create your views here.
-@csrf_exempt
-@api_view(['post'])
-@permission_classes((IsAuthenticated,))
-def create(request):
-    json_data = API.json_get_data(request)
-
-    user = User.objects.get(pk=API.getUserByToken(request))
-
-    # Empty fields valitation =========================== #
-    check_user_fields = Validator.are_request_fields_valid(json_data)
-
-    # Check is theres no empty fields
-    if check_user_fields is not True:
-        return API.json_response({
-            "status": "error",
-            "message": "Error while trying to create your goal. The following fields are empty: {}".format(
-                check_user_fields),
-            "type": "danger"
-        })
-
-    # if all fields are set to create our board
-
-    if User.check_user_exists(user.id) is False:
-        return API.error_user_doesnt_exists()
-
-    # check if column exists
-    if Column.check_exists(json_data['column_id']) is False:
-        return API.error_goal_inexistent_column()
-
-    # check if theres a column with the same name for this user
-
-    if Goal.check_goal_by_title(user.id, json_data['title']) is True:
-        return API.error_goal_already_exists()
-
-    # check if short term goal deadline > long term goal deadline
-
-    short_term_deadline = datetime.strptime(json_data['deadline'], '%Y-%m-%d')
-    long_term_deadline = datetime.strptime(Column.objects.get(pk=json_data['column_id']).deadline.strftime('%Y-%m-%d'),
-                                           '%Y-%m-%d')
-
-    if short_term_deadline > long_term_deadline:
-        return API.json_response({
-            "status": "error",
-            "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
-                short_term_deadline.date(), long_term_deadline.date()),
-            "type": "danger"
-        })
-
-    # check if user is trying to schedule a goal to the past
-    today = datetime.strptime(
-        datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
-
-    if today > short_term_deadline:
-        return API.json_response({
-            "status": "error",
-            "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
-            "type": "danger"
-        })
-
-    # create new datetime
-    date = json_data['deadline'].split('-')
-
-    # get how many goals are already associated with this column
-    total_goals = len(Goal.objects.filter(column=json_data['column_id']))
-
-    # # if not, create it
-    new_goal = Goal(
-        user=User.objects.get(pk=user.id),
-        title=json_data['title'],
-        description=json_data['description'],
-        duration_hrs=int(json_data['optional_duration_hrs']
-                         ) if json_data['optional_duration_hrs'] else 0,
-        deadline=datetime(int(date[0]), int(date[1]), int(date[2])),
-        column=Column.objects.get(pk=json_data['column_id']),
-        priority=json_data['priority'],
-        status=1,  # always active on creation
-        order_position=total_goals + 1
-    )
-    new_goal.save()
-    serializer = GoalSerializer(new_goal)
-    return API.json_response({
-        "status": "success",
-        "message": "Your new goal was created successfully!",
-        "type": "success",
-        "response": serializer.data
-
-    })
-
-
-@csrf_exempt
-@api_view(['put', 'patch'])
-@permission_classes((IsAuthenticated,))
-def update(request, goal_id):
-    user = User.objects.get(pk=API.getUserByToken(request))
-    json_data = API.json_get_data(request)
-
-    # validation =========================== #
-
-    short_term_deadline = datetime.strptime(json_data['deadline'], '%Y-%m-%d')
-    long_term_deadline = datetime.strptime(Column.objects.get(pk=json_data['column_id']).deadline.strftime('%Y-%m-%d'),
-                                           '%Y-%m-%d')
-
-    if short_term_deadline > long_term_deadline:
-        return API.json_response({
-            "status": "error",
-            "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
-                short_term_deadline.date(), long_term_deadline.date()),
-            "type": "danger"
-        })
-
-    # check if user is trying to schedule a goal to the past
-    today = datetime.strptime(
-        datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
-
-    if today > short_term_deadline:
-        return API.json_response({
-            "status": "error",
-            "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
-            "type": "danger"
-        })
-
-    goal = Goal.objects.get(pk=goal_id)
-
-    if goal.user.id is not user.id:
-        return API.json_response({
-            "status": "error",
-            "message": "You cannot update a goal that is not yours.",
-            "type": "error"
-        })
-
-    # updating =========================== #
-
-    try:
-        goal = Goal.objects.filter(
-            id=goal_id, user_id=user.id).update(**json_data)
-        return API.json_response({
-            "status": "success",
-            "message": "Your goal was updated successfully!",
-            "type": "success"
-        })
-
-    except Exception as e:  # and more generic exception handling on bottom
-        print(e)
-        return API.json_response({
-            "status": "error",
-            "message": "Error while trying to update your goal",
-            "type": "error"
-        })
+# # Create your views here.
+# @csrf_exempt
+# @api_view(['post'])
+# @permission_classes((IsAuthenticated,))
+# def create(request):
+#     json_data = API.json_get_data(request)
+#
+#     user = User.objects.get(pk=API.getUserByToken(request))
+#
+#     # Empty fields valitation =========================== #
+#     check_user_fields = Validator.are_request_fields_valid(json_data)
+#
+#     # Check is theres no empty fields
+#     if check_user_fields is not True:
+#         return API.json_response({
+#             "status": "error",
+#             "message": "Error while trying to create your goal. The following fields are empty: {}".format(
+#                 check_user_fields),
+#             "type": "danger"
+#         })
+#
+#     # if all fields are set to create our board
+#
+#     if User.check_user_exists(user.id) is False:
+#         return API.error_user_doesnt_exists()
+#
+#     # check if column exists
+#     if Column.check_exists(json_data['column_id']) is False:
+#         return API.error_goal_inexistent_column()
+#
+#     # check if theres a column with the same name for this user
+#
+#     if Goal.check_goal_by_title(user.id, json_data['title']) is True:
+#         return API.error_goal_already_exists()
+#
+#     # check if short term goal deadline > long term goal deadline
+#
+#     short_term_deadline = datetime.strptime(json_data['deadline'], '%Y-%m-%d')
+#     long_term_deadline = datetime.strptime(Column.objects.get(pk=json_data['column_id']).deadline.strftime('%Y-%m-%d'),
+#                                            '%Y-%m-%d')
+#
+#     if short_term_deadline > long_term_deadline:
+#         return API.json_response({
+#             "status": "error",
+#             "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
+#                 short_term_deadline.date(), long_term_deadline.date()),
+#             "type": "danger"
+#         })
+#
+#     # check if user is trying to schedule a goal to the past
+#     today = datetime.strptime(
+#         datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+#
+#     if today > short_term_deadline:
+#         return API.json_response({
+#             "status": "error",
+#             "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
+#             "type": "danger"
+#         })
+#
+#     # create new datetime
+#     date = json_data['deadline'].split('-')
+#
+#     # get how many goals are already associated with this column
+#     total_goals = len(Goal.objects.filter(column=json_data['column_id']))
+#
+#     # # if not, create it
+#     new_goal = Goal(
+#         user=User.objects.get(pk=user.id),
+#         title=json_data['title'],
+#         description=json_data['description'],
+#         duration_hrs=int(json_data['optional_duration_hrs']
+#                          ) if json_data['optional_duration_hrs'] else 0,
+#         deadline=datetime(int(date[0]), int(date[1]), int(date[2])),
+#         column=Column.objects.get(pk=json_data['column_id']),
+#         priority=json_data['priority'],
+#         status=1,  # always active on creation
+#         order_position=total_goals + 1
+#     )
+#     new_goal.save()
+#     serializer = GoalSerializer(new_goal)
+#     return API.json_response({
+#         "status": "success",
+#         "message": "Your new goal was created successfully!",
+#         "type": "success",
+#         "response": serializer.data
+#
+#     })
+#
+#
+# @csrf_exempt
+# @api_view(['put', 'patch'])
+# @permission_classes((IsAuthenticated,))
+# def update(request, goal_id):
+#     user = User.objects.get(pk=API.getUserByToken(request))
+#     json_data = API.json_get_data(request)
+#
+#     # validation =========================== #
+#
+#     short_term_deadline = datetime.strptime(json_data['deadline'], '%Y-%m-%d')
+#     long_term_deadline = datetime.strptime(Column.objects.get(pk=json_data['column_id']).deadline.strftime('%Y-%m-%d'),
+#                                            '%Y-%m-%d')
+#
+#     if short_term_deadline > long_term_deadline:
+#         return API.json_response({
+#             "status": "error",
+#             "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
+#                 short_term_deadline.date(), long_term_deadline.date()),
+#             "type": "danger"
+#         })
+#
+#     # check if user is trying to schedule a goal to the past
+#     today = datetime.strptime(
+#         datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+#
+#     if today > short_term_deadline:
+#         return API.json_response({
+#             "status": "error",
+#             "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
+#             "type": "danger"
+#         })
+#
+#     goal = Goal.objects.get(pk=goal_id)
+#
+#     if goal.user.id is not user.id:
+#         return API.json_response({
+#             "status": "error",
+#             "message": "You cannot update a goal that is not yours.",
+#             "type": "error"
+#         })
+#
+#     # updating =========================== #
+#
+#     try:
+#         goal = Goal.objects.filter(
+#             id=goal_id, user_id=user.id).update(**json_data)
+#         return API.json_response({
+#             "status": "success",
+#             "message": "Your goal was updated successfully!",
+#             "type": "success"
+#         })
+#
+#     except Exception as e:  # and more generic exception handling on bottom
+#         print(e)
+#         return API.json_response({
+#             "status": "error",
+#             "message": "Error while trying to update your goal",
+#             "type": "error"
+#         })
 
 
 @csrf_exempt
@@ -424,8 +423,9 @@ class CommentPublicGoal(mixins.CreateModelMixin,
         instance = self.get_object()
 
         if instance.user.id != request.user.id:
-            return Response({'status': 'error', 'message': "Sorry, you're not allowed to delete a comment that is not yours."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'status': 'error', 'message': "Sorry, you're not allowed to delete a comment that is not yours."},
+                status=status.HTTP_400_BAD_REQUEST)
         else:
             self.perform_destroy(instance)
             return Response({'status': 'success', 'message': 'Comment deleted successfully '},
@@ -494,7 +494,6 @@ class OrderUpdateGoalView(GenericAPIView, UpdateModelMixin):
 
 
 class GoalViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
-
     """  Goal ViewSet  """
 
     queryset = Goal.objects.all()
@@ -541,3 +540,110 @@ class UpdateGoalFileViewSet(viewsets.GenericViewSet, UpdateModelMixin):
     queryset = Goal.objects.all()
     serializer_class = UpdateGoalFileSerializer
 
+
+class CreateGoalViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = Goal.objects.all()
+    serializer_class = CreateNewGoalSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if Goal.check_goal_by_title(request.user.id, serializer.validated_data['title']) is True:
+            return Response({
+                "status": "error",
+                "message": "Goal with the same title already exists",
+                "type": "danger"
+            })
+        try:
+            deadline = serializer.validated_data['deadline']
+        except KeyError:
+            deadline = None
+        if deadline:
+            short_term_deadline = datetime.strptime(request.data['deadline'], '%Y-%m-%d')
+            long_term_deadline = datetime.strptime(
+                Column.objects.get(pk=request.data['column']).deadline.strftime('%Y-%m-%d'), '%Y-%m-%d')
+            if short_term_deadline > long_term_deadline:
+                return Response({
+                    "status": "error",
+                    "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
+                        short_term_deadline.date(), long_term_deadline.date()),
+                    "type": "danger"
+                })
+            # check if user is trying to schedule a goal to the past
+            today = datetime.strptime(
+                datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+            if today > short_term_deadline:
+                return Response({
+                    "status": "error",
+                    "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
+                    "type": "danger"
+                })
+        serializer = GoalSerializer(self.perform_create(serializer))
+        return Response({
+            "status": "success",
+            "message": "Your new goal was created successfully!",
+            "type": "success",
+            "response": serializer.data
+
+        }, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        total_goals = len(Goal.objects.filter(column=instance.column.id))
+        instance.order_position = total_goals + 1
+        instance.save()
+        return instance
+
+
+class UpdateGoalviewset(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = Goal.objects.all()
+    serializer_class = CreateNewGoalSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        goal = Goal.objects.get(pk=instance.id)
+
+        if instance.user.id is not request.user.id:
+            return Response({
+                "status": "error",
+                "message": "You cannot update a goal that is not yours.",
+                "type": "error"
+            })
+        try:
+            deadline = serializer.validated_data['deadline']
+        except KeyError:
+            deadline = None
+        if deadline:
+            short_term_deadline = datetime.strptime(request.data['deadline'], '%Y-%m-%d')
+            long_term_deadline = datetime.strptime(
+                Column.objects.get(pk=request.data['column']).deadline.strftime('%Y-%m-%d'), '%Y-%m-%d')
+            if short_term_deadline > long_term_deadline:
+                return Response({
+                    "status": "error",
+                    "message": "Your short-term goal deadline ({}) must be before your long-term goal deadline ({})".format(
+                        short_term_deadline.date(), long_term_deadline.date()),
+                    "type": "danger"
+                })
+            # check if user is trying to schedule a goal to the past
+            today = datetime.strptime(
+                datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d')
+            if today > short_term_deadline:
+                return Response({
+                    "status": "error",
+                    "message": "Your cannot schedule a goal to a date before today ({})".format(today.date()),
+                    "type": "danger"
+                })
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()

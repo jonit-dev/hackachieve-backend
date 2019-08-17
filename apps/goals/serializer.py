@@ -12,6 +12,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'email']
 
 
+class CreateNewGoalSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    deadline = serializers.DateTimeField(input_formats=['%Y-%M-%d'], required=False)
+    description = serializers.CharField(required=False)
+
+    class Meta:
+        model = Goal
+        fields = ['id', 'title', 'description', 'duration_hrs', 'deadline', 'column', 'priority', 'user']
+
+
 class GoalSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     file = FileSerializer()

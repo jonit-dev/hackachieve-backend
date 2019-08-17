@@ -12,10 +12,10 @@ class Goal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    duration_hrs = models.IntegerField(default=None, null=True)
-    deadline = models.DateTimeField()
+    duration_hrs = models.IntegerField(default=None, blank=True, null=True)
+    deadline = models.DateTimeField(blank=True, null=True)
     column = models.ForeignKey(Column, on_delete=models.CASCADE)
-    priority = models.IntegerField(default=0)
+    priority = models.IntegerField(default=0, blank=True)
     status = models.IntegerField(default=1)  # 1 = standby, 2 = ongoing, 3=done
     order_position = models.IntegerField(default=0, blank=True)
     labels = models.ManyToManyField(Label, default=None)

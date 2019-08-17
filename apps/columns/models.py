@@ -12,7 +12,7 @@ class Column(models.Model):
     description = models.CharField(max_length=255, default=None)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    deadline = models.DateTimeField(null=True, default=None)
+    deadline = models.DateTimeField(null=True, blank=True, default=None)
     order_position = models.IntegerField(null=True, blank=True)
     member = models.ManyToManyField(User, related_name="column_member")
 

@@ -40,13 +40,13 @@ class ProjectCreateSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'description', 'user', 'member']
+        fields = ['id', 'name', 'user', 'member']
 
 
 class ProjectContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'name']
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -93,7 +93,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'description', 'member', 'created_at']
+        fields = ['id', 'name', 'member', 'created_at']
 
 
 class ProjectUpdateSerializer(WritableNestedModelSerializer):
@@ -101,7 +101,7 @@ class ProjectUpdateSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['name', 'description', 'member']
+        fields = ['name', 'member']
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -110,4 +110,4 @@ class ProjectListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'description', 'member', 'user', 'member']
+        fields = ['id', 'name', 'member', 'user', 'member']

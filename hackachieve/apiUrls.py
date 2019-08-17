@@ -7,7 +7,7 @@ from apps.columns.views import UpdateColumnViewSets, GoalMemberViewSet
 from apps.countries.api import views as api_countries_view
 from apps.documents.views import FileView
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView, GoalViewSet, \
-    UpdateGoalFileViewSet
+    UpdateGoalFileViewSet, UpdateGoalviewset, CreateGoalViewset
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
 from apps.tasks.views import TaskModelViewSet, ProjectTaskDetailViewSet
 from apps.projects.views import ProjectViewSet, ProjectContentViewSet, ProjectBoardsViewSet
@@ -30,6 +30,8 @@ router.register(r'project/boards', ProjectBoardsViewSet)
 router.register(r'goals/member', GoalViewSet)
 router.register(r'columns/member', GoalMemberViewSet)
 router.register(r'upload', FileView)
+router.register(r'goals/create', CreateGoalViewset)
+router.register(r'goals/update', UpdateGoalviewset)
 router.register(r'goals/update-file', UpdateGoalFileViewSet)
 
 urlpatterns = router.urls
@@ -78,8 +80,8 @@ urlpatterns += [
         PublicGoalUpdateView.as_view()),
     url(r'^goals/update-order/(?P<pk>[0-9]+)/$',
         OrderUpdateGoalView.as_view()),
-    url(r'^goals/update/(?P<goal_id>[0-9]+)/$', goal_views.update),
-    url(r'^goals/create/$', goal_views.create),
+    # url(r'^goals/update/(?P<goal_id>[0-9]+)/$', goal_views.update),
+    # url(r'^goals/create/$', goal_views.create),
     url(r'^goals/delete/(?P<goal_id>[0-9]+)/$', goal_views.delete),
     url(r'^goals/attach/columns/$', goal_views.attach_to_column),
     url(r'^goals/show/(?P<goal_id>[0-9]+)/$', goal_views.show),
