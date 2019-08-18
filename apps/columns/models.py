@@ -15,6 +15,8 @@ class Column(models.Model):
     deadline = models.DateTimeField(null=True, blank=True, default=None)
     order_position = models.IntegerField(null=True, blank=True)
     member = models.ManyToManyField(User, related_name="column_member")
+    is_example = models.BooleanField(default=False)
+
 
     def __str__(self):  # title on dashboard
         return self.name

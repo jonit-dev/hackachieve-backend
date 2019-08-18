@@ -33,7 +33,8 @@ def create_boards(sender, instance, **kwargs):
                             board_id=board.id,
                             user_id=instance.user.id,
                             description=column['description'],
-                            deadline=column['deadline']
+                            deadline=column['deadline'],
+                            is_example=True
                         )
                         if column['short_term_goal'] and len(column['short_term_goal']) > 0:
                             for goal in column['short_term_goal']:

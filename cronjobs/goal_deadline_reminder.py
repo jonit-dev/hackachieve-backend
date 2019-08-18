@@ -5,15 +5,16 @@ from datetime import datetime
 # from importlib import reload
 from apps.goals.models import Goal
 from hackachieve.classes.DateHandler import *
-
 import random
 from apps.columns.models import Column
+
+from hackachieve.settings import HOST_NAME
 
 # this is just an accessory class. it wont be executed by cron jobs.
 from hackachieve.classes.EmailHandler import EmailHandler
 
 
-def send_goal_reminder_email(user, goal, goal_name, goal_type, diff, titles):
+def send_goal_reminder_email(user, goal, goal_name, goal_type, diff, titles, project_url):
     # choose  a random email title
 
     n = random.randint(0, len(titles))
@@ -28,7 +29,8 @@ def send_goal_reminder_email(user, goal, goal_name, goal_type, diff, titles):
                                        "goal_name": goal_name.capitalize(),
                                        "goal_description": goal.description.capitalize(),
                                        "goal_deadline": goal.deadline,
-                                       "goal_diff_days": diff
+                                       "goal_diff_days": diff,
+                                       "project_url": project_url
                                    })
 
     time.sleep(2)
@@ -50,36 +52,60 @@ def goal_reminder(goal_type):
 
     for goal in goals:
 
-        try:
-            user = goal.user
+        print('Evaluating email sending...')
 
-            # calculate days difference between today and deadline date.
-            diff = DateHandler.get_date_difference(goal.deadline, today, 'days')
+        # do not send notifications to goals that are not just examples (goals created on project creation, just to teach the user how to use hackachieve)
 
-            # set some random titles to avoid gmail spam folder
-            random_titles = [
+        if goal_type == 'long-term' and goal.is_example:
+            print('{} long term - is an example goal... skipping!'.format(goal.name))
+            pass
+        elif goal_type == 'short-term' and goal.column.is_example:
+            print('{} short term - is an example goal... skipping!'.format(goal.name))
+            pass
+        else:
+            try:
+                user = goal.user
 
-                'Your deadline to "{}" is in {} day(s)'.format(getattr(goal, goal_name).capitalize(), diff),
-                '{} deadline is in {} day(s)'.format(getattr(goal,
-                                                             goal_name).capitalize(),
-                                                     diff),
-                '{} your goal "{}" is due in {} day(s)'.format(user.first_name.capitalize(),
-                                                               getattr(goal, goal_name).capitalize(), diff),
-            ]
+                # calculate days difference between today and deadline date.
+                diff = DateHandler.get_date_difference(goal.deadline, today, 'days')
 
-            periods = [2, 14, 7, 1, 0]
+                # set some random titles to avoid gmail spam folder
+                random_titles = [
 
-            if diff in periods:
-                print(
-                    '*** Sending {} day(s) email for goal {} to {}'.format(diff, getattr(goal, goal_name), user.email))
-                send_goal_reminder_email(user, goal, getattr(goal, goal_name).capitalize(), goal_type, diff,
-                                         random_titles)
-            else:
-                pass
+                    'Remember to accomplish "{}" in {} day(s)'.format(getattr(goal, goal_name).capitalize(), diff),
+                    '{} deadline in {} day(s)'.format(getattr(goal,
+                                                              goal_name).capitalize(),
+                                                      diff),
+                    '{}, "{}" is due in {} day(s)'.format(user.first_name.capitalize(),
+                                                          getattr(goal, goal_name).capitalize(), diff),
+
+                ]
+
+                # periods = [2, 14, 7, 1, 0]
+                periods = [0, 3, 7]
+
+                project_url = ""
+
+                if diff in periods:
+                    print(
+                        '*** Sending {} day(s) email for goal {} to {}'.format(diff, getattr(goal, goal_name),
+                                                                               user.email))
+
+                    if goal_type == 'long-term':
+                        project_url = '{}/project/{}/board'.format(HOST_NAME, goal.board.project.id)
+                    elif goal_type == 'short-term':
+                        project_url = '{}/project/{}/board'.format(HOST_NAME, goal.column.board.project.id)
 
 
-        except Exception as e:
-            print('An error has occured while trying to send your e-mail')
-            print(e)
+
+                    send_goal_reminder_email(user, goal, getattr(goal, goal_name).capitalize(), goal_type, diff,
+                                             random_titles, project_url)
+                else:
+                    pass
+
+
+            except Exception as e:
+                print('An error has occured while trying to send your e-mail')
+                print(e)
 
     pass
