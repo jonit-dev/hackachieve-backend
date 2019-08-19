@@ -1,6 +1,7 @@
-from drf_writable_nested import WritableNestedModelSerializer
+from drf_writable_nested import WritableNestedModelSerializer, NestedUpdateMixin
 from rest_framework import serializers
 
+from apps.documents.models import MediaFile
 from apps.goals.models import Goal, GoalComment, CommentVote
 from apps.projects.serializer import MemberDetialSerializer, FileSerializer
 from apps.users.models import User
@@ -83,10 +84,34 @@ class GoalOrderSerializer(serializers.ModelSerializer):
         fields = ['order_position', 'user']
 
 
-class UpdateGoalFileSerializer(serializers.ModelSerializer):
+class NestedFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MediaFile
+        fields = ['id']
+
+
+class UpdateGoalFileSerializer(NestedUpdateMixin):
+    file = NestedFileSerializer(many=True)
+
     class Meta:
         model = Goal
         fields = ['file']
+
+    def update(self, instance, validated_data):
+        relations, reverse_relations = self._extract_relations(validated_data)
+
+        # Create or update direct relations (foreign key, one-to-one)
+        self.update_or_create_direct_relations(
+            validated_data,
+            relations,
+        )
+        # Update instance
+        instance = super(NestedUpdateMixin, self).update(
+            instance,
+            validated_data,
+        )
+        self.update_or_create_reverse_relations(instance, reverse_relations)
+        return instance
 
 
 class GoalMemberSerializer(serializers.ModelSerializer):
