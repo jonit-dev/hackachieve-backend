@@ -121,7 +121,7 @@ def user_register(request):
 
             # UserHandler.generate_initial_boards_columns(create_user)
 
-            send = EmailHandler.send_email('Welcome to Hackachieve', [json_data['email']],
+            send = EmailHandler.send_email('Welcome to Hackachieve!', [json_data['email']],
                                            "welcome",
                                            {
                                                "name": json_data['firstName'],
