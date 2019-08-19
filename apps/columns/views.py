@@ -7,7 +7,9 @@ from rest_framework.response import Response
 
 from apps.boards.models import Board
 from apps.columns.models import Column
-from apps.columns.serializer import ColumnOrderSerializer, ColumnMemberCreateSerializer, ColumnMemberDetailSerializer, ColumnSerializer
+from apps.columns.serializer import ColumnOrderSerializer, ColumnMemberCreateSerializer, ColumnMemberDetailSerializer, \
+    ColumnSerializer
+from apps.projects.models import Project
 from hackachieve.classes.Validator import *
 from hackachieve.classes.API import *
 
@@ -28,6 +30,9 @@ from django.forms.models import model_to_dict
 @permission_classes((IsAuthenticated,))
 def create(request):
     json_data = API.json_get_data(request)
+
+
+
     user = User.objects.get(pk=API.getUserByToken(request))
     # Empty fields valitation =========================== #
     check_user_fields = Validator.are_request_fields_valid(json_data)
@@ -43,6 +48,14 @@ def create(request):
 
         # if all fields are set to create our board
 
+
+    if not 'deadline' in json_data:
+        return API.json_response({
+            "status": "error",
+            "message": "Please, select a long-term goal deadline.",
+            "type": "danger"
+        })
+
     try:
         user = User.objects.get(pk=user.id)
 
@@ -55,13 +68,27 @@ def create(request):
         })
 
     # check if board exists
-    check_board = Board.objects.filter(id=json_data['board_id'])
-    if len(check_board) is 0:
-        return API.json_response({
-            "status": "error",
-            "message": "Trying to add column to inexistent board",
-            "type": "danger"
-        })
+
+    board_id = json_data['board_id']
+
+    board_exists = Board.objects.filter(id=json_data['board_id']).exists()
+    if not board_exists:
+
+        # set category as default
+
+        default_category = Board.objects.filter(user=request.user, name="Other")
+
+        # if user didnt set a category for this new column, lets create one
+        if not default_category.exists():
+            # create one
+            other_board = Board(name="Other", project=Project.objects.get(pk=json_data['project_id']),
+                                user=request.user)
+            other_board.save()
+            board_id = other_board.id
+        else:
+            # if user alredy has "Other" board category
+
+            board_id = default_category.first().id
 
     # check if theres a column with the same name for this user
 
@@ -78,11 +105,14 @@ def create(request):
 
     new_column = Column(
         name=json_data['name'],
-        description=json_data['description'],
-        board=Board.objects.get(pk=json_data['board_id']),
+        board=Board.objects.get(pk=board_id),
         user=user,
         deadline=json_data['deadline']
     )
+
+    if 'description' in json_data.keys():
+        new_column.description = json_data['description']
+
     new_column.save()
     serializer = ColumnSerializer(new_column)
     return API.json_response({
@@ -231,11 +261,11 @@ class GoalMemberViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, view
             valid_user = User.objects.filter(id=user['id'])
             if len(valid_user) != 1:
                 return Response({
-                            "status": "error",
-                            "message": "Member user must have valid ID",
-                            "type": "error"
-                            },
-                        status=status.HTTP_200_OK)
+                    "status": "error",
+                    "message": "Member user must have valid ID",
+                    "type": "error"
+                },
+                    status=status.HTTP_200_OK)
 
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)

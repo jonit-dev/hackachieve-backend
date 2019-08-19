@@ -6,7 +6,7 @@ from apps.users.models import User
 class Board(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    description = models.CharField(max_length=255, default=None)
+    description = models.CharField(max_length=255, default=None, null=True)
     project = models.ForeignKey(Project,  on_delete=models.CASCADE, null=True)
 
     def __str__(self):  # title on dashboard

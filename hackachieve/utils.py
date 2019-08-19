@@ -59,5 +59,6 @@ START_UP_BOARD_LIST = [
     {'name': 'Recruitment', 'description': ''},
     {'name': 'Sales', 'description': ''},
     {'name': 'Marketing', 'description': ''},
-    {'name': 'Operations', 'description': ''}
+    {'name': 'Operations', 'description': ''},
+    {'name': 'Other', 'description': ''},
 ]
