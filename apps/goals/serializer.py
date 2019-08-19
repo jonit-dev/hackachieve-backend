@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CreateNewGoalSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    deadline = serializers.DateTimeField(input_formats=['%Y-%M-%d'], required=False)
+    deadline = serializers.DateTimeField(input_formats=['%Y-%m-%d'], required=False)
     description = serializers.CharField(required=False)
 
     class Meta:

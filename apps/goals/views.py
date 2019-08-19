@@ -463,9 +463,14 @@ class UpdateGoalviewset(mixins.UpdateModelMixin, viewsets.GenericViewSet):
             })
         try:
             deadline = serializer.validated_data['deadline']
+            print(serializer.validated_data)
+
+
+
         except KeyError:
             deadline = None
         if deadline:
+
             short_term_deadline = datetime.strptime(request.data['deadline'], '%Y-%m-%d')
             long_term_deadline = datetime.strptime(
                 Column.objects.get(pk=request.data['column']).deadline.strftime('%Y-%m-%d'), '%Y-%m-%d')
