@@ -3,12 +3,10 @@ import base64
 from django.shortcuts import render
 
 # Create your views here.
-from drf_extra_fields.fields import Base64FileField
-from requests.compat import basestring
-from rest_framework import serializers, viewsets, parsers, status
-from rest_framework.parsers import MultiPartParser, FormParser
-from django.core.files.base import ContentFile
+from rest_framework import serializers, viewsets, status
+from rest_framework.mixins import DestroyModelMixin
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from apps.documents.models import MediaFile
 from apps.users.models import User
@@ -56,6 +54,12 @@ class FileView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+class DeleteFileView(DestroyModelMixin, GenericViewSet):
+    queryset = MediaFile.objects.all()
+    serializer_class = FileSerializer
 
-
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'message': 'File Delete Successfully'}, status=status.HTTP_204_NO_CONTENT)
 

@@ -80,7 +80,7 @@ class GoalContentSerializer(serializers.ModelSerializer):
     deadline = serializers.DateTimeField()
     labels = LabelContentSerializer(many=True)
     member = MemberDetialSerializer(many=True)
-    file = FileSerializer()
+    file = FileSerializer(many=True)
 
     class Meta:
         model = Goal

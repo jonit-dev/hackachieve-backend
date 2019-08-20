@@ -21,7 +21,7 @@ class Goal(models.Model):
     labels = models.ManyToManyField(Label, default=None)
     is_public = models.BooleanField(default=False)
     member = models.ManyToManyField(User, related_name="goal_member")
-    file = models.ForeignKey(MediaFile, on_delete=models.CASCADE, null=True, blank=True)
+    file = models.ManyToManyField(MediaFile, default=None)
 
     def __str__(self):  # title on dashboard
         return self.title

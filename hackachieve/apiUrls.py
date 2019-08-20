@@ -5,7 +5,7 @@ from rest_framework import routers
 # Views =========================== #
 from apps.columns.views import UpdateColumnViewSets, GoalMemberViewSet
 from apps.countries.api import views as api_countries_view
-from apps.documents.views import FileView
+from apps.documents.views import FileView, DeleteFileView
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, OrderUpdateGoalView, GoalViewSet, \
     UpdateGoalFileViewSet, UpdateGoalviewset, CreateGoalViewset
 from apps.goals.views import GoalFeedsViewSet, PublicGoalUpdateView, CommentPublicGoal, CommentVoteViewset
@@ -30,6 +30,7 @@ router.register(r'project/boards', ProjectBoardsViewSet)
 router.register(r'goals/member', GoalViewSet)
 router.register(r'columns/member', GoalMemberViewSet)
 router.register(r'upload', FileView)
+router.register(r'delete-file', DeleteFileView)
 router.register(r'goals/create', CreateGoalViewset)
 router.register(r'goals/update', UpdateGoalviewset)
 router.register(r'goals/update-file', UpdateGoalFileViewSet)
