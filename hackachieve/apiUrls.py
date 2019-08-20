@@ -38,6 +38,9 @@ router.register(r'goals/update-file', UpdateGoalFileViewSet)
 
 urlpatterns = router.urls
 
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 urlpatterns += [
 
     # DRF SERIALIZED BASED ROUTES =========================== #
@@ -112,5 +115,3 @@ urlpatterns += [
     # url(r'^test/mailgun/newuser/$', test_view.mailgun),
 
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

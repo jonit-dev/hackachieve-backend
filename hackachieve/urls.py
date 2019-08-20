@@ -7,6 +7,10 @@ from .apiUrls import urlpatterns as api_urls
 from django.conf.urls.static import static
 from django.conf import settings
 
+urlpatterns = []
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -15,5 +19,3 @@ urlpatterns = [
     url('api/token/', TokenObtainPairView.as_view()),
     url('api/token/refresh/', TokenRefreshView.as_view())
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
