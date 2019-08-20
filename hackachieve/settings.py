@@ -316,6 +316,8 @@ MEDIA_ROOT = BASE_DIR + MEDIA_URL
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/var/www/static/',
+    os.path.join(BASE_DIR, "media"),
+    '/var/www/media',
 ]
 
 # PROPERTIES_IMAGES_ROOT = os.path.join(BASE_DIR, "static") + "/images/properties"
