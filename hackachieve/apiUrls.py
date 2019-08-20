@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.urls import path
 from rest_framework import routers
 
@@ -17,7 +18,7 @@ from apps.boards import views as board_views
 from apps.columns import views as column_views
 from apps.goals import views as goal_views
 from apps.area_of_knowledges import views as aok_views
-
+from hackachieve import settings
 
 router = routers.SimpleRouter()
 router.register(r'goals/comment', CommentPublicGoal)
@@ -118,4 +119,4 @@ urlpatterns += [
 
 
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
