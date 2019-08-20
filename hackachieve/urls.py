@@ -14,4 +14,6 @@ urlpatterns = [
     url('api-auth/', include('rest_framework.urls')),
     url('api/token/', TokenObtainPairView.as_view()),
     url('api/token/refresh/', TokenRefreshView.as_view())
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

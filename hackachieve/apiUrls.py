@@ -104,12 +104,6 @@ urlpatterns += [
 
     url(r'^labels/(?P<label_id>[0-9]+)/attach/(?P<resource_name>[-\w]+)/(?P<resource_id>[0-9]+)/$', labels_view.attach),
 
-
-
-
-
-
-
     url(r'^areas-of-knowledge/search/(?P<keyword>[-\w]+)/$',
         aok_views.keyword),
 
@@ -117,6 +111,6 @@ urlpatterns += [
 
     # url(r'^test/mailgun/newuser/$', test_view.mailgun),
 
+]
 
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
