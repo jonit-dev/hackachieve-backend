@@ -65,6 +65,7 @@ def goal_reminder(goal_type):
         else:
             try:
                 user = goal.user
+                members = goal.member.all()
 
                 # calculate days difference between today and deadline date.
                 diff = DateHandler.get_date_difference(goal.deadline, today, 'days')
@@ -80,6 +81,13 @@ def goal_reminder(goal_type):
                                                           getattr(goal, goal_name).capitalize(), diff),
 
                 ]
+                member_title = []
+                for member in members:
+                    member_title.append([
+                        'Remember to accomplish "{}" in {} day(s)'.format(getattr(goal, goal_name).capitalize(), diff),
+                        '{} deadline in {} day(s)'.format(getattr(goal,  goal_name).capitalize(), diff),
+                        '{}, "{}" is due in {} day(s)'.format(member.first_name.capitalize(),  getattr(goal, goal_name).capitalize(), diff),
+                    ])
 
                 # periods = [2, 14, 7, 1, 0]
                 periods = [0, 3, 7]
@@ -100,6 +108,10 @@ def goal_reminder(goal_type):
 
                     send_goal_reminder_email(user, goal, getattr(goal, goal_name).capitalize(), goal_type, diff,
                                              random_titles, project_url)
+
+                    # sending email if goal has member
+                    for idx, member in enumerate(members):
+                        send_goal_reminder_email(member, goal, getattr(goal, goal_name).capitalize(), goal_type, diff, member_title[idx], project_url)
                 else:
                     pass
 
