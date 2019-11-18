@@ -4,11 +4,11 @@
 
 # Hackachieve Community Version: Open-source alternative to project management
 
+[Support this initiative through Patreon](https://www.patreon.com/hackachieve)
+
 Hackachieve is a productivity management system oriented towards short term and long term goals, where users can collaborate with each other to achieve their personal or business goals!
 
 This is our Django powered back-end server that's supposed to run together with our [front-end](https://github.com/jonit-dev/hackachieve-frontend)
-
-[Support this initiative through Patreon](https://www.patreon.com/hackachieve)
 
 ![](https://www.hackachieve.com/landing_resources/images/dashboard.webp)
 
