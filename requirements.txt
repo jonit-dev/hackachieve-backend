@@ -10,7 +10,7 @@ django-dotenv==1.4.2
 django-extra-fields==1.2.3
 django-oauth-toolkit==1.2.0
 django-rest-framework-social-oauth2==1.1.0
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 djangorestframework-simplejwt==3.2.3
 drf-writable-nested==0.5.1
 idna==2.8
